@@ -100,4 +100,3 @@ Message class can be used to encapsulate and parse IRC messages. You can create 
 ### CommandParser Class
 
 CommandParser class can be used to parse incoming IRC commands and route them to the appropriate handlers (e.g., join, part, privmsg).
-This is a basic outline, and the actual design may vary depending on your specific requirements and design choices. You may also need additional classes or data structures to handle things like message queues, user authentication, and more advanced IRC features. Remember to encapsulate the behavior and data related to each class to keep your code organized and maintainable.
