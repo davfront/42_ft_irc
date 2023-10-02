@@ -36,9 +36,9 @@ Server class represents the IRC server itself.
 - HandleCommands: Parse and process IRC commands received from clients.
 
 
-### Client Class
+### User Class
 
-Client class represents a connected user/client.
+User class represents a connected user client.
 
 #### Attributes:
 - Client socket
@@ -55,13 +55,16 @@ Client class represents a connected user/client.
 - Disconnect: Close the client's connection to the server.
 
 
-### Operator Class (inherits from Client):
+### Operator Class (inherits from User):
 
 Operator class represents IRC operators with elevated privileges.
 
 Inherits from Client and adds additional operator-specific attributes and methods.
 
-#### Channel operators commands:
+#### Channel operator commands:
+- To be defined...
+
+#### Channel operator commands:
 - KICK - Eject a client from the channel
 - INVITE - Invite a client to a channel
 - TOPIC - Change or view the channel topic
