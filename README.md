@@ -2,11 +2,7 @@
 
 ## Resources
 
-Tutorials:
-- [ℳíиí₸ΞḶ ⱤØṨΞ](https://loving-slicer-4bc.notion.site/FT_IRC_-8ba17be867ac4c7cb2ad5e3ae5d91ce8) - Doc and tutorial
-- [IRCv3](https://ircv3.net/)
-
-Clients:
+IRC clients:
 - [Irssi](https://irssi.org/) - Simple CLI client
 - [WeeChat](https://weechat.org/) - Extensible CLI client
 - [Kiwi IRC](https://kiwiirc.com/) - Web client
@@ -14,6 +10,11 @@ Clients:
 IRC Protocols:
 - [RFC 1459](https://datatracker.ietf.org/doc/html/rfc1459)
 - [RFC 2812](https://datatracker.ietf.org/doc/html/rfc2812)
+
+Miscellaneous:
+- [ℳíиí₸ΞḶ ⱤØṨΞ](https://loving-slicer-4bc.notion.site/FT_IRC_-8ba17be867ac4c7cb2ad5e3ae5d91ce8) - Doc and tutorial
+- [IRCv3](https://ircv3.net/)
+- [Evaluation sheet](https://rphlr.github.io/42-Evals/Rank05/ft_irc/)
 
 ## Structure
 

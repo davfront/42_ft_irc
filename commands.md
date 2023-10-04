@@ -2,9 +2,9 @@
 
 ## Connection Registration
 
-- [PASS](https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.1)
-- [NICK](https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.2)
-- [USER](https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.3)
+- [**PASS**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.1) - mandatory
+- [**NICK**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.2) - mandatory
+- [**USER**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.3) - mandatory
 - [OPER](https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.4)
 - [MODE](https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.5)
 - [~~SERVICE~~](https://datatracker.ietf.org/doc/html/rfc2812#section-3.1.6) - bot bonus
@@ -13,9 +13,9 @@
 
 ## Channel operations
 
-- [JOIN](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.1)
-- [PART](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.2)
-- [MODE](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.3)
+- [**JOIN**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.1) - mandatory
+- [**PART**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.2) - mandatory
+- [**MODE**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.3) - mandatory
 	#### Channel modes (required in subject) :
 	- i: Set/remove Invite-only channel
 	- t: Set/remove the restrictions of the TOPIC command to channel operators
@@ -24,15 +24,15 @@
 	- l: Set/remove the user limit to channel
 
 
-- [TOPIC](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.4)
-- [~~NAMES~~](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.5) - not required
-- [~~LIST~~](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.6) - not required
-- [INVITE](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.7)
-- [KICK](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.8)
+- [**TOPIC**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.4) - mandatory
+- [NAMES](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.5)
+- [LIST](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.6)
+- [**INVITE**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.7) - mandatory
+- [**KICK**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.2.8) - mandatory
 
 ## Sending messages
 
-- [PRIVMSG](https://datatracker.ietf.org/doc/html/rfc2812#section-3.3.1)
+- [**PRIVMSG**](https://datatracker.ietf.org/doc/html/rfc2812#section-3.3.1) - mandatory
 - [NOTICE](https://datatracker.ietf.org/doc/html/rfc2812#section-3.3.2)
 
 ## Server queries and commands
