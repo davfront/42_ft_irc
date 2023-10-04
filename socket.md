@@ -27,7 +27,7 @@
 - Socket initialization: the IRC client uses socket programming to create a socket that will connect to the IRC server. The client specifies the server's IP address or hostname and the server's port
 - Connecting to the server: the client uses the connect function to establish a connection to the IRC server. Once connected, it obtains a socket for communication
 - User interaction: the client allows users to interact with the server by sending IRC commands and chat messages over the socket (for ex, join channels, send messages, change their nicknames, ...)
--Receiving data: the client continuously checks the socket for incoming data from the server. This includes server responses, messages from other users, and notifications about server events
+- Receiving data: the client continuously checks the socket for incoming data from the server. This includes server responses, messages from other users, and notifications about server events
 - Displaying messages: messages received from the server are displayed to the user in the client's user interface. Users can see chat messages in channels they've joined and respond accordingly
 - User commands: users can issue IRC commands by typing them into the client. The client translates these commands into the appropriate IRC protocol messages and sends them to the server
 - Disconnecting: users can disconnect from the server by closing the socket or sending a disconnect command to the server
@@ -36,7 +36,6 @@
 
 ### socket
 
-lib: sys/socket.h
 int	socket(int domain, int type, int protocol)
 - domain: specifies a communication domain (usually PF_INET for IPv4 or PF_INET6 for IPv6)
 - type: specifies the communication semantics (usually SOCK_STREAM for TCP or SOCK_DGRAM for UDP)
