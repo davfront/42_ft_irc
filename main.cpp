@@ -6,11 +6,12 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 13:00:54 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/04 13:11:48 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/04 17:14:11 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ircserv.hpp"
+#include "Server.hpp"
+#include <cstdlib>
 
 int main(int argc, char** argv) {
 
@@ -19,9 +20,7 @@ int main(int argc, char** argv) {
 		return (1);
 	}
 	
-	std::cout << "port:     " << argv[1] << std::endl;
-	std::cout << "password: " << argv[2] << std::endl;
-	// todo: create and start server ...
+	Server server(std::atoi(argv[1]), argv[2]);
 
 	return (0);
 }

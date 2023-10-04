@@ -1,5 +1,27 @@
 # ft_irc
 
+## Getting started
+
+Compile:
+
+```bash
+# without debug mode
+make
+
+# with debug mode
+make CXXFLAGS=-DDEBUG=true
+```
+
+Launch the program:
+
+```bash
+# Usage
+./ircserv <port> <password>
+
+# Example
+./ircserv 6667 !Lov3!rcS3rv
+```
+
 ## Resources
 
 IRC clients:
