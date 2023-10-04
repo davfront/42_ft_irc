@@ -34,7 +34,7 @@ Enables connection between IRC client and the remote IRC server:
 
 ### socket
 
-include <sys/socket.h>
+lib: sys/socket.h
 int	socket(int domain, int type, int protocol)
 - domain: specifies a communication domain (usually PF_INET for IPv4 or PF_INET6 for IPv6)
 - type: specifies the communication semantics (usually SOCK_STREAM for TCP or SOCK_DGRAM for UDP)
