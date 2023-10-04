@@ -1,6 +1,8 @@
 # Sockets
 
-## Socket lifecycle
+[socket_explanation](https://docs.freebsd.org/en/books/developers-handbook/sockets/)
+
+## Socket progamming
 
 - Creating a socket: by specifying the domain (IPv4, IPv6), socket type (stream or datagram), and protocol (usually set to 0 for the default protocol)
 - Binding: for a server socket, you bind it to a specific IP address and port number on which it will listen for incoming connections
@@ -9,26 +11,26 @@
 - Sending & receiving data: both client and server sockets can send and receive data over their respective connections
 - Closing sockets: after communication is complete, sockets are closed to release network resources
 
-## Role during IRC connection
+## Socket programming to implement an IRC system
 
-Enables connection between IRC client and the remote IRC server:
-- Establishing the connection:
-	- the client uses sockets to establish a network connection to the server
-	- the client socket is used to send a connection request to the server
-	- the server socket listens for incoming connections from clients, once the clients establish a connection, it creates a new socket to communicate with each client
-- Bidirectional communication:
-	- the client socket is used to send IRC commands (joining a chanel or sending a message) to the server
-	- the server socket is used to send responses and messages from the server back to the client
-- Receiving messages:
-	- sockets allow the client to receive messages sent by the server (responses to commands, welcome messages, messages from other users, ...)
-	- the client constantly monitors the server socket for incoming data
-- Sending messages: when you type messages in your IRC client, sockets are used to send those messages to the server, which then relays them to other users in the channel or to the intended recipient
-- Handling disconnects:
-	- the client uses sockets to notify the server of your intention to disconnect. Once the server acknowledges the disconnect, the client socket is closed
+### IRC Server
 
-[socket_explanation](https://docs.freebsd.org/en/books/developers-handbook/sockets/)
+- Socket initialization: the IRC server uses socket programming to create and manage server sockets. It typically listens on a specific port (usually port 6667 for non-secure connections)
+- Binding & listening: the server binds to a specific IP address and port, putting the server socket into a listening state. This allows clients to connect to the server
+- Accepting connections: when a client attempts to connect, the server uses the accept() function to accept incoming connections. A new socket is created for each client, and this socket is used for communication with that client
+- Handling multiple clients: the server can use multi-threading or asynchronous I/O (non-blocking sockets) to handle multiple clients concurrently, each with its own socket. This allows many users to participate in the chat simultaneously
+- Communication with clients: the server and clients communicate by sending and receiving messages over their respective sockets. The IRC protocol specifies how messages are formatted and exchanged. Messages may include user commands, chat messages, and server responses
+- Data processing: the server processes messages from clients, maintains a list of connected users, manages channels, and enforces server rules and policies. It broadcasts messages to users in channels and handles private messages
 
+### IRC Client
 
+- Socket initialization: the IRC client uses socket programming to create a socket that will connect to the IRC server. The client specifies the server's IP address or hostname and the server's port
+- Connecting to the server: the client uses the connect function to establish a connection to the IRC server. Once connected, it obtains a socket for communication
+- User interaction: the client allows users to interact with the server by sending IRC commands and chat messages over the socket (for ex, join channels, send messages, change their nicknames, ...)
+-Receiving data: the client continuously checks the socket for incoming data from the server. This includes server responses, messages from other users, and notifications about server events
+- Displaying messages: messages received from the server are displayed to the user in the client's user interface. Users can see chat messages in channels they've joined and respond accordingly
+- User commands: users can issue IRC commands by typing them into the client. The client translates these commands into the appropriate IRC protocol messages and sends them to the server
+- Disconnecting: users can disconnect from the server by closing the socket or sending a disconnect command to the server
 
 ## Functions from the subject
 
