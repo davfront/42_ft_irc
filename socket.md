@@ -4,12 +4,12 @@
 
 ## Socket progamming
 
-- Creating a socket: by specifying the domain (IPv4, IPv6), socket type (stream or datagram), and protocol (usually set to 0 for the default protocol)
-- Binding: for a server socket, you bind it to a specific IP address and port number on which it will listen for incoming connections
-- Listening: for server sockets, you put them into a listening state, waiting for incoming connection requests
-- Accepting: when a client connects to a server, the server accepts the connection request and creates a new socket dedicated to that client
-- Sending & receiving data: both client and server sockets can send and receive data over their respective connections
-- Closing sockets: after communication is complete, sockets are closed to release network resources
+1. Creating a socket: by specifying the domain (IPv4, IPv6), socket type (stream or datagram), and protocol (usually set to 0 for the default protocol)
+2. Binding: for a server socket, you bind it to a specific IP address and port number on which it will listen for incoming connections
+3. Listening: for server sockets, you put them into a listening state, waiting for incoming connection requests
+4. Accepting: when a client connects to a server, the server accepts the connection request and creates a new socket dedicated to that client
+5. Sending & receiving data: both client and server sockets can send and receive data over their respective connections
+6. Closing sockets: after communication is complete, sockets are closed to release network resources
 
 ## Socket programming to implement an IRC system
 
