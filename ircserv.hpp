@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 13:02:11 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/04 13:08:05 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/04 16:46:31 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,7 @@
 # define IRCSERV_HPP
 
 # include <iostream>
+
+# include "Server.hpp"
 
 #endif
