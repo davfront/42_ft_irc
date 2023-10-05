@@ -44,6 +44,19 @@ int	socket(int domain, int type, int protocol)
 
 On success, a fd for the new socket is returned. -1 if error.
 
+#### struct sockaddr
+
+sockaddr is used to represent information about a network address. It is primarily used for specifying IP addresses and port numbers when creating sockets and binding sockets to specific network addresses.
+
+Structure used by kernel to store most addresses.
+
+struct sockaddr {  
+	unsigned char	sa_len;			/* total length */  
+	sa_family_t		sa_family;		/* address family */  
+	char			sa_data[14];	/* actually longer; address value */  
+};   
+#define	SOCK_MAXADDRLEN	255			/* longest possible addresses */
+
 ### setsockopt
 
 lib: sys/socket.h + sys/type.h  
