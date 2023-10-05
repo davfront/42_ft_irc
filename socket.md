@@ -51,11 +51,11 @@ sockaddr is used to represent information about a network address. It is primari
 Structure used by kernel to store most addresses.
 
 struct sockaddr {  
-	unsigned char	sa_len;			/* total length */  
-	sa_family_t		sa_family;		/* address family */  
-	char			sa_data[14];	/* actually longer; address value */  
+	unsigned char	sa_len;	=> total length  
+	sa_family_t		sa_family; => address family    
+	char			sa_data[14]; => actually longer; address value  
 };   
-#define	SOCK_MAXADDRLEN	255			/* longest possible addresses */
+#define	SOCK_MAXADDRLEN	255	=> longest possible addresses
 
 ### setsockopt
 
