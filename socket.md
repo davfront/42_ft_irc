@@ -44,6 +44,13 @@ int	socket(int domain, int type, int protocol)
 
 On success, a fd for the new socket is returned. -1 if error.
 
+### setsockopt
+
+lib: sys/socket.h + sys/type.h  
+int	setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen)
+- sockfd: the fd of the socket we want to modify
+- level: protocol level 
+
 ### bind
 
 
