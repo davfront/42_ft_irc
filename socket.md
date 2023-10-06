@@ -57,6 +57,19 @@ struct sockaddr {
 };   
 #define	SOCK_MAXADDRLEN	255	=> longest possible addresses
 
+### htonl,  htons,  ntohl, ntohs
+
+Convert values between host and network byte order
+
+lib: netinet/in.h  
+uint32_t htonl(uint32_t hostlong);  
+uint16_t htons(uint16_t hostshort);  
+uint32_t ntohl(uint32_t netlong);  
+uint16_t ntohs(uint16_t netshort);  
+
+These routines convert 16 and 32 bit quantities	between network byte order and host	byte order. On machines which have a byte order which is the same as the network order, routines are defined as null macros.  
+These routines are most often used in conjunction with Internet addresses and ports as returned by gethostbyname(3) and getservent(3).
+
 ### setsockopt
 
 lib: sys/socket.h + sys/type.h  
@@ -64,21 +77,24 @@ int	setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
 - sockfd: the fd of the socket we want to modify
 - level: protocol level 
 
-### bind
+### bind (server function)
 
 
 
-### listen
+### listen (server function)
 
 
 
-### accept
+### accept (server function)
 
 
 
-### connect
+### connect (client function)
 
-
+int connect(int fd, const struct sockaddr *name, socklen_t namelen)
+- fd returned by socket()
+- name = pointer to a structure containing info about a network address
+- namelen = size of the sockaddr struct
 
 ### send
 
