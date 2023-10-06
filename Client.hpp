@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/06 20:57:51 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/08 10:42:06 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ class Client
 		
 	private:
 
-		// Prevent default constructor call
+		// Prevent default constructor and copy
 		Client(void);
+		Client(Client const & src);
+		Client &	operator=(Client const & rhs);
 
 		// Member attributes
 		int const					_fd;
@@ -41,11 +43,7 @@ class Client
 
 		// Constructors & destructor
 		Client(int fd, std::string nickname, std::string username, std::string realname, bool isOper = false);
-		Client(Client const & src);
 		~Client(void);
-	
-		// Assignment operator
-		Client &	operator=(Client const & rhs);
 
 		// Getters
 		int const &				getFd(void) const;

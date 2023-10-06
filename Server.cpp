@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/05 11:15:10 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/06 21:04:34 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,14 @@ Server::Server(Server const & src):
 
 Server::~Server(void)
 {
+	std::map<int, Client*>::const_iterator	it, begin, end;
+	begin = this->_clients.begin();
+	end = this->_clients.end();
+	
+	for (it = begin; it != end; it++) {
+		delete it->second;
+	}
+	
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Server " << *this << " destroyed." << Txt::RESET << std::endl;
 	return ;
@@ -112,6 +120,86 @@ std::string const &	Server::getPassword(void) const
 {
 	return (this->_password);
 }
+
+std::map<int, Client*> const &	Server::getClients(void) const
+{
+	return (this->_clients);
+}
+
+
+// Member functions (public)
+// ==========================================================================
+
+void	Server::addClient(Client* client)
+{
+	if (!client) {
+		return ;
+	}
+
+	std::map<int, Client*>::iterator it = this->_clients.find(client->getFd());
+	if (it == this->_clients.end()) {
+		this->_clients[client->getFd()] = client;
+	}
+}
+
+void	Server::deleteClient(int fd)
+{
+	std::map<int, Client*>::iterator it = this->_clients.find(fd);
+	if (it == this->_clients.end()) {
+		return ;
+	}
+	delete it->second;
+	this->_clients.erase(it);
+}
+
+Client*	Server::getClient(int const & fd) const
+{
+	std::map<int, Client*>::const_iterator	it, end;
+	it = this->_clients.find(fd);
+	end = this->_clients.end();
+
+	if (it == end) {
+		return (NULL);
+	}
+	return (it->second);
+}
+
+Client*	Server::getClientByNick(std::string const & nickname) const
+{
+	std::map<int, Client*>::const_iterator	it, begin, end;
+	begin = this->_clients.begin();
+	end = this->_clients.end();
+
+	for (it = begin; it != end; it++) {
+		if (it->second && it->second->getNickname() == nickname) {
+			return (it->second);
+		}
+	}
+	return (NULL);
+}
+
+void	Server::printClients(void) const
+{
+	std::cout << this->_clients.size() << " client(s)"<< std::endl;
+	if (this->_clients.empty()) {
+		return ;
+	}
+	
+	std::map<int, Client*>::const_iterator	it, begin, end;
+	begin = this->_clients.begin();
+	end = this->_clients.end();
+	
+	for (it = begin; it != end; it++) {
+		std::cout << "Client " << it->first << ": ";
+		if (it->second) {
+			std::cout << *(it->second);
+		} else {
+			std::cout << "NULL";
+		}
+		std::cout << std::endl;
+	}
+}
+
 
 
 // Output stream
