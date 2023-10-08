@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/06 20:58:18 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/08 10:52:41 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,12 @@
 # include <cstdlib>
 # include <map>
 # include <stdexcept>
+# include <string>
 
 # include "text_formatting.hpp"
 
 # include "Client.hpp"
+# include "Channel.hpp"
 
 class Server
 {
@@ -35,14 +37,15 @@ class Server
 		Server(void) {}
 
 		// Member attributes
-		int						_port;
-		std::string				_password;
-		std::map<int, Client*>	_clients;
+		int									_port;
+		std::string							_password;
+		std::map<int, Client*>				_clients;
+		std::map<std::string, Channel*>		_channels;
 
 		// Non-member functions
-		static int const &			_checkPort(int const & port);
-		static std::string const &	_checkPassword(std::string const & password);
-		static int					_stringToPort(std::string const & token);
+		static int const &				_checkPort(int const & port);
+		static std::string const &		_checkPassword(std::string const & password);
+		static int						_stringToPort(std::string const & token);
 
 	public:
 
@@ -56,9 +59,10 @@ class Server
 		Server &	operator=(Server const & rhs);
 
 		// Getters
-		int const &						getPort(void) const;
-		std::string const &				getPassword(void) const;
-		std::map<int, Client*> const &	getClients(void) const;
+		int const &									getPort(void) const;
+		std::string const &							getPassword(void) const;
+		std::map<int, Client*> const &				getClients(void) const;
+		std::map<std::string, Channel*> const &		getChannels(void) const;
 
 		// Member functions
 		void		addClient(Client* client);
@@ -66,6 +70,11 @@ class Server
 		Client*		getClient(int const & fd) const;
 		Client*		getClientByNick(std::string const & nickname) const;
 		void		printClients(void) const;
+	
+		void		addChannel(Channel* channel);
+		void		deleteChannel(std::string name);
+		Channel*	getChannel(std::string const & name) const;
+		void		printChannels(void) const;
 
 		// Exceptions
 		class InvalidPortException: public std::exception {
