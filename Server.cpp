@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/08 10:53:21 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/09 10:54:06 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ Server::Server(int port, std::string password):
 	_port(Server::_checkPort(port)),
 	_password(Server::_checkPassword(password))
 {
+	this->_clients.setDeleteOnRemove(true);
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Server " << *this << " created." << Txt::RESET << std::endl;
 	return ;
@@ -65,46 +66,17 @@ Server::Server(std::string portToken, std::string password):
 	_port(Server::_stringToPort(portToken)),
 	_password(Server::_checkPassword(password))
 {
+	this->_clients.setDeleteOnRemove(true);
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Server " << *this << " created (tokens)." << Txt::RESET << std::endl;
 	return ;
 }
 
-Server::Server(Server const & src):
-	_port(src.getPort()),
-	_password(src.getPassword())
-{
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Server " << *this << " created (copy)." << Txt::RESET << std::endl;
-	return ;
-}
-
 Server::~Server(void)
 {
-	std::map<int, Client*>::const_iterator	it, begin, end;
-	begin = this->_clients.begin();
-	end = this->_clients.end();
-	
-	for (it = begin; it != end; it++) {
-		delete it->second;
-	}
-	
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Server " << *this << " destroyed." << Txt::RESET << std::endl;
 	return ;
-}
-
-
-// Assignment operator
-// ==========================================================================
-
-Server &	Server::operator=(Server const & rhs)
-{
-	if (this != &rhs) {
-		this->_port = rhs.getPort();
-		this->_password = rhs.getPassword();
-	}
-	return (*this);
 }
 
 
@@ -121,7 +93,7 @@ std::string const &	Server::getPassword(void) const
 	return (this->_password);
 }
 
-std::map<int, Client*> const &	Server::getClients(void) const
+ClientList const &	Server::getClients(void) const
 {
 	return (this->_clients);
 }
@@ -137,72 +109,17 @@ std::map<std::string, Channel*> const &	Server::getChannels(void) const
 
 void	Server::addClient(Client* client)
 {
-	if (!client) {
-		return ;
-	}
-
-	std::map<int, Client*>::iterator it = this->_clients.find(client->getFd());
-	if (it == this->_clients.end()) {
-		this->_clients[client->getFd()] = client;
-	}
+	this->_clients.add(client);
 }
 
-void	Server::deleteClient(int fd)
+void	Server::removeClient(int fd)
 {
-	std::map<int, Client*>::iterator it = this->_clients.find(fd);
-	if (it == this->_clients.end()) {
-		return ;
-	}
-	delete it->second;
-	this->_clients.erase(it);
+	this->_clients.remove(fd);
 }
 
 Client*	Server::getClient(int const & fd) const
 {
-	std::map<int, Client*>::const_iterator	it, end;
-	it = this->_clients.find(fd);
-	end = this->_clients.end();
-
-	if (it == end) {
-		return (NULL);
-	}
-	return (it->second);
-}
-
-Client*	Server::getClientByNick(std::string const & nickname) const
-{
-	std::map<int, Client*>::const_iterator	it, begin, end;
-	begin = this->_clients.begin();
-	end = this->_clients.end();
-
-	for (it = begin; it != end; it++) {
-		if (it->second && it->second->getNickname() == nickname) {
-			return (it->second);
-		}
-	}
-	return (NULL);
-}
-
-void	Server::printClients(void) const
-{
-	std::cout << this->_clients.size() << " client(s)"<< std::endl;
-	if (this->_clients.empty()) {
-		return ;
-	}
-	
-	std::map<int, Client*>::const_iterator	it, begin, end;
-	begin = this->_clients.begin();
-	end = this->_clients.end();
-	
-	for (it = begin; it != end; it++) {
-		std::cout << "Client " << it->first << ": ";
-		if (it->second) {
-			std::cout << *(it->second);
-		} else {
-			std::cout << "NULL";
-		}
-		std::cout << std::endl;
-	}
+	return (this->_clients.get(fd));
 }
 
 void	Server::addChannel(Channel* channel)

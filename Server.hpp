@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/08 10:52:41 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/09 10:53:58 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 # include "text_formatting.hpp"
 
-# include "Client.hpp"
+# include "ClientList.hpp"
 # include "Channel.hpp"
 
 class Server
@@ -33,13 +33,15 @@ class Server
 		
 	private:
 
-		// Prevent default constructor call
+		// Prevent default constructor and copy
 		Server(void) {}
+		Server(Server const &) {}
+		Server &	operator=(Server const &) { return (*this); }
 
 		// Member attributes
 		int									_port;
 		std::string							_password;
-		std::map<int, Client*>				_clients;
+		ClientList							_clients;
 		std::map<std::string, Channel*>		_channels;
 
 		// Non-member functions
@@ -52,24 +54,18 @@ class Server
 		// Constructors & destructor
 		Server(int port, std::string password);
 		Server(std::string portToken, std::string password);
-		Server(Server const & src);
 		~Server(void);
-		
-		// Assignment operator
-		Server &	operator=(Server const & rhs);
 
 		// Getters
 		int const &									getPort(void) const;
 		std::string const &							getPassword(void) const;
-		std::map<int, Client*> const &				getClients(void) const;
+		ClientList const &							getClients(void) const;
 		std::map<std::string, Channel*> const &		getChannels(void) const;
 
 		// Member functions
 		void		addClient(Client* client);
-		void		deleteClient(int fd);
+		void		removeClient(int fd);
 		Client*		getClient(int const & fd) const;
-		Client*		getClientByNick(std::string const & nickname) const;
-		void		printClients(void) const;
 	
 		void		addChannel(Channel* channel);
 		void		deleteChannel(std::string name);
