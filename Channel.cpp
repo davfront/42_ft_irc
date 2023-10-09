@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/08 10:36:50 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/08 22:13:57 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,6 @@
 
 // Constructors & destructor
 // ==========================================================================
-
-Channel::Channel(void): _name("")
-{
-	return ;
-}
 
 Channel::Channel(std::string name, std::string topic, bool isInviteOnly):
 	_name(name),
@@ -31,34 +26,11 @@ Channel::Channel(std::string name, std::string topic, bool isInviteOnly):
 	return ;
 }
 
-Channel::Channel(Channel const & src):
-	_name(src.getName()),
-	_topic(src.getTopic()),
-	_isInviteOnly(src.getIsInviteOnly())
-{
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Channel " << *this << " created (copy)." << Txt::RESET << std::endl;
-	return ;
-}
-
 Channel::~Channel(void)
 {
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Channel " << *this << " destroyed." << Txt::RESET << std::endl;
 	return ;
-}
-
-
-// Assignment operator
-// ==========================================================================
-
-Channel &	Channel::operator=(Channel const & rhs)
-{
-	if (this != &rhs) {
-		this->_topic = rhs.getTopic();
-		this->_isInviteOnly = rhs.getIsInviteOnly();
-	}
-	return (*this);
 }
 
 

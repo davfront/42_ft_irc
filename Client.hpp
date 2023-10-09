@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/08 10:42:06 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/09 10:10:32 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ class Client
 	private:
 
 		// Prevent default constructor and copy
-		Client(void);
-		Client(Client const & src);
-		Client &	operator=(Client const & rhs);
+		Client(void): _fd(-1) {}
+		Client(Client const &): _fd(-1) {}
+		Client &	operator=(Client const &) { return (*this); }
 
 		// Member attributes
 		int const					_fd;

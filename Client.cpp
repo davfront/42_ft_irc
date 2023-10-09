@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/06 21:02:10 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/09 10:15:14 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,6 @@
 
 // Constructors & destructor
 // ==========================================================================
-
-Client::Client(void): _fd(-1)
-{
-	return ;
-}
 
 Client::Client(int fd, std::string nickname, std::string username, std::string realname, bool isOper):
 	_fd(fd),
@@ -33,38 +28,11 @@ Client::Client(int fd, std::string nickname, std::string username, std::string r
 	return ;
 }
 
-Client::Client(Client const & src):
-	_fd(src.getFd()),
-	_nickname(src.getNickname()),
-	_username(src.getUsername()),
-	_realname(src.getRealname()),
-	_isOper(src.getIsOper())
-{
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Client " << *this << " created (copy)." << Txt::RESET << std::endl;
-	return ;
-}
-
 Client::~Client(void)
 {
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Client " << *this << " destroyed." << Txt::RESET << std::endl;
 	return ;
-}
-
-
-// Assignment operator
-// ==========================================================================
-
-Client &	Client::operator=(Client const & rhs)
-{
-	if (this != &rhs) {
-		this->_nickname = rhs.getNickname();
-		this->_username = rhs.getUsername();
-		this->_realname = rhs.getRealname();
-		this->_isOper = rhs.getIsOper();
-	}
-	return (*this);
 }
 
 

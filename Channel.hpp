@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/08 10:42:04 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/08 22:13:38 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ class Channel
 	private:
 
 		// Prevent default constructor and copy
-		Channel(void);
-		Channel(Channel const & src);
-		Channel &	operator=(Channel const & rhs);
+		Channel(void) {}
+		Channel(Channel const &) {}
+		Channel &	operator=(Channel const &) { return (*this); }
 
 		// Member attributes
 		std::string const			_name;
