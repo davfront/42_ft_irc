@@ -79,20 +79,36 @@ int	setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t
 
 ### bind (server function)
 
+To tell sockets which port we want to serve.
 
+int bind(int s, const struct sockaddr *addr, socklen_t addrlen)  
+- s = fd returned by socket()
+- addr = pointer to a structure containing the addr info
+- addrlen = size of the sockaddr struct
 
 ### listen (server function)
 
+To prepare a socket for incoming connections
 
+int listen( int s, int backlog )  
+- s = fd of the socket that has been bound and ready to listen
+- backlog = max nb of incoming connections that can be queued for processing (how many clients can wait in the queue to establish a connection)
 
 ### accept (server function)
 
+To accept a connection on a socket.
 
+int (int s, struct sockaddr *restrict addr, socklen_t *restrict addrlen)  
+- s = fd of the socket listening for connections
+- addr = pointer to a struct sockaddr that will receive the address of the client that is connecting
+- addrlen = pointer to a socklen_t that contains the struct size, will be modified upon a successfull accept() to reflect the actual size of the client's address
+
+Returns a new socket fd in case of success which will be used for communication with the client.
 
 ### connect (client function)
 
-int connect(int fd, const struct sockaddr *name, socklen_t namelen)
-- fd returned by socket()
+int connect(int s, const struct sockaddr *name, socklen_t namelen)  
+- s = fd returned by socket()
 - name = pointer to a structure containing info about a network address
 - namelen = size of the sockaddr struct
 
@@ -101,3 +117,16 @@ int connect(int fd, const struct sockaddr *name, socklen_t namelen)
 
 
 ### recv
+
+
+
+### poll
+
+Used for multiplexing I/O operations allowing a program to efficiently wait for events on multiple file descriptors (sockets, files, etc.) simultaneously. Can build non-blocking I/O apps.
+
+int poll(struct pollfd *fds, nfds_t nfds, int timeout)  
+- fds = array of 'struct pollfd', where each of them describes a fd to monitor & specifies the events to watch for
+- nfds = nb of elements in the fds array
+- timeout = max time in ms that poll() should wait for events, -1 means indefinitely, 0 means poll and return immediately and positive specifies a timeout duration
+
+If 1 or more fd have events ready, poll() returns the nb of fd with events. If no events occurred before the timeout, it return 0.

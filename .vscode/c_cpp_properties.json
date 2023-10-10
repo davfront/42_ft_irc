@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "compilerPath": "/usr/bin/g++",
+            "cppStandard": "c++98",
+            "cStandard": "c99"
+        }
+    ],
+    "version": 4
+}
