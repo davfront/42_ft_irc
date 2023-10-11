@@ -32,9 +32,9 @@ int	main()
 
 	// Struct sockaddr initialization
 
-	sa.sin_family = PF_INET;
-	sa.sin_port = htons( port );
-	sa.sin_addr.s_addr = INADDR_ANY;
+	sa.sin_family = PF_INET; // IPv4 format
+	sa.sin_port = htons( port ); // Convert port
+	sa.sin_addr.s_addr = INADDR_ANY; // Bind to any available interface
 
 	// Binding of server socket
 
