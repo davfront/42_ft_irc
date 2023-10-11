@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/09 10:10:32 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/11 09:45:28 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class Client
 		std::string					_username;
 		std::string					_realname;
 		bool						_isOper;
+		std::string					_buffer;
 
 	public:
 
@@ -51,12 +52,17 @@ class Client
 		std::string const &		getUsername(void) const;
 		std::string const &		getRealname(void) const;
 		bool const &			getIsOper(void) const;
+		std::string const &		getBuffer(void) const;
 
 		// Setters
 		void	setNickname(std::string const & nickname);
 		void	setUsername(std::string const & username);
 		void	setRealname(std::string const & realname);
 		void	setIsOper(bool const & isOper);
+		void	setBuffer(std::string const & str);
+
+		// Member functions
+		void	addToBuffer(std::string const & str);
 };
 
 // Output stream

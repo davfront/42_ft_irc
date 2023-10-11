@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/09 10:17:41 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/11 09:39:15 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,16 @@ void	ClientList::setDeleteOnRemove(bool const & deleteOnRemove)
 
 // Member functions (public)
 // ==========================================================================
+
+bool	ClientList::empty(void) const
+{
+	return (this->_clients.empty());
+}
+
+size_t	ClientList::size(void) const
+{
+	return (this->_clients.size());
+}
 
 void	ClientList::add(Client* client)
 {

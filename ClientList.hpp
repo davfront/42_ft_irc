@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/09 10:06:02 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/11 09:37:22 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ class ClientList
 		void	setDeleteOnRemove(bool const & deleteOnRemove);
 
 		// Member functions
+		bool		empty(void) const;
+		size_t		size(void) const;
 		void		add(Client* client);
 		void		remove(int fd);
 		Client*		get(int const & fd) const;
