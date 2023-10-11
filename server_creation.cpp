@@ -121,7 +121,7 @@ int	main()
 					}
 					buffer[ret] = '\0';
 					std::string	msg( buffer );
-					std::cout << msg << std::endl;
+					std::cout << "Client " << i << ": " << msg << std::endl;
 				}
 			}
 		}
