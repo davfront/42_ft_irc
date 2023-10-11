@@ -125,7 +125,8 @@ int	main()
 				}
 			}
 		}
-		std::cout << "End of loop" << std::endl;
 	}
+	std::cout << "End of loop" << std::endl;
+	close( server_socket );
 	return ( 0 );
 }
