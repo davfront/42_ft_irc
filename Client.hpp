@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/11 09:45:28 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/11 09:55:21 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ class Client
 		void	setBuffer(std::string const & str);
 
 		// Member functions
-		void	addToBuffer(std::string const & str);
+		void		addToBuffer(std::string const & str);
+		std::string	extractMessage(void);
 };
 
 // Output stream

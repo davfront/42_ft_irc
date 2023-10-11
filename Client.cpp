@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/11 09:29:32 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/11 10:09:28 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,17 @@ void	Client::setBuffer(std::string const & str)
 void	Client::addToBuffer(std::string const & str)
 {
 	this->_buffer += str;
+}
+
+std::string	Client::extractMessage(void)
+{
+	size_t separatorPos = this->_buffer.find("\r\n");
+	if (separatorPos == std::string::npos)
+		return ("");
+
+	std::string message = this->_buffer.substr(0, separatorPos);
+	this->_buffer = this->_buffer.substr(separatorPos + 2, this->_buffer.size());
+	return (message);
 }
 
 
