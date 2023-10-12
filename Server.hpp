@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/09 10:53:58 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/12 10:39:09 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 # include "ClientList.hpp"
 # include "Channel.hpp"
+# include "Command.hpp"
 
 class Server
 {
