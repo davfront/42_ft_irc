@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/09 10:54:06 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/11 09:40:50 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,8 @@ std::ostream &	operator<<(std::ostream & o, Server const & x)
 	o << "port: " << x.getPort();
 	o << ", ";
 	o << "password: \"" << x.getPassword() << "\"";
+	o << ", ";
+	o << "clients: " << x.getClients().size();
 	o << "}";
 	return (o);
 }
