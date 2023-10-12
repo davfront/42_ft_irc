@@ -1,4 +1,5 @@
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <netinet/in.h>
 #include <iostream>
 #include <arpa/inet.h>
@@ -8,6 +9,7 @@
 #include <vector>
 #include <fcntl.h>
 #include <stdio.h>
+#include <netdb.h>
 
 const int	max_clients = 10;
 
@@ -16,19 +18,32 @@ int	main()
 	int					server_socket;
 	const int 			port = 6667;
 	struct sockaddr_in	sa = {};
-
-	// Socket creation
+	const char			*proto_name = "tcp";
+	struct protoent		*pe;
+	int					sockopt;
 	
-	server_socket = socket( PF_INET, SOCK_STREAM, 0 );
-	if ( server_socket == -1 )
+	if ( ( pe = getprotobyname( proto_name ) ) == NULL )
 	{
-		perror("Error: creating socket");
+		perror( "Error getting protocol name" ); // à changer par une fonction qui close proprement, en utilisant "errno"
 		return ( 1 );
 	}
 
-	// !!!!!!!! Ajouter setsockopt() pour définir les options de la socket
+	// Socket creation
+	
+	server_socket = socket( PF_INET, SOCK_STREAM, pe->p_proto );
+	if ( server_socket == -1 )
+	{
+		perror( "Error: creating socket" );
+		return ( 2 );
+	}
 
-	//port = 6667;
+	sockopt = 1; // Enable SO_REUSEADDR and SO_REUSEPORT
+
+	if ( setsockopt( server_socket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT , &sockopt, sizeof( sockopt ) ) < 0 ) // allows to reuse server address nd port after close (protect bind from crash)
+	{
+		perror( "Error: setting socket options" );
+		return ( 3 );
+	}
 
 	// Struct sockaddr initialization
 
@@ -42,7 +57,7 @@ int	main()
 	{
 		perror("Error: binding server socket");
 		close( server_socket );
-		return ( 2 );
+		return ( 4 );
 	}
 
 	// Listening
@@ -51,13 +66,13 @@ int	main()
 	{
 		std::cerr << "Error: listening" << std::endl;
 		close( server_socket );
-		return ( 3 );
+		return ( 5 );
 	}
 
 	// Creating a pollfd array
 
 		// Array of pollfd structs to monitor sockets
-	std::vector<pollfd> fds( max_clients + 1 ); // including server socket
+	std::vector<struct pollfd> fds( max_clients + 1 ); // including server socket
 	fds[0].fd = server_socket;
 	fds[0].events = POLLIN; // Monitor for incoming connections
 
@@ -90,7 +105,7 @@ int	main()
 					else
 					{
 						// set the client socket to non-blocking mode
-						int flags = fcntl( client_socket, F_GETFL, 0 );
+						int flags = fcntl( client_socket, F_GETFL, 0 ); // to get a new flag to set
 						fcntl( client_socket, F_SETFL, flags | O_NONBLOCK );
 
 						std::cout << "New client connected" << std::endl;
@@ -119,9 +134,13 @@ int	main()
 						fds[i].fd = -1;
 						std::cout << "Client disconnected" << std::endl;
 					}
-					buffer[ret] = '\0';
-					std::string	msg( buffer );
-					std::cout << "Client " << i << ": " << msg << std::endl;
+					else
+					{
+						buffer[ret] = '\0';
+						// là où il faudra checker le buffer et lancer une cmd si nécessaire
+						std::string	msg( buffer );
+						std::cout << "Client " << i << ": " << msg << std::endl;
+					}
 				}
 			}
 		}
