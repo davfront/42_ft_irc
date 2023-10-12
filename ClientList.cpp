@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/11 09:39:15 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/12 11:51:26 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 ClientList::ClientList(void): _deleteOnRemove(false)
 {
 	if (DEBUG)
-		std::cout << Txt::FAINT << "ClientList " << *this << " created." << Txt::RESET << std::endl;
+		std::cout << Txt::FAINT << "ClientList created." << Txt::RESET << std::endl;
 	return ;
 }
 
@@ -36,7 +36,7 @@ ClientList::~ClientList(void)
 	}
 	
 	if (DEBUG)
-		std::cout << Txt::FAINT << "ClientList " << *this << " destroyed." << Txt::RESET << std::endl;
+		std::cout << Txt::FAINT << "ClientList (" << this->getClients().size() << " client(s)) destroyed." << Txt::RESET << std::endl;
 	return ;
 }
 
