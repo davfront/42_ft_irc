@@ -1,3 +1,5 @@
 *.o
 ircserv
 client_creation.cpp
+.vscode/c_cpp_properties.json
+.cscode/settings.json
