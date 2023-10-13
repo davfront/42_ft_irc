@@ -9,7 +9,7 @@ Compile:
 make
 
 # with debug mode
-make CXXFLAGS=-DDEBUG=true
+make debug
 ```
 
 Launch the program:
