@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: marvin <marvin@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/10/04 16:33:44 by dapereir         ###   ########.fr        #
+#    Updated: 2023/10/13 12:32:56 by marvin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,15 +23,15 @@ RM					=	rm -rf
 NAME				=	ircserv
 
 SRCS_DIR			=	.
-SRCS_FILES			=	main.cpp Server.cpp
-SRCS				=	$(addprefix $(SRCS_DIR)/, $(SRCS_FILES))
+SRCS_FILES			=	main.cpp Server.cpp Client.cpp ClientList.cpp Channel.cpp Command.cpp
+SRCS 				=	$(addprefix $(SRCS_DIR)/, $(SRCS_FILES))
 
 OBJS_DIR			=	./obj
 OBJS_FILES			=	$(SRCS_FILES:.cpp=.o)
 OBJS				=	$(addprefix $(OBJS_DIR)/, $(OBJS_FILES))
 
 HEADERS_DIR			=	.
-HEADERS_FILES		=	ircserv.hpp text_formatting.hpp Server.hpp
+HEADERS_FILES		=	text_formatting.hpp Server.hpp Client.hpp ClientList.hpp Channel.hpp Command.hpp
 HEADERS				=	$(addprefix $(HEADERS_DIR)/, $(HEADERS_FILES))
 HEADERS_INC			=	-I $(HEADERS_DIR)
 
@@ -56,3 +56,7 @@ fclean:				clean
 .PHONY: re
 re:					fclean
 					$(MAKE) all
+
+.PHONY: debug
+debug:				fclean
+					$(MAKE) CXXFLAGS=-DDEBUG=true

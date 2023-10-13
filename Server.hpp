@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/13 11:50:19 by marvin           ###   ########.fr       */
+/*   Updated: 2023/10/13 12:08:21 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,16 @@
 # include <map>
 # include <stdexcept>
 # include <string>
+# include <sys/socket.h>
+# include <sys/types.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <unistd.h>
+# include <poll.h>
+# include <vector>
+# include <fcntl.h>
+# include <stdio.h>
+# include <netdb.h>
 
 # include "text_formatting.hpp"
 
@@ -42,6 +52,7 @@ class Server
 		// Member attributes
 		int									_port;
 		std::string							_password;
+		int									_server_socket;
 		ClientList							_clients;
 		std::map<std::string, Channel*>		_channels;
 
@@ -64,6 +75,7 @@ class Server
 		std::map<std::string, Channel*> const &		getChannels(void) const;
 
 		// Member functions
+		int			init();
 		void		addClient(Client* client);
 		void		removeClient(int fd);
 		Client*		getClient(int const & fd) const;

@@ -71,6 +71,17 @@ struct sockaddr {
 };   
 #define	SOCK_MAXADDRLEN	255	=> longest possible addresses
 
+#### struct sockaddr_in
+
+Data structure used for representing and working with IPv4 socket addresses.
+
+struct sockaddr_in {
+    short sin_family; => Address family, typically AF_INET for IPv4
+    unsigned short sin_port; => Port number
+    struct in_addr sin_addr; => IP address
+    char sin_zero[8]; => Padding to make the struct the same size as sockaddr
+};
+
 ### htonl,  htons,  ntohl, ntohs
 
 Convert values between host and network byte order

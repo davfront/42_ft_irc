@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 13:00:54 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/13 11:49:03 by marvin           ###   ########.fr       */
+/*   Updated: 2023/10/13 12:29:40 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ int main(int argc, char** argv) {
 		std::cerr << "Error: " << e.what() << std::endl;
 		return (1);
 	}
+	if (server.init() != 0)
+		exit(1);
 
 	return (0);
 }
