@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/05 11:21:43 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/13 11:50:19 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,41 +19,59 @@
 
 # include <iostream>
 # include <cstdlib>
+# include <map>
 # include <stdexcept>
+# include <string>
 
 # include "text_formatting.hpp"
+
+# include "ClientList.hpp"
+# include "Channel.hpp"
+# include "Command.hpp"
 
 class Server
 {
 		
 	private:
 
-		// Prevent default constructor call
+		// Prevent default constructor and copy
 		Server(void) {}
+		Server(Server const &) {}
+		Server &	operator=(Server const &) { return (*this); }
 
 		// Member attributes
-		int				_port;
-		std::string		_password;
+		int									_port;
+		std::string							_password;
+		ClientList							_clients;
+		std::map<std::string, Channel*>		_channels;
 
 		// Non-member functions
-		static int const &			_checkPort(int const & port);
-		static std::string const &	_checkPassword(std::string const & password);
-		static int					_stringToPort(std::string const & token);
+		static int const &				_checkPort(int const & port);
+		static std::string const &		_checkPassword(std::string const & password);
+		static int						_stringToPort(std::string const & token);
 
 	public:
 
 		// Constructors & destructor
 		Server(int port, std::string password);
 		Server(std::string portToken, std::string password);
-		Server(Server const & src);
 		~Server(void);
-		
-        // Assignment operator
-		Server &	operator=(Server const & rhs);
 
 		// Getters
-		int const &			getPort(void) const;
-		std::string const &	getPassword(void) const;
+		int const &									getPort(void) const;
+		std::string const &							getPassword(void) const;
+		ClientList const &							getClients(void) const;
+		std::map<std::string, Channel*> const &		getChannels(void) const;
+
+		// Member functions
+		void		addClient(Client* client);
+		void		removeClient(int fd);
+		Client*		getClient(int const & fd) const;
+	
+		void		addChannel(Channel* channel);
+		void		deleteChannel(std::string name);
+		Channel*	getChannel(std::string const & name) const;
+		void		printChannels(void) const;
 
 		// Exceptions
 		class InvalidPortException: public std::exception {
