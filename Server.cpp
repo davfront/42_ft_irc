@@ -6,12 +6,13 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/11 09:40:50 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/13 15:01:37 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
+const int	max_clients = 10;
 
 // Non-member functions (private)
 // ==========================================================================
@@ -54,7 +55,8 @@ int	Server::_stringToPort(std::string const & token)
 
 Server::Server(int port, std::string password):
 	_port(Server::_checkPort(port)),
-	_password(Server::_checkPassword(password))
+	_password(Server::_checkPassword(password)),
+	_serverSocket()
 {
 	this->_clients.setDeleteOnRemove(true);
 	if (DEBUG)
@@ -64,7 +66,8 @@ Server::Server(int port, std::string password):
 
 Server::Server(std::string portToken, std::string password):
 	_port(Server::_stringToPort(portToken)),
-	_password(Server::_checkPassword(password))
+	_password(Server::_checkPassword(password)),
+	_serverSocket()
 {
 	this->_clients.setDeleteOnRemove(true);
 	if (DEBUG)
@@ -106,6 +109,134 @@ std::map<std::string, Channel*> const &	Server::getChannels(void) const
 
 // Member functions (public)
 // ==========================================================================
+
+void	Server::start()
+{
+	const char			*proto_name = "tcp";
+	struct protoent		*pe;
+
+	if ((pe = getprotobyname(proto_name)) == NULL) {
+		// todo: reset server
+		throw std::runtime_error("Error getting protocol name");
+	}
+
+	// Socket creation
+	this->_serverSocket = socket(PF_INET, SOCK_STREAM, pe->p_proto);
+	if ( this->_serverSocket == -1 ) {
+		// todo: reset server
+		close(this->_serverSocket);
+		throw std::runtime_error("Error: creating socket");
+	}
+
+	int sockopt = 1; // Enable SO_REUSEADDR and SO_REUSEPORT
+	if ( setsockopt( this->_serverSocket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT , &sockopt, sizeof( sockopt ) ) < 0 ) // allows to reuse server address nd port after close (protect bind from crash)
+	{
+		// todo: reset server
+		close(this->_serverSocket);
+		throw std::runtime_error("Error: setting socket options");
+	}
+
+	// Struct sockaddr initialization
+	struct sockaddr_in	sa = {};
+	sa.sin_family = PF_INET; // IPv4 format
+	sa.sin_port = htons( _port ); // Convert port
+	sa.sin_addr.s_addr = INADDR_ANY; // Bind to any available interface
+
+	// Binding of server socket
+	if ( bind( this->_serverSocket, reinterpret_cast<struct sockaddr *>( &sa ), sizeof( sa ) ) < 0 )
+	{
+		// todo: reset server
+		close(this->_serverSocket);
+		throw std::runtime_error("Error: binding server socket");
+	}
+
+	// Listening
+	if ( listen( this->_serverSocket, SOMAXCONN ) < 0 ) // SOMAXCONN = constant representing the max size of the backlog
+	{
+		// todo: reset server
+		close(this->_serverSocket);
+		throw std::runtime_error("Error: listening");
+	}
+
+	// Creating a pollfd array ===> à voir pour mettre dans main
+
+	// Array of pollfd structs to monitor sockets
+	std::vector<struct pollfd> fds( max_clients + 1 ); // including server socket, max_clients à remplacer par size ClientList + 2
+	fds[0].fd = this->_serverSocket;
+	fds[0].events = POLLIN; // Monitor for incoming connections
+
+		// Initialize other fds entries
+	for( int i = 1; i <= max_clients; ++i ) // remplacer par un iterator
+	{
+		fds[i].fd = -1; // -1 indicates unused
+	}
+	std::cout << "Server is listening on port " << this->_port << std::endl;
+	
+	while ( true )
+	{
+		int ret = poll( fds.data(), fds.size(), -1 );
+		if ( ret < 0 )
+		{
+			perror("Error: poll failed");
+			break ;
+		}
+		for ( size_t i = 0; i < fds.size(); ++i )
+		{
+			if ( fds[i].revents & POLLIN )
+			{
+				if ( fds[i].fd == this->_serverSocket )
+				{
+					// todo: create a method `acceptClient`
+					// new connection request ====> à voir si on crée une fonction 'accept'
+					int client_socket = accept( this->_serverSocket, NULL, NULL ); // créer une nvelle struct sockaddr_in pour remplacer les NULL
+					if ( client_socket < 0 )
+						std::cerr << "Error: accept failed" << std::endl;
+					else
+					{
+						// set the client socket to non-blocking mode
+						int flags = fcntl( client_socket, F_GETFL, 0 ); // to get a new flag to set
+						fcntl( client_socket, F_SETFL, flags | O_NONBLOCK );
+
+						std::cout << "New client connected" << std::endl;
+
+						// find an empty slot in the fds array to store the client socket
+						for ( size_t j = 1; j < fds.size(); ++j )
+						{
+							if ( fds[j].fd == -1 )
+							{
+								fds[j].fd = client_socket;
+								fds[j].events = POLLIN;
+								break ;
+							}
+						}
+					}
+				}
+				else
+				{
+					// data available to read from a client socket
+					char buffer[1024];
+					int ret = recv( fds[i].fd, buffer, sizeof( buffer ), 0 );
+					if ( ret <= 0 )
+					{
+						// connection closed or error
+						close( fds[i].fd );
+						fds[i].fd = -1;
+						std::cout << "Client disconnected" << std::endl;
+					}
+					else
+					{
+						buffer[ret] = '\0';
+						// là où il faudra checker le buffer et lancer une cmd si nécessaire
+						std::string	msg( buffer );
+						std::cout << "Client " << i << ": " << msg << std::endl;
+					}
+				}
+			}
+		}
+	}
+	std::cout << "End of loop" << std::endl;
+	close(this->_serverSocket);
+}
 
 void	Server::addClient(Client* client)
 {
