@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/13 15:01:37 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/14 17:05:57 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,18 +158,16 @@ void	Server::start()
 		throw std::runtime_error("Error: listening");
 	}
 
-	// Creating a pollfd array ===> à voir pour mettre dans main
+	// Creating a pollfd array of pollfd structs to monitor sockets
+	std::vector<pollfd> fds;
+	
+	// Including server socket
+	pollfd serverPollfd;
+	serverPollfd.fd = this->_serverSocket;
+	serverPollfd.events = POLLIN;
+	serverPollfd.revents = 0;
+	fds.push_back(serverPollfd);
 
-	// Array of pollfd structs to monitor sockets
-	std::vector<struct pollfd> fds( max_clients + 1 ); // including server socket, max_clients à remplacer par size ClientList + 2
-	fds[0].fd = this->_serverSocket;
-	fds[0].events = POLLIN; // Monitor for incoming connections
-
-		// Initialize other fds entries
-	for( int i = 1; i <= max_clients; ++i ) // remplacer par un iterator
-	{
-		fds[i].fd = -1; // -1 indicates unused
-	}
 	std::cout << "Server is listening on port " << this->_port << std::endl;
 	
 	while ( true )
@@ -199,16 +197,11 @@ void	Server::start()
 
 						std::cout << "New client connected" << std::endl;
 
-						// find an empty slot in the fds array to store the client socket
-						for ( size_t j = 1; j < fds.size(); ++j )
-						{
-							if ( fds[j].fd == -1 )
-							{
-								fds[j].fd = client_socket;
-								fds[j].events = POLLIN;
-								break ;
-							}
-						}
+						pollfd clientPollfd;
+						clientPollfd.fd = client_socket;
+						clientPollfd.events = POLLIN;
+						clientPollfd.revents = 0;
+						fds.push_back(clientPollfd);
 					}
 				}
 				else
@@ -219,9 +212,9 @@ void	Server::start()
 					if ( ret <= 0 )
 					{
 						// connection closed or error
-						close( fds[i].fd );
-						fds[i].fd = -1;
-						std::cout << "Client disconnected" << std::endl;
+						close(fds[i].fd);
+						fds.erase(fds.begin() + i);
+						std::cout << "Client " << i << " disconnected" << std::endl;
 					}
 					else
 					{
