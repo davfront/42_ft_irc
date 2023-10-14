@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/14 17:05:57 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/14 22:31:09 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,10 +107,94 @@ std::map<std::string, Channel*> const &	Server::getChannels(void) const
 }
 
 
-// Member functions (public)
+// Member functions
 // ==========================================================================
 
-void	Server::start()
+void	Server::_addPollfd(int fd)
+{
+	pollfd clientPollfd;
+	clientPollfd.fd = fd;
+	clientPollfd.events = POLLIN;
+	clientPollfd.revents = 0;
+	this->_pollfds.push_back(clientPollfd);
+}
+
+void	Server::_removePollfd(int fd)
+{
+	std::vector<pollfd>::iterator it, begin, end;
+	begin = this->_pollfds.begin();
+	end = this->_pollfds.end();
+	for (it = begin; it != end; it++) {
+		if (it->fd == fd) {
+			close(it->fd);
+			this->_pollfds.erase(it);
+			break ;
+		}
+	}
+}
+
+void	Server::_handleNewConnection(void)
+{
+	// accept connection from an incoming client
+	int clientSocket = accept(this->_serverSocket, NULL, NULL);
+	if (clientSocket == -1) {
+		throw std::runtime_error("accept client failed");
+	}
+	if (this->_clients.get(clientSocket)) {
+		throw std::runtime_error("client fd already exists");
+	}
+	
+	// set the client socket to non-blocking mode
+	int flags = fcntl(clientSocket, F_GETFL, 0);
+	fcntl(clientSocket, F_SETFL, flags | O_NONBLOCK);
+
+	// add client socket to pollfd array
+	Server::_addPollfd(clientSocket);
+
+	// add client to client list
+	Client* client = new Client(clientSocket);
+	this->_clients.add(client);
+	
+	std::cout << "New client connected" << std::endl;
+}
+
+void	Server::_deleteClient(int fd)
+{
+	close(fd);
+	Server::_removePollfd(fd);
+	this->_clients.remove(fd);
+}
+
+void	Server::_handleClientInput(int fd)
+{
+	// read data sent by client
+	char buffer[1024];
+	int ret = recv(fd, buffer, sizeof(buffer), 0);
+	if (ret <= 0) {
+		Server::_deleteClient(fd);
+		std::cout << "Client disconnected" << std::endl;
+		return ;
+	}
+	buffer[ret] = '\0';
+
+	// add to client buffer
+	Client* client = this->_clients.get(fd);
+	if (!client) {
+		throw std::runtime_error("client not found");
+	}
+	client->addToBuffer(buffer);
+	
+	// parse and execute commands
+	std::string msg = client->extractMessage();
+	while (!msg.empty()) {
+		Command cmd(msg);
+		std::cout << "Command: " << cmd << std::endl;
+		// todo: execute command
+		msg = client->extractMessage();
+	}
+}
+
+void	Server::start(void)
 {
 	const char			*proto_name = "tcp";
 	struct protoent		*pe;
@@ -157,93 +241,35 @@ void	Server::start()
 		close(this->_serverSocket);
 		throw std::runtime_error("Error: listening");
 	}
-
-	// Creating a pollfd array of pollfd structs to monitor sockets
-	std::vector<pollfd> fds;
 	
 	// Including server socket
-	pollfd serverPollfd;
-	serverPollfd.fd = this->_serverSocket;
-	serverPollfd.events = POLLIN;
-	serverPollfd.revents = 0;
-	fds.push_back(serverPollfd);
+	Server::_addPollfd(this->_serverSocket);
 
 	std::cout << "Server is listening on port " << this->_port << std::endl;
 	
-	while ( true )
+	while (true)
 	{
-		int ret = poll( fds.data(), fds.size(), -1 );
-		if ( ret < 0 )
-		{
-			perror("Error: poll failed");
-			break ;
+		// poll for events
+		int ret = poll(this->_pollfds.data(), this->_pollfds.size(), -1);
+		if (ret < 0) {
+			// todo: reset server
+			throw std::runtime_error("Error: poll failed");
 		}
-		for ( size_t i = 0; i < fds.size(); ++i )
-		{
-			if ( fds[i].revents & POLLIN )
-			{
-				if ( fds[i].fd == this->_serverSocket )
-				{
-					// todo: create a method `acceptClient`
-					// new connection request ====> à voir si on crée une fonction 'accept'
-					int client_socket = accept( this->_serverSocket, NULL, NULL ); // créer une nvelle struct sockaddr_in pour remplacer les NULL
-					if ( client_socket < 0 )
-						std::cerr << "Error: accept failed" << std::endl;
-					else
-					{
-						// set the client socket to non-blocking mode
-						int flags = fcntl( client_socket, F_GETFL, 0 ); // to get a new flag to set
-						fcntl( client_socket, F_SETFL, flags | O_NONBLOCK );
 
-						std::cout << "New client connected" << std::endl;
+		// check new connection request
+		if (this->_pollfds[0].revents & POLLIN) {
+			Server::_handleNewConnection();
+		}
 
-						pollfd clientPollfd;
-						clientPollfd.fd = client_socket;
-						clientPollfd.events = POLLIN;
-						clientPollfd.revents = 0;
-						fds.push_back(clientPollfd);
-					}
-				}
-				else
-				{
-					// data available to read from a client socket
-					char buffer[1024];
-					int ret = recv( fds[i].fd, buffer, sizeof( buffer ), 0 );
-					if ( ret <= 0 )
-					{
-						// connection closed or error
-						close(fds[i].fd);
-						fds.erase(fds.begin() + i);
-						std::cout << "Client " << i << " disconnected" << std::endl;
-					}
-					else
-					{
-						buffer[ret] = '\0';
-						// là où il faudra checker le buffer et lancer une cmd si nécessaire
-						std::string	msg( buffer );
-						std::cout << "Client " << i << ": " << msg << std::endl;
-					}
-				}
+		// handle client inputs
+		for (size_t i = 1; i < this->_pollfds.size(); i++) {
+			if (this->_pollfds[i].revents & POLLIN) {
+				Server::_handleClientInput(this->_pollfds[i].fd);
 			}
 		}
 	}
 	std::cout << "End of loop" << std::endl;
 	close(this->_serverSocket);
-}
-
-void	Server::addClient(Client* client)
-{
-	this->_clients.add(client);
-}
-
-void	Server::removeClient(int fd)
-{
-	this->_clients.remove(fd);
-}
-
-Client*	Server::getClient(int const & fd) const
-{
-	return (this->_clients.get(fd));
 }
 
 void	Server::addChannel(Channel* channel)

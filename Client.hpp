@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/11 09:55:21 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/14 20:19:38 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class Client
 	public:
 
 		// Constructors & destructor
-		Client(int fd, std::string nickname, std::string username, std::string realname, bool isOper = false);
+		Client(int fd, std::string nickname = "", std::string username = "", std::string realname = "", bool isOper = false);
 		~Client(void);
 
 		// Getters
