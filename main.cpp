@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 13:00:54 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/13 14:35:48 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/14 16:48:45 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 
 	try {
 		Server server(argv[1], argv[2]);
-		server.init();
+		server.start();
 	} catch(std::exception & e) {
 		std::cerr << "Error: " << e.what() << std::endl;
 		return (1);
