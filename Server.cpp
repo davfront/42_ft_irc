@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/15 13:42:05 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/15 14:36:08 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,10 +137,14 @@ void	Server::_removePollfd(int fd)
 void	Server::_handleNewConnection(void)
 {
 	// accept connection from an incoming client
-	int clientSocket = accept(this->_serverSocket, NULL, NULL);
+	sockaddr_in clientAddr;
+	socklen_t clientAddrSize = sizeof(clientAddr);
+	int clientSocket = accept(this->_serverSocket, reinterpret_cast<sockaddr*>(&clientAddr), &clientAddrSize);
 	if (clientSocket == -1) {
 		throw std::runtime_error("accept client failed");
 	}
+	
+	// check if client socket already exists
 	if (this->_clients.get(clientSocket)) {
 		throw std::runtime_error("client fd already exists");
 	}
@@ -151,9 +155,13 @@ void	Server::_handleNewConnection(void)
 
 	// add client socket to pollfd array
 	Server::_addPollfd(clientSocket);
+	
+	// get client ip and port
+    getsockname(clientSocket, reinterpret_cast<struct sockaddr*>(&clientAddr), &clientAddrSize);
+	std::string clientHost = inet_ntoa(clientAddr.sin_addr);
 
 	// add client to client list
-	Client* client = new Client(clientSocket);
+	Client* client = new Client(clientSocket, clientHost);
 	this->_clients.add(client);
 	
 	std::cout << "New client connected" << std::endl;
