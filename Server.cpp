@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/15 14:36:08 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/15 19:57:06 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Server::Server(int port, std::string password):
 	_serverSocket()
 {
 	this->_clients.setDeleteOnRemove(true);
+	this->_initCmds();
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Server " << *this << " created." << Txt::RESET << std::endl;
 	return ;
@@ -35,6 +36,7 @@ Server::Server(std::string portToken, std::string password):
 	_serverSocket()
 {
 	this->_clients.setDeleteOnRemove(true);
+	this->_initCmds();
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Server " << *this << " created (tokens)." << Txt::RESET << std::endl;
 	return ;
@@ -196,11 +198,28 @@ void	Server::_handleClientInput(int fd)
 	// parse and execute commands
 	std::string msg = client->extractMessage();
 	while (!msg.empty()) {
-		Command cmd(msg);
-		std::cout << "Command: " << cmd << std::endl;
-		// todo: execute command
+		this->_executeCommand(Command(msg), *client);
 		msg = client->extractMessage();
 	}
+}
+
+void	Server::_initCmds(void)
+{
+	this->_cmds["PASS"] = &Server::_pass;
+	this->_cmds["NICK"] = &Server::_nick;
+	this->_cmds["USER"] = &Server::_user;
+}
+
+void	Server::_executeCommand(Command const & cmd, Client & client)
+{
+	std::map<std::string, cmdFn>::iterator it = this->_cmds.find(cmd.getCommand());
+	if (it == this->_cmds.end()) {
+		// todo: reply ERR_UNKNOWNCOMMAND
+		return ;
+	}
+	
+	cmdFn fn = it->second;
+	(this->*fn)(client, cmd.getParameters());
 }
 
 void	Server::start(void)
@@ -335,6 +354,37 @@ void	Server::printChannels(void) const
 		}
 		std::cout << std::endl;
 	}
+}
+
+
+// Commands
+// ==========================================================================
+
+void	Server::_pass(Client & client, std::vector<std::string> const & params)
+{
+	std::cout << "Client " << client.getFd() << ": PASS ";
+	for (size_t i = 0; i < params.size(); i++) {
+		std::cout << params[i] << " ";
+	}
+	std::cout << std::endl;
+}
+
+void	Server::_nick(Client & client, std::vector<std::string> const & params)
+{
+	std::cout << "Client " << client.getFd() << ": NICK ";
+	for (size_t i = 0; i < params.size(); i++) {
+		std::cout << params[i] << " ";
+	}
+	std::cout << std::endl;
+}
+
+void	Server::_user(Client & client, std::vector<std::string> const & params)
+{
+	std::cout << "Client " << client.getFd() << ": USER ";
+	for (size_t i = 0; i < params.size(); i++) {
+		std::cout << params[i] << " ";
+	}
+	std::cout << std::endl;
 }
 
 

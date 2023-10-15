@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/15 13:45:42 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/15 19:41:28 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ class Server
 
 	private:
 
+		// Type definitions
+		typedef void (Server::*cmdFn)(Client & client, std::vector<std::string> const & params);
+
 		// Prevent default constructor and copy
 		Server(void) {}
 		Server(Server const &) {}
@@ -57,6 +60,7 @@ class Server
 		std::vector<pollfd>					_pollfds;
 		ClientList							_clients;
 		std::map<std::string, Channel*>		_channels;
+		std::map<std::string, cmdFn>		_cmds;
 
 		// Member functions
 		void	_addPollfd(int fd);
@@ -65,6 +69,14 @@ class Server
 		void	_handleNewConnection(void);
 		void	_deleteClient(int fd);
 		void	_handleClientInput(int fd);
+		
+		void	_initCmds(void);
+		void	_executeCommand(Command const & cmd, Client & client);
+
+		// Commands
+		void	_pass(Client & client, std::vector<std::string> const & params);
+		void	_nick(Client & client, std::vector<std::string> const & params);
+		void	_user(Client & client, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);
