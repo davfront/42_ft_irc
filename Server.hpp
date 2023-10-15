@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/14 22:14:20 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/15 13:45:42 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 
 class Server
 {
-		
+
 	private:
 
 		// Prevent default constructor and copy
@@ -61,9 +61,10 @@ class Server
 		// Member functions
 		void	_addPollfd(int fd);
 		void	_removePollfd(int fd);
+
 		void	_handleNewConnection(void);
-		void	_handleClientInput(int fd);
 		void	_deleteClient(int fd);
+		void	_handleClientInput(int fd);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);
@@ -85,7 +86,7 @@ class Server
 
 		// Member functions
 		void		start(void);
-	
+
 		void		addChannel(Channel* channel);
 		void		deleteChannel(std::string name);
 		Channel*	getChannel(std::string const & name) const;

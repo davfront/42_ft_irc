@@ -6,48 +6,13 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/14 22:31:09 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/15 13:42:05 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 const int	max_clients = 10;
-
-// Non-member functions (private)
-// ==========================================================================
-
-int const &	Server::_checkPort(int const & port)
-{
-	if (port < 0 || port > 65535) {
-		throw Server::InvalidPortException();
-	}
-	return (port);
-}
-
-std::string const &	Server::_checkPassword(std::string const & password)
-{
-	if (password.size() < 8) {
-		throw Server::InvalidPasswordException();
-	}
-	return (password);
-}
-
-int	Server::_stringToPort(std::string const & token)
-{
-	if (token.empty() || token.size() > 5) {
-		throw Server::InvalidPortException();
-	}
-	
-	for (size_t i = 0; i < token.size(); i++) {
-		if (!isdigit(token[i])) {
-			throw Server::InvalidPortException();
-		}
-	}
-	
-	int port = atoi(token.c_str());
-	return (Server::_checkPort(port));
-}
 
 
 // Constructors & destructor
@@ -104,6 +69,42 @@ ClientList const &	Server::getClients(void) const
 std::map<std::string, Channel*> const &	Server::getChannels(void) const
 {
 	return (this->_channels);
+}
+
+
+// Non-member functions
+// ==========================================================================
+
+int const &	Server::_checkPort(int const & port)
+{
+	if (port < 0 || port > 65535) {
+		throw Server::InvalidPortException();
+	}
+	return (port);
+}
+
+std::string const &	Server::_checkPassword(std::string const & password)
+{
+	if (password.size() < 8) {
+		throw Server::InvalidPasswordException();
+	}
+	return (password);
+}
+
+int	Server::_stringToPort(std::string const & token)
+{
+	if (token.empty() || token.size() > 5) {
+		throw Server::InvalidPortException();
+	}
+	
+	for (size_t i = 0; i < token.size(); i++) {
+		if (!isdigit(token[i])) {
+			throw Server::InvalidPortException();
+		}
+	}
+	
+	int port = atoi(token.c_str());
+	return (Server::_checkPort(port));
 }
 
 
