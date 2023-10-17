@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/15 19:41:28 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/17 13:18:30 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include <stdio.h>
 # include <netdb.h>
 
+# include "replies.hpp"
 # include "text_formatting.hpp"
 
 # include "ClientList.hpp"
@@ -72,7 +73,8 @@ class Server
 		
 		void	_initCmds(void);
 		void	_executeCommand(Command const & cmd, Client & client);
-
+		void	_reply(int fd, std::string const & msg);
+	
 		// Commands
 		void	_pass(Client & client, std::vector<std::string> const & params);
 		void	_nick(Client & client, std::vector<std::string> const & params);
@@ -114,6 +116,17 @@ class Server
 			public: virtual const char* what() const throw() {
 				return "Invalid password: Provide at least 8 characters";
 			}
+		};
+		class ErrException: public std::exception {
+			private:
+				std::string	_msg;
+			public:
+				ErrException(std::string msg): _msg(msg) {}
+				ErrException(ErrException const & src): _msg(src._msg) {}
+				virtual ~ErrException(void) throw() {}
+				virtual const char* what() const throw() {
+					return (this->_msg.c_str());
+				}
 		};
 };
 

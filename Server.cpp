@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/15 19:57:06 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/17 13:11:21 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,14 +212,28 @@ void	Server::_initCmds(void)
 
 void	Server::_executeCommand(Command const & cmd, Client & client)
 {
-	std::map<std::string, cmdFn>::iterator it = this->_cmds.find(cmd.getCommand());
-	if (it == this->_cmds.end()) {
-		// todo: reply ERR_UNKNOWNCOMMAND
-		return ;
+	try {
+		std::map<std::string, cmdFn>::iterator it = this->_cmds.find(cmd.getCommand());
+		if (it == this->_cmds.end()) {
+			throw Server::ErrException(ERR_UNKNOWNCOMMAND(cmd.getCommand()));
+		}
+		
+		cmdFn fn = it->second;
+		(this->*fn)(client, cmd.getParameters());
+
+	} catch(Server::ErrException & e) {
+		Server::_reply(client.getFd(), e.what());
+	} catch(std::exception & e) {
+		throw e;
 	}
-	
-	cmdFn fn = it->second;
-	(this->*fn)(client, cmd.getParameters());
+}
+
+void	Server::_reply(int fd, std::string const & msg)
+{
+	std::string reply = ":localhost " + msg + "\r\n";
+	if (DEBUG)
+		std::cout << "[ >> client " << fd << "] " << reply;
+	send(fd, reply.c_str(), reply.size(), 0);
 }
 
 void	Server::start(void)

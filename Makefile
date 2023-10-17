@@ -6,7 +6,7 @@
 #    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/10/13 14:39:46 by dapereir         ###   ########.fr        #
+#    Updated: 2023/10/17 13:00:05 by dapereir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ OBJS_FILES			=	$(SRCS_FILES:.cpp=.o)
 OBJS				=	$(addprefix $(OBJS_DIR)/, $(OBJS_FILES))
 
 HEADERS_DIR			=	.
-HEADERS_FILES		=	text_formatting.hpp Server.hpp Client.hpp ClientList.hpp Channel.hpp Command.hpp
+HEADERS_FILES		=	text_formatting.hpp replies.hpp Server.hpp Client.hpp ClientList.hpp Channel.hpp Command.hpp
 HEADERS				=	$(addprefix $(HEADERS_DIR)/, $(HEADERS_FILES))
 HEADERS_INC			=	-I $(HEADERS_DIR)
 
