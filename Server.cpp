@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/17 13:11:21 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:26:46 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,7 @@ void	Server::_handleNewConnection(void)
 {
 	// accept connection from an incoming client
 	sockaddr_in clientAddr;
+	memset(&clientAddr, 0, sizeof(clientAddr));
 	socklen_t clientAddrSize = sizeof(clientAddr);
 	int clientSocket = accept(this->_serverSocket, reinterpret_cast<sockaddr*>(&clientAddr), &clientAddrSize);
 	if (clientSocket == -1) {

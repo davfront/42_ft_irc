@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/17 13:18:30 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:32:51 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 # include <iostream>
 # include <cstdlib>
+# include <cstring>
 # include <map>
 # include <stdexcept>
 # include <string>
