@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/18 12:22:10 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/18 23:27:09 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #  define DEBUG (0)
 # endif
 
-# define HOST	("localhost")
+# define HOST			("ircserv.net")
 # define VERSION		("1.0.0")
 # define USERMODES		("o")
 # define CHANNELMODES	("iklot")
