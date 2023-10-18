@@ -17,6 +17,10 @@
 #  define DEBUG (0)
 # endif
 
+# define HOST	("localhost")
+
+# define RPL_SERVERNAME	HOST
+
 # include <iostream>
 # include <cstdlib>
 # include <cstring>

@@ -215,7 +215,7 @@ void	Server::_executeCommand(Command const & cmd, Client & client)
 	try {
 		std::map<std::string, cmdFn>::iterator it = this->_cmds.find(cmd.getCommand());
 		if (it == this->_cmds.end()) {
-			throw Server::ErrException(ERR_UNKNOWNCOMMAND(cmd.getCommand()));
+			throw Server::ErrException(ERR_UNKNOWNCOMMAND(client.getNickname(), cmd.getCommand()));
 		}
 		
 		cmdFn fn = it->second;
@@ -230,10 +230,9 @@ void	Server::_executeCommand(Command const & cmd, Client & client)
 
 void	Server::_reply(int fd, std::string const & msg)
 {
-	std::string reply = ":localhost " + msg + "\r\n";
 	if (DEBUG)
-		std::cout << "[ >> client " << fd << "] " << reply;
-	send(fd, reply.c_str(), reply.size(), 0);
+		std::cout << "[ >> client " << fd << "] " << msg;
+	send(fd, msg.c_str(), msg.size(), 0);
 }
 
 void	Server::start(void)

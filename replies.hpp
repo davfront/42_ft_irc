@@ -13,6 +13,12 @@
 #ifndef REPLIES_HPP
 # define REPLIES_HPP
 
-# define ERR_UNKNOWNCOMMAND(cmd)	("421 " + cmd + " :Unknown command")
+# ifndef RPL_SERVERNAME
+#  define RPL_SERVERNAME ("localhost")
+# endif
+
+# define RPL(nick, code, msg)								(std::string(":") + RPL_SERVERNAME + " " + code + " " + nick + " " + msg + "\r\n")
+
+# define ERR_UNKNOWNCOMMAND(nick, cmd)						RPL(nick, "421", cmd + " :Unknown command")
 
 #endif
