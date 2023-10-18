@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/13 15:01:32 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:32:51 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 # include <iostream>
 # include <cstdlib>
+# include <cstring>
 # include <map>
 # include <stdexcept>
 # include <string>
@@ -34,6 +35,7 @@
 # include <stdio.h>
 # include <netdb.h>
 
+# include "replies.hpp"
 # include "text_formatting.hpp"
 
 # include "ClientList.hpp"
@@ -42,8 +44,11 @@
 
 class Server
 {
-		
+
 	private:
+
+		// Type definitions
+		typedef void (Server::*cmdFn)(Client & client, std::vector<std::string> const & params);
 
 		// Prevent default constructor and copy
 		Server(void) {}
@@ -54,8 +59,27 @@ class Server
 		int									_port;
 		std::string							_password;
 		int									_serverSocket;
+		std::vector<pollfd>					_pollfds;
 		ClientList							_clients;
 		std::map<std::string, Channel*>		_channels;
+		std::map<std::string, cmdFn>		_cmds;
+
+		// Member functions
+		void	_addPollfd(int fd);
+		void	_removePollfd(int fd);
+
+		void	_handleNewConnection(void);
+		void	_deleteClient(int fd);
+		void	_handleClientInput(int fd);
+		
+		void	_initCmds(void);
+		void	_executeCommand(Command const & cmd, Client & client);
+		void	_reply(int fd, std::string const & msg);
+	
+		// Commands
+		void	_pass(Client & client, std::vector<std::string> const & params);
+		void	_nick(Client & client, std::vector<std::string> const & params);
+		void	_user(Client & client, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);
@@ -76,11 +100,8 @@ class Server
 		std::map<std::string, Channel*> const &		getChannels(void) const;
 
 		// Member functions
-		void		start();
-		void		addClient(Client* client);
-		void		removeClient(int fd);
-		Client*		getClient(int const & fd) const;
-	
+		void		start(void);
+
 		void		addChannel(Channel* channel);
 		void		deleteChannel(std::string name);
 		Channel*	getChannel(std::string const & name) const;
@@ -96,6 +117,17 @@ class Server
 			public: virtual const char* what() const throw() {
 				return "Invalid password: Provide at least 8 characters";
 			}
+		};
+		class ErrException: public std::exception {
+			private:
+				std::string	_msg;
+			public:
+				ErrException(std::string msg): _msg(msg) {}
+				ErrException(ErrException const & src): _msg(src._msg) {}
+				virtual ~ErrException(void) throw() {}
+				virtual const char* what() const throw() {
+					return (this->_msg.c_str());
+				}
 		};
 };
 

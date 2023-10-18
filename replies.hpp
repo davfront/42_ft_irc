@@ -1,33 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/04 13:00:54 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/14 16:48:45 by dapereir         ###   ########.fr       */
+/*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
+/*   Updated: 2023/10/17 12:55:28 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
-#include <iostream>
-#include <stdexcept>
+#ifndef REPLIES_HPP
+# define REPLIES_HPP
 
-int main(int argc, char** argv) {
+# define ERR_UNKNOWNCOMMAND(cmd)	("421 " + cmd + " :Unknown command")
 
-	if (argc != 3) {
-		std::cerr << "Usage: ./ircserv <port> <password>" << std::endl;
-		return (1);
-	}
-
-	try {
-		Server server(argv[1], argv[2]);
-		server.start();
-	} catch(std::exception & e) {
-		std::cerr << "Error: " << e.what() << std::endl;
-		return (1);
-	}
-
-	return (0);
-}
+#endif

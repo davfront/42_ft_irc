@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/11 10:09:28 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/15 14:39:40 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,13 @@
 // Constructors & destructor
 // ==========================================================================
 
-Client::Client(int fd, std::string nickname, std::string username, std::string realname, bool isOper):
+Client::Client(int fd, std::string hostname):
 	_fd(fd),
-	_nickname(nickname),
-	_username(username),
-	_realname(realname),
-	_isOper(isOper),
+	_hostname(hostname),
+	_nickname(""),
+	_username(""),
+	_realname(""),
+	_isOper(false),
 	_buffer("")
 {
 	if (DEBUG)
@@ -43,6 +44,11 @@ Client::~Client(void)
 int const &	Client::getFd(void) const
 {
 	return (this->_fd);
+}
+
+std::string const &	Client::getHostname(void) const
+{
+	return (this->_hostname);
 }
 
 std::string const &	Client::getNickname(void) const
@@ -73,6 +79,11 @@ std::string const &	Client::getBuffer(void) const
 
 // Setters
 // ==========================================================================
+
+void	Client::setHostname(std::string const & hostname)
+{
+	this->_hostname = hostname;
+}
 
 void	Client::setNickname(std::string const & nickname)
 {
@@ -127,6 +138,8 @@ std::ostream &	operator<<(std::ostream & o, Client const & x)
 {
 	o << "{";
 	o << "fd: " << x.getFd();
+	o << ", ";
+	o << "host: \"" << x.getHostname() << "\"";
 	o << ", ";
 	o << "nick: \"" << x.getNickname() << "\"";
 	o << ", ";

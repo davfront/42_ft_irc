@@ -6,48 +6,13 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/13 15:01:37 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:32:53 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 const int	max_clients = 10;
-
-// Non-member functions (private)
-// ==========================================================================
-
-int const &	Server::_checkPort(int const & port)
-{
-	if (port < 0 || port > 65535) {
-		throw Server::InvalidPortException();
-	}
-	return (port);
-}
-
-std::string const &	Server::_checkPassword(std::string const & password)
-{
-	if (password.size() < 8) {
-		throw Server::InvalidPasswordException();
-	}
-	return (password);
-}
-
-int	Server::_stringToPort(std::string const & token)
-{
-	if (token.empty() || token.size() > 5) {
-		throw Server::InvalidPortException();
-	}
-	
-	for (size_t i = 0; i < token.size(); i++) {
-		if (!isdigit(token[i])) {
-			throw Server::InvalidPortException();
-		}
-	}
-	
-	int port = atoi(token.c_str());
-	return (Server::_checkPort(port));
-}
 
 
 // Constructors & destructor
@@ -59,6 +24,7 @@ Server::Server(int port, std::string password):
 	_serverSocket()
 {
 	this->_clients.setDeleteOnRemove(true);
+	this->_initCmds();
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Server " << *this << " created." << Txt::RESET << std::endl;
 	return ;
@@ -70,6 +36,7 @@ Server::Server(std::string portToken, std::string password):
 	_serverSocket()
 {
 	this->_clients.setDeleteOnRemove(true);
+	this->_initCmds();
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Server " << *this << " created (tokens)." << Txt::RESET << std::endl;
 	return ;
@@ -107,10 +74,169 @@ std::map<std::string, Channel*> const &	Server::getChannels(void) const
 }
 
 
-// Member functions (public)
+// Non-member functions
 // ==========================================================================
 
-void	Server::start()
+int const &	Server::_checkPort(int const & port)
+{
+	if (port < 0 || port > 65535) {
+		throw Server::InvalidPortException();
+	}
+	return (port);
+}
+
+std::string const &	Server::_checkPassword(std::string const & password)
+{
+	if (password.size() < 8) {
+		throw Server::InvalidPasswordException();
+	}
+	return (password);
+}
+
+int	Server::_stringToPort(std::string const & token)
+{
+	if (token.empty() || token.size() > 5) {
+		throw Server::InvalidPortException();
+	}
+	
+	for (size_t i = 0; i < token.size(); i++) {
+		if (!isdigit(token[i])) {
+			throw Server::InvalidPortException();
+		}
+	}
+	
+	int port = atoi(token.c_str());
+	return (Server::_checkPort(port));
+}
+
+
+// Member functions
+// ==========================================================================
+
+void	Server::_addPollfd(int fd)
+{
+	pollfd clientPollfd;
+	clientPollfd.fd = fd;
+	clientPollfd.events = POLLIN;
+	clientPollfd.revents = 0;
+	this->_pollfds.push_back(clientPollfd);
+}
+
+void	Server::_removePollfd(int fd)
+{
+	std::vector<pollfd>::iterator it, begin, end;
+	begin = this->_pollfds.begin();
+	end = this->_pollfds.end();
+	for (it = begin; it != end; it++) {
+		if (it->fd == fd) {
+			close(it->fd);
+			this->_pollfds.erase(it);
+			break ;
+		}
+	}
+}
+
+void	Server::_handleNewConnection(void)
+{
+	// accept connection from an incoming client
+	sockaddr_in clientAddr;
+	memset(&clientAddr, 0, sizeof(clientAddr));
+	socklen_t clientAddrSize = sizeof(clientAddr);
+	int clientSocket = accept(this->_serverSocket, reinterpret_cast<sockaddr*>(&clientAddr), &clientAddrSize);
+	if (clientSocket == -1) {
+		throw std::runtime_error("accept client failed");
+	}
+	
+	// check if client socket already exists
+	if (this->_clients.get(clientSocket)) {
+		throw std::runtime_error("client fd already exists");
+	}
+	
+	// set the client socket to non-blocking mode
+	fcntl(clientSocket, F_SETFL, O_NONBLOCK);
+
+	// add client socket to pollfd array
+	Server::_addPollfd(clientSocket);
+	
+	// get client ip and port
+    getsockname(clientSocket, reinterpret_cast<struct sockaddr*>(&clientAddr), &clientAddrSize);
+	std::string clientHost = inet_ntoa(clientAddr.sin_addr);
+
+	// add client to client list
+	Client* client = new Client(clientSocket, clientHost);
+	this->_clients.add(client);
+	
+	std::cout << "New client connected" << std::endl;
+}
+
+void	Server::_deleteClient(int fd)
+{
+	close(fd);
+	Server::_removePollfd(fd);
+	this->_clients.remove(fd);
+}
+
+void	Server::_handleClientInput(int fd)
+{
+	// read data sent by client
+	char buffer[1024];
+	int ret = recv(fd, buffer, sizeof(buffer), 0);
+	if (ret <= 0) {
+		Server::_deleteClient(fd);
+		std::cout << "Client disconnected" << std::endl;
+		return ;
+	}
+	buffer[ret] = '\0';
+
+	// add to client buffer
+	Client* client = this->_clients.get(fd);
+	if (!client) {
+		throw std::runtime_error("client not found");
+	}
+	client->addToBuffer(buffer);
+	
+	// parse and execute commands
+	std::string msg = client->extractMessage();
+	while (!msg.empty()) {
+		this->_executeCommand(Command(msg), *client);
+		msg = client->extractMessage();
+	}
+}
+
+void	Server::_initCmds(void)
+{
+	this->_cmds["PASS"] = &Server::_pass;
+	this->_cmds["NICK"] = &Server::_nick;
+	this->_cmds["USER"] = &Server::_user;
+}
+
+void	Server::_executeCommand(Command const & cmd, Client & client)
+{
+	try {
+		std::map<std::string, cmdFn>::iterator it = this->_cmds.find(cmd.getCommand());
+		if (it == this->_cmds.end()) {
+			throw Server::ErrException(ERR_UNKNOWNCOMMAND(cmd.getCommand()));
+		}
+		
+		cmdFn fn = it->second;
+		(this->*fn)(client, cmd.getParameters());
+
+	} catch(Server::ErrException & e) {
+		Server::_reply(client.getFd(), e.what());
+	} catch(std::exception & e) {
+		throw e;
+	}
+}
+
+void	Server::_reply(int fd, std::string const & msg)
+{
+	std::string reply = ":localhost " + msg + "\r\n";
+	if (DEBUG)
+		std::cout << "[ >> client " << fd << "] " << reply;
+	send(fd, reply.c_str(), reply.size(), 0);
+}
+
+void	Server::start(void)
 {
 	const char			*proto_name = "tcp";
 	struct protoent		*pe;
@@ -157,100 +283,35 @@ void	Server::start()
 		close(this->_serverSocket);
 		throw std::runtime_error("Error: listening");
 	}
+	
+	// Including server socket
+	Server::_addPollfd(this->_serverSocket);
 
-	// Creating a pollfd array ===> à voir pour mettre dans main
-
-	// Array of pollfd structs to monitor sockets
-	std::vector<struct pollfd> fds( max_clients + 1 ); // including server socket, max_clients à remplacer par size ClientList + 2
-	fds[0].fd = this->_serverSocket;
-	fds[0].events = POLLIN; // Monitor for incoming connections
-
-		// Initialize other fds entries
-	for( int i = 1; i <= max_clients; ++i ) // remplacer par un iterator
-	{
-		fds[i].fd = -1; // -1 indicates unused
-	}
 	std::cout << "Server is listening on port " << this->_port << std::endl;
 	
-	while ( true )
+	while (true)
 	{
-		int ret = poll( fds.data(), fds.size(), -1 );
-		if ( ret < 0 )
-		{
-			perror("Error: poll failed");
-			break ;
+		// poll for events
+		int ret = poll(this->_pollfds.data(), this->_pollfds.size(), -1);
+		if (ret < 0) {
+			// todo: reset server
+			throw std::runtime_error("Error: poll failed");
 		}
-		for ( size_t i = 0; i < fds.size(); ++i )
-		{
-			if ( fds[i].revents & POLLIN )
-			{
-				if ( fds[i].fd == this->_serverSocket )
-				{
-					// todo: create a method `acceptClient`
-					// new connection request ====> à voir si on crée une fonction 'accept'
-					int client_socket = accept( this->_serverSocket, NULL, NULL ); // créer une nvelle struct sockaddr_in pour remplacer les NULL
-					if ( client_socket < 0 )
-						std::cerr << "Error: accept failed" << std::endl;
-					else
-					{
-						// set the client socket to non-blocking mode
-						int flags = fcntl( client_socket, F_GETFL, 0 ); // to get a new flag to set
-						fcntl( client_socket, F_SETFL, flags | O_NONBLOCK );
 
-						std::cout << "New client connected" << std::endl;
+		// check new connection request
+		if (this->_pollfds[0].revents & POLLIN) {
+			Server::_handleNewConnection();
+		}
 
-						// find an empty slot in the fds array to store the client socket
-						for ( size_t j = 1; j < fds.size(); ++j )
-						{
-							if ( fds[j].fd == -1 )
-							{
-								fds[j].fd = client_socket;
-								fds[j].events = POLLIN;
-								break ;
-							}
-						}
-					}
-				}
-				else
-				{
-					// data available to read from a client socket
-					char buffer[1024];
-					int ret = recv( fds[i].fd, buffer, sizeof( buffer ), 0 );
-					if ( ret <= 0 )
-					{
-						// connection closed or error
-						close( fds[i].fd );
-						fds[i].fd = -1;
-						std::cout << "Client disconnected" << std::endl;
-					}
-					else
-					{
-						buffer[ret] = '\0';
-						// là où il faudra checker le buffer et lancer une cmd si nécessaire
-						std::string	msg( buffer );
-						std::cout << "Client " << i << ": " << msg << std::endl;
-					}
-				}
+		// handle client inputs
+		for (size_t i = 1; i < this->_pollfds.size(); i++) {
+			if (this->_pollfds[i].revents & POLLIN) {
+				Server::_handleClientInput(this->_pollfds[i].fd);
 			}
 		}
 	}
 	std::cout << "End of loop" << std::endl;
 	close(this->_serverSocket);
-}
-
-void	Server::addClient(Client* client)
-{
-	this->_clients.add(client);
-}
-
-void	Server::removeClient(int fd)
-{
-	this->_clients.remove(fd);
-}
-
-Client*	Server::getClient(int const & fd) const
-{
-	return (this->_clients.get(fd));
 }
 
 void	Server::addChannel(Channel* channel)
@@ -307,6 +368,37 @@ void	Server::printChannels(void) const
 		}
 		std::cout << std::endl;
 	}
+}
+
+
+// Commands
+// ==========================================================================
+
+void	Server::_pass(Client & client, std::vector<std::string> const & params)
+{
+	std::cout << "Client " << client.getFd() << ": PASS ";
+	for (size_t i = 0; i < params.size(); i++) {
+		std::cout << params[i] << " ";
+	}
+	std::cout << std::endl;
+}
+
+void	Server::_nick(Client & client, std::vector<std::string> const & params)
+{
+	std::cout << "Client " << client.getFd() << ": NICK ";
+	for (size_t i = 0; i < params.size(); i++) {
+		std::cout << params[i] << " ";
+	}
+	std::cout << std::endl;
+}
+
+void	Server::_user(Client & client, std::vector<std::string> const & params)
+{
+	std::cout << "Client " << client.getFd() << ": USER ";
+	for (size_t i = 0; i < params.size(); i++) {
+		std::cout << params[i] << " ";
+	}
+	std::cout << std::endl;
 }
 
 
