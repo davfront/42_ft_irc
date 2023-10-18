@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/18 11:26:46 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:32:53 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,8 +153,7 @@ void	Server::_handleNewConnection(void)
 	}
 	
 	// set the client socket to non-blocking mode
-	int flags = fcntl(clientSocket, F_GETFL, 0);
-	fcntl(clientSocket, F_SETFL, flags | O_NONBLOCK);
+	fcntl(clientSocket, F_SETFL, O_NONBLOCK);
 
 	// add client socket to pollfd array
 	Server::_addPollfd(clientSocket);
