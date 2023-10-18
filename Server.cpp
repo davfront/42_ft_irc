@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/18 11:32:53 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/18 12:33:29 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,7 @@ void	Server::_executeCommand(Command const & cmd, Client & client)
 		if (it == this->_cmds.end()) {
 			throw Server::ErrException(ERR_UNKNOWNCOMMAND(client.getNickname(), cmd.getCommand()));
 		}
-		
+
 		// during registration process, only PASS NICK USER are accepted
 		bool isRegistrationCommand = cmd.getCommand() == "PASS" || cmd.getCommand() == "NICK" || cmd.getCommand() == "USER";
 		if (!client.getIsRegistered() && !isRegistrationCommand) {
@@ -244,6 +244,15 @@ void	Server::_checkRegistration(Client & client)
 {
 	bool isRegistered = client.getIsPasswordValid() && client.getNickname() != "*" && !client.getUsername().empty();
 	client.setIsRegistered(isRegistered);
+	
+	if (isRegistered) {
+		std::string messages;
+		messages += RPL_WELCOME(client.getNickname(), client.getUsername(), client.getHostname());
+		messages += RPL_YOURHOST(client.getNickname(), HOST, VERSION);
+		messages += RPL_CREATED(client.getNickname(), formatTime(this->_startTime));
+		messages += RPL_MYINFO(client.getNickname(), HOST, VERSION, USERMODES, CHANNELMODES);
+		Server::_reply(client.getFd(), messages);
+	}
 }
 
 void	Server::_reply(int fd, std::string const & msg)
@@ -303,6 +312,9 @@ void	Server::start(void)
 	
 	// Including server socket
 	Server::_addPollfd(this->_serverSocket);
+
+	// Update start time
+	std::time(&(this->_startTime));
 
 	std::cout << "Server is listening on port " << this->_port << std::endl;
 	
