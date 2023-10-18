@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/15 14:39:40 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/17 20:57:34 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,13 @@
 
 Client::Client(int fd, std::string hostname):
 	_fd(fd),
+	_buffer(""),
 	_hostname(hostname),
-	_nickname(""),
+	_nickname("*"),
 	_username(""),
 	_realname(""),
-	_isOper(false),
-	_buffer("")
+	_isPasswordValid(false),
+	_isOper(false)
 {
 	if (DEBUG)
 		std::cout << Txt::FAINT << "Client " << *this << " created." << Txt::RESET << std::endl;
@@ -46,6 +47,11 @@ int const &	Client::getFd(void) const
 	return (this->_fd);
 }
 
+std::string const &	Client::getBuffer(void) const
+{
+	return (this->_buffer);
+}
+
 std::string const &	Client::getHostname(void) const
 {
 	return (this->_hostname);
@@ -66,19 +72,29 @@ std::string const &	Client::getRealname(void) const
 	return (this->_realname);
 }
 
+bool const &	Client::getIsPasswordValid(void) const
+{
+	return (this->_isPasswordValid);
+}
+
+bool const &	Client::getIsRegistered(void) const
+{
+	return (this->_isRegistered);
+}
+
 bool const &	Client::getIsOper(void) const
 {
 	return (this->_isOper);
 }
 
-std::string const &	Client::getBuffer(void) const
-{
-	return (this->_buffer);
-}
-
 
 // Setters
 // ==========================================================================
+
+void	Client::setBuffer(std::string const & str)
+{
+	this->_buffer = str;
+}
 
 void	Client::setHostname(std::string const & hostname)
 {
@@ -100,16 +116,20 @@ void	Client::setRealname(std::string const & realname)
 	this->_realname = realname;
 }
 
+void	Client::setIsPasswordValid(bool const & isPasswordValid)
+{
+	this->_isPasswordValid = isPasswordValid;
+}
+
+void	Client::setIsRegistered(bool const & isRegistered)
+{
+	this->_isRegistered = isRegistered;
+}
+
 void	Client::setIsOper(bool const & isOper)
 {
 	this->_isOper = isOper;
 }
-
-void	Client::setBuffer(std::string const & str)
-{
-	this->_buffer = str;
-}
-
 
 // Member functions
 // ==========================================================================

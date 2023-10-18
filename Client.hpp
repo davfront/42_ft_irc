@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/15 14:39:43 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/17 20:57:38 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,14 @@ class Client
 
 		// Member attributes
 		int const					_fd;
+		std::string					_buffer;
 		std::string					_hostname;
 		std::string					_nickname;
 		std::string					_username;
 		std::string					_realname;
+		bool						_isPasswordValid;
+		bool						_isRegistered;
 		bool						_isOper;
-		std::string					_buffer;
 
 	public:
 
@@ -49,20 +51,24 @@ class Client
 
 		// Getters
 		int const &				getFd(void) const;
+		std::string const &		getBuffer(void) const;
 		std::string const &		getHostname(void) const;
 		std::string const &		getNickname(void) const;
 		std::string const &		getUsername(void) const;
 		std::string const &		getRealname(void) const;
+		bool const &			getIsPasswordValid(void) const;
+		bool const &			getIsRegistered(void) const;
 		bool const &			getIsOper(void) const;
-		std::string const &		getBuffer(void) const;
 
 		// Setters
+		void	setBuffer(std::string const & str);
 		void	setHostname(std::string const & hostname);
 		void	setNickname(std::string const & nickname);
 		void	setUsername(std::string const & username);
 		void	setRealname(std::string const & realname);
+		void	setIsPasswordValid(bool const & isPasswordValid);
+		void	setIsRegistered(bool const & isRegistered);
 		void	setIsOper(bool const & isOper);
-		void	setBuffer(std::string const & str);
 
 		// Member functions
 		void		addToBuffer(std::string const & str);

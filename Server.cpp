@@ -218,14 +218,32 @@ void	Server::_executeCommand(Command const & cmd, Client & client)
 			throw Server::ErrException(ERR_UNKNOWNCOMMAND(client.getNickname(), cmd.getCommand()));
 		}
 		
+		// during registration process, only PASS NICK USER are accepted
+		bool isRegistrationCommand = cmd.getCommand() == "PASS" || cmd.getCommand() == "NICK" || cmd.getCommand() == "USER";
+		if (!client.getIsRegistered() && !isRegistrationCommand) {
+			throw Server::ErrException(ERR_NOTREGISTERED(client.getNickname()));
+		}
+		
+		// process command
 		cmdFn fn = it->second;
 		(this->*fn)(client, cmd.getParameters());
+
+		// check if registration is complete
+		if (!client.getIsRegistered()) {
+			this->_checkRegistration(client);
+		}
 
 	} catch(Server::ErrException & e) {
 		Server::_reply(client.getFd(), e.what());
 	} catch(std::exception & e) {
 		throw e;
 	}
+}
+
+void	Server::_checkRegistration(Client & client)
+{
+	bool isRegistered = client.getIsPasswordValid() && client.getNickname() != "*" && !client.getUsername().empty();
+	client.setIsRegistered(isRegistered);
 }
 
 void	Server::_reply(int fd, std::string const & msg)
@@ -375,29 +393,68 @@ void	Server::printChannels(void) const
 
 void	Server::_pass(Client & client, std::vector<std::string> const & params)
 {
-	std::cout << "Client " << client.getFd() << ": PASS ";
-	for (size_t i = 0; i < params.size(); i++) {
-		std::cout << params[i] << " ";
+	if (params.empty() || params[0].empty()) {
+		throw Server::ErrException(ERR_NEEDMOREPARAMS(client.getNickname(), "PASS"));
 	}
-	std::cout << std::endl;
+
+	if (client.getIsRegistered()) {
+		throw Server::ErrException(ERR_ALREADYREGISTERED(client.getNickname()));
+	}
+	
+	client.setIsPasswordValid(params[0] == this->_password);
+	if (!client.getIsPasswordValid()) {
+		throw Server::ErrException(ERR_PASSWDMISMATCH(client.getNickname()));
+	}
 }
 
 void	Server::_nick(Client & client, std::vector<std::string> const & params)
 {
-	std::cout << "Client " << client.getFd() << ": NICK ";
-	for (size_t i = 0; i < params.size(); i++) {
-		std::cout << params[i] << " ";
+	if (!client.getIsPasswordValid()) {
+		return ;
 	}
-	std::cout << std::endl;
+	
+	if (params.empty() || params[0].empty()) {
+		throw Server::ErrException(ERR_NEEDMOREPARAMS(client.getNickname(), "NICK"));
+	}
+
+	// check nickname validity
+	if (params[0].empty() || params[0].size() > 9) {
+		throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
+	}
+	std::string specialChars = "[]\\`_^{|}";
+	if (!isalpha(params[0][0]) && specialChars.find(params[0][0]) == std::string::npos) {
+		throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
+	}
+	for (size_t i = 1; i < params[0].size(); i++) {
+		if (!isalnum(params[0][i]) && specialChars.find(params[0][i]) == std::string::npos && params[0][i] != '-') {
+			throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
+		}
+	}
+	
+	// check nickname availability
+	Client* otherClient = this->_clients.get(client.getNickname());
+	if (otherClient && otherClient != &client) {
+		throw Server::ErrException(ERR_NICKNAMEINUSE(client.getNickname(), params[0]));
+	}
+
+	// update nickname
+	client.setNickname(params[0]);
 }
 
 void	Server::_user(Client & client, std::vector<std::string> const & params)
 {
-	std::cout << "Client " << client.getFd() << ": USER ";
-	for (size_t i = 0; i < params.size(); i++) {
-		std::cout << params[i] << " ";
+	if (!client.getIsPasswordValid()) {
+		return ;
 	}
-	std::cout << std::endl;
+	
+	if (params.size() < 4 || params[0].empty() || params[3].empty()) {
+		throw Server::ErrException(ERR_NEEDMOREPARAMS(client.getNickname(), "USER"));
+	}
+
+	// todo: check params validity
+
+	client.setUsername(params[0]);
+	client.setRealname(params[3]);
 }
 
 

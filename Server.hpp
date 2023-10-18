@@ -78,6 +78,7 @@ class Server
 		
 		void	_initCmds(void);
 		void	_executeCommand(Command const & cmd, Client & client);
+		void	_checkRegistration(Client & client);
 		void	_reply(int fd, std::string const & msg);
 	
 		// Commands
