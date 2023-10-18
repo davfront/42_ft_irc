@@ -6,7 +6,7 @@
 #    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/10/17 13:00:05 by dapereir         ###   ########.fr        #
+#    Updated: 2023/10/17 23:33:24 by dapereir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ RM					=	rm -rf
 NAME				=	ircserv
 
 SRCS_DIR			=	.
-SRCS_FILES			=	main.cpp Server.cpp Client.cpp ClientList.cpp Channel.cpp Command.cpp
+SRCS_FILES			=	main.cpp utils.cpp Server.cpp Client.cpp ClientList.cpp Channel.cpp Command.cpp
 SRCS 				=	$(addprefix $(SRCS_DIR)/, $(SRCS_FILES))
 
 OBJS_DIR			=	./obj
@@ -31,7 +31,7 @@ OBJS_FILES			=	$(SRCS_FILES:.cpp=.o)
 OBJS				=	$(addprefix $(OBJS_DIR)/, $(OBJS_FILES))
 
 HEADERS_DIR			=	.
-HEADERS_FILES		=	text_formatting.hpp replies.hpp Server.hpp Client.hpp ClientList.hpp Channel.hpp Command.hpp
+HEADERS_FILES		=	text_formatting.hpp replies.hpp utils.hpp Server.hpp Client.hpp ClientList.hpp Channel.hpp Command.hpp
 HEADERS				=	$(addprefix $(HEADERS_DIR)/, $(HEADERS_FILES))
 HEADERS_INC			=	-I $(HEADERS_DIR)
 

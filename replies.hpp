@@ -6,13 +6,34 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/17 12:55:28 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/18 12:26:13 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REPLIES_HPP
 # define REPLIES_HPP
 
-# define ERR_UNKNOWNCOMMAND(cmd)	("421 " + cmd + " :Unknown command")
+# ifndef RPL_SERVERNAME
+#  define RPL_SERVERNAME ("localhost")
+# endif
+
+# define RPL(nick, code, msg)								(std::string(":") + RPL_SERVERNAME + " " + code + " " + nick + " " + msg + "\r\n")
+
+# define RPL_WELCOME(nick, user, host)						RPL(nick, "001", ":Welcome to the Internet Relay Network, " + nick + "!" + user + "@" + host)
+# define RPL_YOURHOST(nick, serv, ver)						RPL(nick, "002", ":Your host is " + serv + ", running version " + ver)
+# define RPL_CREATED(nick, date)							RPL(nick, "003", ":This server was created " + date)
+# define RPL_MYINFO(nick, serv, ver, userMod, chanMod)		RPL(nick, "004", serv + " " + ver + " " + userMod + " " + chanMod)
+
+# define ERR_UNKNOWNCOMMAND(nick, cmd)						RPL(nick, "421", cmd + " :Unknown command")
+
+# define ERR_NONICKNAMEGIVEN(nick)							RPL(nick, "431", ":No nickname given")
+# define ERR_ERRONEUSNICKNAME(nick, newNick)				RPL(nick, "432", newNick + " :Erroneus nickname")
+# define ERR_NICKNAMEINUSE(nick, newNick)					RPL(nick, "433", newNick + " :Nickname is already in use")
+
+# define ERR_NOTREGISTERED(nick)							RPL(nick, "451", ":You have not registered")
+
+# define ERR_NEEDMOREPARAMS(nick, cmd)						RPL(nick, "461", cmd + " :Not enough parameters")
+# define ERR_ALREADYREGISTERED(nick)						RPL(nick, "462", ":You may not reregister")
+# define ERR_PASSWDMISMATCH(nick)							RPL(nick, "464", ":Password incorrect")
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/18 11:32:51 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/18 23:27:09 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,17 @@
 #  define DEBUG (0)
 # endif
 
+# define HOST			("ircserv.net")
+# define VERSION		("1.0.0")
+# define USERMODES		("o")
+# define CHANNELMODES	("iklot")
+
+# define RPL_SERVERNAME	HOST
+
 # include <iostream>
 # include <cstdlib>
 # include <cstring>
+# include <ctime>
 # include <map>
 # include <stdexcept>
 # include <string>
@@ -37,6 +45,7 @@
 
 # include "replies.hpp"
 # include "text_formatting.hpp"
+# include "utils.hpp"
 
 # include "ClientList.hpp"
 # include "Channel.hpp"
@@ -63,6 +72,7 @@ class Server
 		ClientList							_clients;
 		std::map<std::string, Channel*>		_channels;
 		std::map<std::string, cmdFn>		_cmds;
+		std::time_t							_startTime;
 
 		// Member functions
 		void	_addPollfd(int fd);
@@ -74,6 +84,7 @@ class Server
 		
 		void	_initCmds(void);
 		void	_executeCommand(Command const & cmd, Client & client);
+		void	_checkRegistration(Client & client);
 		void	_reply(int fd, std::string const & msg);
 	
 		// Commands
