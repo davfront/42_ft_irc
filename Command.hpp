@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/12 11:47:49 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/21 01:35:01 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,14 @@
 #ifndef COMMAND_HPP
 # define COMMAND_HPP
 
-# ifndef DEBUG
-#  define DEBUG (0)
-# endif
-
+# include <iostream>
 # include <stdexcept>
 # include <string>
 # include <vector>
 
-# include <iostream>
-
 # include "text_formatting.hpp"
+
+# include "Log.hpp"
 
 class Command
 {

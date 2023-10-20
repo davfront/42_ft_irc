@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/17 20:57:34 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/24 13:51:12 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,16 @@ Client::Client(int fd, std::string hostname):
 	_username(""),
 	_realname(""),
 	_isPasswordValid(false),
+	_isRegistered(false),
 	_isOper(false)
 {
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Client " << *this << " created." << Txt::RESET << std::endl;
+	Log::debug("Client " + stringify(this->_fd) + " created");
 	return ;
 }
 
 Client::~Client(void)
 {
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Client " << *this << " destroyed." << Txt::RESET << std::endl;
+	Log::debug("Client " + stringify(this->_fd) + " destroyed");
 	return ;
 }
 
@@ -139,15 +138,16 @@ void	Client::addToBuffer(std::string const & str)
 	this->_buffer += str;
 }
 
-std::string	Client::extractMessage(void)
+bool	Client::extractMessage(std::string & dest)
 {
 	size_t separatorPos = this->_buffer.find("\r\n");
 	if (separatorPos == std::string::npos)
-		return ("");
+		return (false);
 
 	std::string message = this->_buffer.substr(0, separatorPos);
 	this->_buffer = this->_buffer.substr(separatorPos + 2, this->_buffer.size());
-	return (message);
+	dest = message;
+	return (true);
 }
 
 

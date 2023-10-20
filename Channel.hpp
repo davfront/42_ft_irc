@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/08 22:13:38 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/21 01:34:28 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,11 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
-# ifndef DEBUG
-#  define DEBUG (0)
-# endif
-
 # include <iostream>
 
 # include "text_formatting.hpp"
+
+# include "Log.hpp"
 
 class Channel
 {

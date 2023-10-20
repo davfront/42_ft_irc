@@ -6,16 +6,12 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/11 09:37:22 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/21 01:34:55 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENTLIST_HPP
 # define CLIENTLIST_HPP
-
-# ifndef DEBUG
-#  define DEBUG (0)
-# endif
 
 # include <iostream>
 # include <map>
@@ -24,6 +20,7 @@
 # include "text_formatting.hpp"
 
 # include "Client.hpp"
+# include "Log.hpp"
 
 class ClientList
 {

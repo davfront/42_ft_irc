@@ -6,16 +6,12 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/18 23:27:09 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/21 01:35:25 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
-
-# ifndef DEBUG
-#  define DEBUG (0)
-# endif
 
 # define HOST			("ircserv.net")
 # define VERSION		("1.0.0")
@@ -50,6 +46,7 @@
 # include "ClientList.hpp"
 # include "Channel.hpp"
 # include "Command.hpp"
+# include "Log.hpp"
 
 class Server
 {
@@ -85,7 +82,7 @@ class Server
 		void	_initCmds(void);
 		void	_executeCommand(Command const & cmd, Client & client);
 		void	_checkRegistration(Client & client);
-		void	_reply(int fd, std::string const & msg);
+		void	_reply(int fd, std::string const & msg) const;
 	
 		// Commands
 		void	_pass(Client & client, std::vector<std::string> const & params);
