@@ -463,7 +463,7 @@ void	Server::_nick(Client & client, std::vector<std::string> const & params)
 	}
 	
 	// check nickname availability
-	Client* otherClient = this->_clients.get(client.getNickname());
+	Client* otherClient = this->_clients.get(params[0]);
 	if (otherClient && otherClient != &client) {
 		throw Server::ErrException(ERR_NICKNAMEINUSE(client.getNickname(), params[0]));
 	}
