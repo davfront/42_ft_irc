@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/21 01:32:18 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/25 00:23:02 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,8 @@ ClientList::ClientList(void): _deleteOnRemove(false)
 ClientList::~ClientList(void)
 {
 	if (this->_deleteOnRemove) {
-		std::map<int, Client*>::const_iterator	it, begin, end;
-		begin = this->_clients.begin();
-		end = this->_clients.end();
-		
-		for (it = begin; it != end; it++) {
+		std::map<int, Client*>::const_iterator it;
+		for (it = this->_clients.begin(); it != this->_clients.end(); ++it) {
 			delete it->second;
 		}
 	}
@@ -115,11 +112,8 @@ Client*	ClientList::get(int const & fd) const
 
 Client*	ClientList::get(std::string const & nickname) const
 {
-	std::map<int, Client*>::const_iterator	it, begin, end;
-	begin = this->_clients.begin();
-	end = this->_clients.end();
-
-	for (it = begin; it != end; it++) {
+	std::map<int, Client*>::const_iterator it;
+	for (it = this->_clients.begin(); it != this->_clients.end(); ++it) {
 		if (it->second && it->second->getNickname() == nickname) {
 			return (it->second);
 		}
@@ -138,11 +132,8 @@ std::ostream &	operator<<(std::ostream & o, ClientList const & x)
 		return (o);
 	}
 	
-	std::map<int, Client*>::const_iterator	it, begin, end;
-	begin = x.getClients().begin();
-	end = x.getClients().end();
-	
-	for (it = begin; it != end; it++) {
+	std::map<int, Client*>::const_iterator it;
+	for (it = x.getClients().begin(); it != x.getClients().end(); ++it) {
 		o << "Client " << it->first << ": ";
 		if (it->second) {
 			o << *(it->second);

@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/24 14:49:19 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/25 00:23:48 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	Server::_stringToPort(std::string const & token)
 		throw Server::InvalidPortException();
 	}
 	
-	for (size_t i = 0; i < token.size(); i++) {
+	for (size_t i = 0; i < token.size(); ++i) {
 		if (!isdigit(token[i])) {
 			throw Server::InvalidPortException();
 		}
@@ -121,10 +121,8 @@ void	Server::_addPollfd(int fd)
 
 void	Server::_removePollfd(int fd)
 {
-	std::vector<pollfd>::iterator it, begin, end;
-	begin = this->_pollfds.begin();
-	end = this->_pollfds.end();
-	for (it = begin; it != end; it++) {
+	std::vector<pollfd>::iterator it;
+	for (it = this->_pollfds.begin(); it != this->_pollfds.end(); ++it) {
 		if (it->fd == fd) {
 			close(it->fd);
 			this->_pollfds.erase(it);
@@ -352,7 +350,7 @@ void	Server::start(void)
 		}
 
 		// handle client inputs
-		for (size_t i = 1; i < this->_pollfds.size(); i++) {
+		for (size_t i = 1; i < this->_pollfds.size(); ++i) {
 			if (this->_pollfds[i].revents & POLLIN) {
 				Server::_handleClientInput(this->_pollfds[i].fd);
 			}
@@ -403,11 +401,8 @@ void	Server::printChannels(void) const
 		return ;
 	}
 	
-	std::map<std::string, Channel*>::const_iterator	it, begin, end;
-	begin = this->_channels.begin();
-	end = this->_channels.end();
-	
-	for (it = begin; it != end; it++) {
+	std::map<std::string, Channel*>::const_iterator	it;
+	for (it = this->_channels.begin(); it != this->_channels.end(); ++it) {
 		std::cout << "Channel " << it->first << ": ";
 		if (it->second) {
 			std::cout << *(it->second);
@@ -456,7 +451,7 @@ void	Server::_nick(Client & client, std::vector<std::string> const & params)
 	if (!isalpha(params[0][0]) && specialChars.find(params[0][0]) == std::string::npos) {
 		throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
 	}
-	for (size_t i = 1; i < params[0].size(); i++) {
+	for (size_t i = 1; i < params[0].size(); ++i) {
 		if (!isalnum(params[0][i]) && specialChars.find(params[0][i]) == std::string::npos && params[0][i] != '-') {
 			throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
 		}
