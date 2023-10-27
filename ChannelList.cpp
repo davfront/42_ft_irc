@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/27 11:19:45 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/27 11:47:02 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ ChannelList::ChannelList(void): _deleteOnRemove(false)
 ChannelList::~ChannelList(void)
 {
 	if (this->_deleteOnRemove) {
-		std::map<std::string, Channel*>::const_iterator it;
+		std::map<std::string, Channel*, ChannelList::cmp>::const_iterator it;
 		for (it = this->_channels.begin(); it != this->_channels.end(); ++it) {
 			delete it->second;
 		}
@@ -45,7 +45,7 @@ bool const &	ChannelList::getDeleteOnRemove(void) const
 	return (this->_deleteOnRemove);
 }
 
-std::map<std::string, Channel*> const &	ChannelList::getChannels(void) const
+std::map<std::string, Channel*, ChannelList::cmp> const &	ChannelList::getChannels(void) const
 {
 	return (this->_channels);
 }
@@ -80,7 +80,7 @@ void	ChannelList::add(Channel* channel)
 		return ;
 	}
 
-	std::map<std::string, Channel*>::iterator it;
+	std::map<std::string, Channel*, ChannelList::cmp>::iterator it;
 	it = this->_channels.find(channel->getName());
 	if (it == this->_channels.end()) {
 		this->_channels[channel->getName()] = channel;
@@ -89,7 +89,7 @@ void	ChannelList::add(Channel* channel)
 
 void	ChannelList::remove(std::string const & name)
 {
-	std::map<std::string, Channel*>::iterator it = this->_channels.find(name);
+	std::map<std::string, Channel*, ChannelList::cmp>::iterator it = this->_channels.find(name);
 	if (it == this->_channels.end()) {
 		return ;
 	}
@@ -101,7 +101,7 @@ void	ChannelList::remove(std::string const & name)
 
 Channel*	ChannelList::get(std::string const & name) const
 {
-	std::map<std::string, Channel*>::const_iterator	it;
+	std::map<std::string, Channel*, ChannelList::cmp>::const_iterator	it;
 	it = this->_channels.find(name);
 
 	if (it == this->_channels.end()) {
@@ -121,7 +121,7 @@ std::ostream &	operator<<(std::ostream & o, ChannelList const & x)
 		return (o);
 	}
 	
-	std::map<std::string, Channel*>::const_iterator it;
+	std::map<std::string, Channel*, ChannelList::cmp>::const_iterator it;
 	for (it = x.getChannels().begin(); it != x.getChannels().end(); ++it) {
 		o << "Channel " << it->first << ": ";
 		if (it->second) {

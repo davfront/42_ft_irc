@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/27 11:23:40 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/27 11:47:59 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,26 +24,23 @@
 
 class ChannelList
 {
-		
-	private:
-
-		// Prevent copy
-		ChannelList(ChannelList const &) {}
-		ChannelList &	operator=(ChannelList const &) { return (*this); }
-
-		// Member attributes
-		bool								_deleteOnRemove;
-		std::map<std::string, Channel*>		_channels;
 
 	public:
+	
+		// Custom comparator for std::map
+		struct 	cmp {
+			bool operator()(std::string const & s1, std::string const & s2) const {
+				return (isEqualIgnoreCase(s1, s2));
+			}
+		};
 
 		// Constructors & destructor
 		ChannelList(void);
 		~ChannelList(void);
 
 		// Getters
-		bool const &								getDeleteOnRemove(void) const;
-		std::map<std::string, Channel*> const &		getChannels(void) const;
+		bool const &									getDeleteOnRemove(void) const;
+		std::map<std::string, Channel*, cmp> const &	getChannels(void) const;
 
 		// Setters
 		void		setDeleteOnRemove(bool const & deleteOnRemove);
@@ -54,6 +51,17 @@ class ChannelList
 		void		add(Channel* channel);
 		void		remove(std::string const & name);
 		Channel*	get(std::string const & name) const;
+		
+	private:
+
+		// Prevent copy
+		ChannelList(ChannelList const &) {}
+		ChannelList &	operator=(ChannelList const &) { return (*this); }
+
+		// Member attributes
+		bool									_deleteOnRemove;
+		std::map<std::string, Channel*, cmp>	_channels;
+
 };
 
 // Output stream
