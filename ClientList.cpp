@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/21 01:32:18 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:24:48 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,11 +103,10 @@ void	ClientList::remove(int fd)
 
 Client*	ClientList::get(int const & fd) const
 {
-	std::map<int, Client*>::const_iterator	it, end;
+	std::map<int, Client*>::const_iterator	it;
 	it = this->_clients.find(fd);
-	end = this->_clients.end();
 
-	if (it == end) {
+	if (it == this->_clients.end()) {
 		return (NULL);
 	}
 	return (it->second);
@@ -115,12 +114,9 @@ Client*	ClientList::get(int const & fd) const
 
 Client*	ClientList::get(std::string const & nickname) const
 {
-	std::map<int, Client*>::const_iterator	it, begin, end;
-	begin = this->_clients.begin();
-	end = this->_clients.end();
-
-	for (it = begin; it != end; it++) {
-		if (it->second && it->second->getNickname() == nickname) {
+	std::map<int, Client*>::const_iterator it;
+	for (it = this->_clients.begin(); it != this->_clients.end(); ++it) {
+		if (it->second && isEqualIgnoreCase(it->second->getNickname(), nickname)) {
 			return (it->second);
 		}
 	}

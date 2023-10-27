@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/21 01:34:55 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/27 10:41:50 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <string>
 
 # include "text_formatting.hpp"
+# include "utils.hpp"
 
 # include "Client.hpp"
 # include "Log.hpp"
