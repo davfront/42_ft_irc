@@ -1,27 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.hpp                                          :+:      :+:    :+:   */
+/*   utils.tpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 23:29:59 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/20 23:45:49 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/20 13:26:30 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_HPP
-# define UTILS_HPP
-
-# include <ctime>
-# include <sstream>
-# include <string>
-# include <vector>
-
-# include "utils.tpp"
-
-std::string                 formatTime(time_t t);
-
-std::vector<std::string>    split(std::string const & s, std::string const & sep, bool keepEmpty = false);
-
-#endif
+template <typename T>
+std::string stringify(T const & x)
+{
+	std::stringstream ss;
+	ss << x;
+	return (ss.str());
+}

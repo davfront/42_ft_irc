@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/08 22:13:57 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/21 01:32:09 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,13 @@ Channel::Channel(std::string name, std::string topic, bool isInviteOnly):
 	_topic(topic),
 	_isInviteOnly(isInviteOnly)
 {
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Channel " << *this << " created." << Txt::RESET << std::endl;
+	Log::debug("Channel " + stringify(this->_name) + " created");
 	return ;
 }
 
 Channel::~Channel(void)
 {
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Channel " << *this << " destroyed." << Txt::RESET << std::endl;
+	Log::debug("Channel " + stringify(this->_name) + " destroyed");
 	return ;
 }
 

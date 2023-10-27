@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/18 12:33:29 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/24 14:49:19 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ Server::Server(int port, std::string password):
 {
 	this->_clients.setDeleteOnRemove(true);
 	this->_initCmds();
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Server " << *this << " created." << Txt::RESET << std::endl;
+	Log::debug("Server created: " + stringify(*this));
 	return ;
 }
 
@@ -37,15 +36,13 @@ Server::Server(std::string portToken, std::string password):
 {
 	this->_clients.setDeleteOnRemove(true);
 	this->_initCmds();
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Server " << *this << " created (tokens)." << Txt::RESET << std::endl;
+	Log::debug("Server created: " + stringify(*this));
 	return ;
 }
 
 Server::~Server(void)
 {
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Server " << *this << " destroyed." << Txt::RESET << std::endl;
+	Log::debug("Server destroyed");
 	return ;
 }
 
@@ -138,35 +135,44 @@ void	Server::_removePollfd(int fd)
 
 void	Server::_handleNewConnection(void)
 {
-	// accept connection from an incoming client
-	sockaddr_in clientAddr;
-	memset(&clientAddr, 0, sizeof(clientAddr));
-	socklen_t clientAddrSize = sizeof(clientAddr);
-	int clientSocket = accept(this->_serverSocket, reinterpret_cast<sockaddr*>(&clientAddr), &clientAddrSize);
-	if (clientSocket == -1) {
-		throw std::runtime_error("accept client failed");
-	}
-	
-	// check if client socket already exists
-	if (this->_clients.get(clientSocket)) {
-		throw std::runtime_error("client fd already exists");
-	}
-	
-	// set the client socket to non-blocking mode
-	fcntl(clientSocket, F_SETFL, O_NONBLOCK);
+	try {
+		
+		// accept connection from an incoming client
+		sockaddr_in clientAddr;
+		memset(&clientAddr, 0, sizeof(clientAddr));
+		socklen_t clientAddrSize = sizeof(clientAddr);
+		int clientSocket = accept(this->_serverSocket, reinterpret_cast<sockaddr*>(&clientAddr), &clientAddrSize);
+		if (clientSocket == -1) {
+			throw std::runtime_error("accept failed");
+		}
+		
+		// check if client socket already exists
+		if (this->_clients.get(clientSocket)) {
+			throw std::runtime_error("client socket already exists");
+		}
+		
+		// set the client socket to non-blocking mode
+		fcntl(clientSocket, F_SETFL, O_NONBLOCK);
 
-	// add client socket to pollfd array
-	Server::_addPollfd(clientSocket);
-	
-	// get client ip and port
-    getsockname(clientSocket, reinterpret_cast<struct sockaddr*>(&clientAddr), &clientAddrSize);
-	std::string clientHost = inet_ntoa(clientAddr.sin_addr);
+		// add client socket to pollfd array
+		Server::_addPollfd(clientSocket);
+		
+		// get client ip and port
+		getsockname(clientSocket, reinterpret_cast<struct sockaddr*>(&clientAddr), &clientAddrSize);
+		std::string clientHost = inet_ntoa(clientAddr.sin_addr);
+		if (clientHost == "127.0.0.1") {
+			clientHost = "localhost";
+		}
 
-	// add client to client list
-	Client* client = new Client(clientSocket, clientHost);
-	this->_clients.add(client);
-	
-	std::cout << "New client connected" << std::endl;
+		// add client to client list
+		Client* client = new Client(clientSocket, clientHost);
+		this->_clients.add(client);
+		
+		Log::info("Accepted connection from " + clientHost + ":" + stringify(this->_port) + \
+			" on socket " + stringify(clientSocket));
+	} catch(std::exception & e) {
+		Log::error("Accepting connection failed: " + std::string(e.what()));
+	}
 }
 
 void	Server::_deleteClient(int fd)
@@ -178,28 +184,33 @@ void	Server::_deleteClient(int fd)
 
 void	Server::_handleClientInput(int fd)
 {
-	// read data sent by client
-	char buffer[1024];
-	int ret = recv(fd, buffer, sizeof(buffer), 0);
-	if (ret <= 0) {
-		Server::_deleteClient(fd);
-		std::cout << "Client disconnected" << std::endl;
-		return ;
-	}
-	buffer[ret] = '\0';
+	try {
 
-	// add to client buffer
-	Client* client = this->_clients.get(fd);
-	if (!client) {
-		throw std::runtime_error("client not found");
-	}
-	client->addToBuffer(buffer);
-	
-	// parse and execute commands
-	std::string msg = client->extractMessage();
-	while (!msg.empty()) {
-		this->_executeCommand(Command(msg), *client);
-		msg = client->extractMessage();
+		// read data sent by client
+		char buffer[1024];
+		int ret = recv(fd, buffer, sizeof(buffer), 0);
+		if (ret <= 0) {
+			this->_deleteClient(fd);
+			throw std::runtime_error("Impossible to read data");
+		}
+		buffer[ret] = '\0';
+
+		// add to client buffer
+		Client* client = this->_clients.get(fd);
+		if (!client) {
+			throw std::runtime_error("Client not found");
+		}
+		client->addToBuffer(buffer);
+		
+		// parse and execute commands
+		std::string msg;
+		while (client->extractMessage(msg)) {
+			Log::input(fd, msg);
+			this->_executeCommand(Command(msg), *client);
+		}
+
+	} catch(std::exception & e) {
+		Log::error("Handling client input (socket " + stringify(fd) + ") failed: " + e.what());
 	}
 }
 
@@ -246,6 +257,9 @@ void	Server::_checkRegistration(Client & client)
 	client.setIsRegistered(isRegistered);
 	
 	if (isRegistered) {
+		Log::info("User \"" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostname() + "\" registered" + \
+			" (socket " + stringify(client.getFd()) + ")");
+
 		std::string messages;
 		messages += RPL_WELCOME(client.getNickname(), client.getUsername(), client.getHostname());
 		messages += RPL_YOURHOST(client.getNickname(), HOST, VERSION);
@@ -255,21 +269,26 @@ void	Server::_checkRegistration(Client & client)
 	}
 }
 
-void	Server::_reply(int fd, std::string const & msg)
+void	Server::_reply(int fd, std::string const & msg) const
 {
-	if (DEBUG)
-		std::cout << "[ >> client " << fd << "] " << msg;
+	if (fd == -1) {
+		return ;
+	}
+
+	Log::output(fd, msg);
 	send(fd, msg.c_str(), msg.size(), 0);
 }
 
 void	Server::start(void)
 {
+	Log::info("Starting " + Txt::BOLD + stringify(HOST) + Txt::RESET + "...");
+	
 	const char			*proto_name = "tcp";
 	struct protoent		*pe;
 
 	if ((pe = getprotobyname(proto_name)) == NULL) {
 		// todo: reset server
-		throw std::runtime_error("Error getting protocol name");
+		throw std::runtime_error("getting protocol name failed");
 	}
 
 	// Socket creation
@@ -277,7 +296,7 @@ void	Server::start(void)
 	if ( this->_serverSocket == -1 ) {
 		// todo: reset server
 		close(this->_serverSocket);
-		throw std::runtime_error("Error: creating socket");
+		throw std::runtime_error("creating socket failed");
 	}
 
 	int sockopt = 1; // Enable SO_REUSEADDR and SO_REUSEPORT
@@ -285,7 +304,7 @@ void	Server::start(void)
 	{
 		// todo: reset server
 		close(this->_serverSocket);
-		throw std::runtime_error("Error: setting socket options");
+		throw std::runtime_error("setting socket options failed");
 	}
 
 	// Struct sockaddr initialization
@@ -299,7 +318,7 @@ void	Server::start(void)
 	{
 		// todo: reset server
 		close(this->_serverSocket);
-		throw std::runtime_error("Error: binding server socket");
+		throw std::runtime_error("binding server socket failed");
 	}
 
 	// Listening
@@ -307,7 +326,7 @@ void	Server::start(void)
 	{
 		// todo: reset server
 		close(this->_serverSocket);
-		throw std::runtime_error("Error: listening");
+		throw std::runtime_error("listening socket failed");
 	}
 	
 	// Including server socket
@@ -316,7 +335,7 @@ void	Server::start(void)
 	// Update start time
 	std::time(&(this->_startTime));
 
-	std::cout << "Server is listening on port " << this->_port << std::endl;
+	Log::info("Listening on 0.0.0.0:" + stringify(this->_port) + " (socket " + stringify(this->_serverSocket) + ")");
 	
 	while (true)
 	{

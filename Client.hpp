@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/17 20:57:38 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/21 01:34:34 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,11 @@
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
-# ifndef DEBUG
-#  define DEBUG (0)
-# endif
-
 # include <iostream>
 
 # include "text_formatting.hpp"
+
+# include "Log.hpp"
 
 class Client
 {
@@ -71,8 +69,8 @@ class Client
 		void	setIsOper(bool const & isOper);
 
 		// Member functions
-		void		addToBuffer(std::string const & str);
-		std::string	extractMessage(void);
+		void	addToBuffer(std::string const & str);
+		bool	extractMessage(std::string & dest);
 };
 
 // Output stream

@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/12 11:47:05 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/21 01:32:49 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,49 +42,50 @@ std::string	Command::_extractMessageToken(std::string & msg)
 
 Command::Command(std::string msg)
 {
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Creating Command from message: `" << msg << "`" << Txt::RESET << std::endl;
+	try {
 
-	if (msg.size() > 510) {
-		throw Command::TooLargeMessageException();
-	}
-	
-	std::string token;
-
-	// prefix or command
-	token = Command::_extractMessageToken(msg);
-	if (token[0] == ':') {
-		this->_prefix = token;
-	} else {
-		this->_command = token;
-	}
-	
-	// command
-	if (this->_command.empty()) {
-		this->_command = Command::_extractMessageToken(msg);
-	}
-
-	// parameters
-	while (!msg.empty()) {
-		token = Command::_extractMessageToken(msg);
-		if (!token.empty()) {
-			if (token[0] == ':') {
-				token = token.substr(1) + msg;
-				msg = "";
-			}
-			this->_parameters.push_back(token);
+		if (msg.size() > 510) {
+			throw Command::TooLargeMessageException();
 		}
-	}
+		
+		std::string token;
 
-	// validation
-	if (this->_prefix == ":" || this->_command.empty()) {
-		throw Command::InvalidMessageException();
-	}
-	
-	if (DEBUG)
-		std::cout << Txt::FAINT <<  "Command " << *this << " created." << Txt::RESET << std::endl;
+		// prefix or command
+		token = Command::_extractMessageToken(msg);
+		if (token[0] == ':') {
+			this->_prefix = token;
+		} else {
+			this->_command = token;
+		}
+		
+		// command
+		if (this->_command.empty()) {
+			this->_command = Command::_extractMessageToken(msg);
+		}
 
-	return ;
+		// parameters
+		while (!msg.empty()) {
+			token = Command::_extractMessageToken(msg);
+			if (!token.empty()) {
+				if (token[0] == ':') {
+					token = token.substr(1) + msg;
+					msg = "";
+				}
+				this->_parameters.push_back(token);
+			}
+		}
+
+		// validation
+		if (this->_prefix == ":" || this->_command.empty()) {
+			throw Command::InvalidMessageException();
+		}
+
+		Log::debug("Command created: " + stringify(*this));
+
+	} catch (std::exception & e) {
+		Log::debug("Command creation failed (" + msg + "): " + std::string(e.what()));
+		throw (e);
+	}
 }
 
 Command::Command(Command const & src):
@@ -92,15 +93,13 @@ Command::Command(Command const & src):
 	_command(src.getCommand()),
 	_parameters(src.getParameters())
 {
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Command " << *this << " created (copy)." << Txt::RESET << std::endl;
+	Log::debug("Command created (copy): " + stringify(*this));
 	return ;
 }
 
 Command::~Command(void)
 {
-	if (DEBUG)
-		std::cout << Txt::FAINT << "Command " << *this << " destroyed." << Txt::RESET << std::endl;
+	Log::debug("Command destroyed: " + stringify(*this));
 	return ;
 }
 
@@ -144,13 +143,9 @@ std::vector<std::string> const &	Command::getParameters(void) const
 std::ostream &	operator<<(std::ostream & o, Command const & x)
 {
 	o << "{";
-	if (!x.getPrefix().empty()) {
-		o << "prefix: \"" << x.getPrefix() << "\"";
-		o << ", ";
-	}
-	o << "command: \"" << x.getCommand() << "\"";
-	o << ", ";
-	o << "parameters: {";
+	o << "\"" << x.getPrefix() << "\", ";
+	o << "\"" << x.getCommand() << "\", ";
+	o << "{";
 	for (size_t i = 0; i < x.getParameters().size(); i++) {
 		o << "`" << x.getParameters()[i] << "`";
 		if (i < x.getParameters().size() - 1) {
