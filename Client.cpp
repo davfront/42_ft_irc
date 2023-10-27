@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/24 13:51:12 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/24 20:02:05 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 Client::Client(int fd, std::string hostname):
 	_fd(fd),
+	_connectTime(time(NULL)),
 	_buffer(""),
 	_hostname(hostname),
 	_nickname("*"),
@@ -44,6 +45,11 @@ Client::~Client(void)
 int const &	Client::getFd(void) const
 {
 	return (this->_fd);
+}
+
+time_t const &	Client::getConnectTime(void) const
+{
+	return (this->_connectTime);
 }
 
 std::string const &	Client::getBuffer(void) const
