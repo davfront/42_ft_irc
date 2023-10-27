@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/21 01:34:34 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:27:36 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 # define CLIENT_HPP
 
 # include <iostream>
-
-# include "text_formatting.hpp"
 
 # include "Log.hpp"
 
