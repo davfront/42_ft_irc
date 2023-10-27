@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/21 01:35:25 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:26:25 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 
 # include "ClientList.hpp"
 # include "Channel.hpp"
+# include "ChannelList.hpp"
 # include "Command.hpp"
 # include "Log.hpp"
 
@@ -67,7 +68,7 @@ class Server
 		int									_serverSocket;
 		std::vector<pollfd>					_pollfds;
 		ClientList							_clients;
-		std::map<std::string, Channel*>		_channels;
+		ChannelList							_channels;
 		std::map<std::string, cmdFn>		_cmds;
 		std::time_t							_startTime;
 
@@ -102,18 +103,13 @@ class Server
 		~Server(void);
 
 		// Getters
-		int const &									getPort(void) const;
-		std::string const &							getPassword(void) const;
-		ClientList const &							getClients(void) const;
-		std::map<std::string, Channel*> const &		getChannels(void) const;
+		int const &				getPort(void) const;
+		std::string const &		getPassword(void) const;
+		ClientList const &		getClients(void) const;
+		ChannelList const &		getChannels(void) const;
 
 		// Member functions
 		void		start(void);
-
-		void		addChannel(Channel* channel);
-		void		deleteChannel(std::string name);
-		Channel*	getChannel(std::string const & name) const;
-		void		printChannels(void) const;
 
 		// Exceptions
 		class InvalidPortException: public std::exception {

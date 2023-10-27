@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/24 14:49:19 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:26:05 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Server::Server(int port, std::string password):
 	_serverSocket()
 {
 	this->_clients.setDeleteOnRemove(true);
+	this->_channels.setDeleteOnRemove(true);
 	this->_initCmds();
 	Log::debug("Server created: " + stringify(*this));
 	return ;
@@ -35,6 +36,7 @@ Server::Server(std::string portToken, std::string password):
 	_serverSocket()
 {
 	this->_clients.setDeleteOnRemove(true);
+	this->_channels.setDeleteOnRemove(true);
 	this->_initCmds();
 	Log::debug("Server created: " + stringify(*this));
 	return ;
@@ -65,7 +67,7 @@ ClientList const &	Server::getClients(void) const
 	return (this->_clients);
 }
 
-std::map<std::string, Channel*> const &	Server::getChannels(void) const
+ChannelList const &	Server::getChannels(void) const
 {
 	return (this->_channels);
 }
@@ -362,62 +364,6 @@ void	Server::start(void)
 	close(this->_serverSocket);
 }
 
-void	Server::addChannel(Channel* channel)
-{
-	if (!channel) {
-		return ;
-	}
-
-	std::map<std::string, Channel*>::iterator it = this->_channels.find(channel->getName());
-	if (it == this->_channels.end()) {
-		this->_channels[channel->getName()] = channel;
-	}
-}
-
-void	Server::deleteChannel(std::string name)
-{
-	std::map<std::string, Channel*>::iterator it = this->_channels.find(name);
-	if (it == this->_channels.end()) {
-		return ;
-	}
-	delete it->second;
-	this->_channels.erase(it);
-}
-
-Channel*	Server::getChannel(std::string const & name) const
-{
-	std::map<std::string, Channel*>::const_iterator	it, end;
-	it = this->_channels.find(name);
-	end = this->_channels.end();
-
-	if (it == end) {
-		return (NULL);
-	}
-	return (it->second);
-}
-
-void	Server::printChannels(void) const
-{
-	std::cout << this->_channels.size() << " channel(s)"<< std::endl;
-	if (this->_channels.empty()) {
-		return ;
-	}
-	
-	std::map<std::string, Channel*>::const_iterator	it, begin, end;
-	begin = this->_channels.begin();
-	end = this->_channels.end();
-	
-	for (it = begin; it != end; it++) {
-		std::cout << "Channel " << it->first << ": ";
-		if (it->second) {
-			std::cout << *(it->second);
-		} else {
-			std::cout << "NULL";
-		}
-		std::cout << std::endl;
-	}
-}
-
 
 // Commands
 // ==========================================================================
@@ -499,7 +445,9 @@ std::ostream &	operator<<(std::ostream & o, Server const & x)
 	o << ", ";
 	o << "password: \"" << x.getPassword() << "\"";
 	o << ", ";
-	o << "clients: " << x.getClients().size();
+	o << x.getClients().size() << " clients";
+	o << ", ";
+	o << x.getChannels().size() << " channels";
 	o << "}";
 	return (o);
 }
