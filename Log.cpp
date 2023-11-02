@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/20 10:01:16 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/24 14:45:36 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/24 22:06:48 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	Log::output(int const & fd, std::string const & msg)
 		return ;
 	}
 	std::vector<std::string> lines = split(msg, "\r\n");
-	for (size_t i = 0; i < lines.size(); i++) {
+	for (size_t i = 0; i < lines.size(); ++i) {
 
 		//	RPL or ERR
 		std::string token;

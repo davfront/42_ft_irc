@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/21 01:34:34 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/25 00:10:23 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define CLIENT_HPP
 
 # include <iostream>
+# include <ctime>
 
 # include "text_formatting.hpp"
 
@@ -26,12 +27,13 @@ class Client
 	private:
 
 		// Prevent default constructor and copy
-		Client(void): _fd(-1) {}
-		Client(Client const &): _fd(-1) {}
+		Client(void): _fd(-1), _connectTime(time(NULL)) {}
+		Client(Client const &): _fd(-1), _connectTime(time(NULL)) {}
 		Client &	operator=(Client const &) { return (*this); }
 
 		// Member attributes
 		int const					_fd;
+		time_t const				_connectTime;
 		std::string					_buffer;
 		std::string					_hostname;
 		std::string					_nickname;
@@ -49,6 +51,7 @@ class Client
 
 		// Getters
 		int const &				getFd(void) const;
+		time_t const &			getConnectTime(void) const;
 		std::string const &		getBuffer(void) const;
 		std::string const &		getHostname(void) const;
 		std::string const &		getNickname(void) const;

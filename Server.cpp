@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/24 14:49:19 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/25 15:54:28 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	Server::_stringToPort(std::string const & token)
 		throw Server::InvalidPortException();
 	}
 	
-	for (size_t i = 0; i < token.size(); i++) {
+	for (size_t i = 0; i < token.size(); ++i) {
 		if (!isdigit(token[i])) {
 			throw Server::InvalidPortException();
 		}
@@ -121,10 +121,8 @@ void	Server::_addPollfd(int fd)
 
 void	Server::_removePollfd(int fd)
 {
-	std::vector<pollfd>::iterator it, begin, end;
-	begin = this->_pollfds.begin();
-	end = this->_pollfds.end();
-	for (it = begin; it != end; it++) {
+	std::vector<pollfd>::iterator it;
+	for (it = this->_pollfds.begin(); it != this->_pollfds.end(); ++it) {
 		if (it->fd == fd) {
 			close(it->fd);
 			this->_pollfds.erase(it);
@@ -182,33 +180,32 @@ void	Server::_deleteClient(int fd)
 	this->_clients.remove(fd);
 }
 
-void	Server::_handleClientInput(int fd)
+void	Server::_handleClientInput(Client & client)
 {
+	int fd = client.getFd();
+
 	try {
 
 		// read data sent by client
 		char buffer[1024];
 		int ret = recv(fd, buffer, sizeof(buffer), 0);
 		if (ret <= 0) {
-			this->_deleteClient(fd);
-			throw std::runtime_error("Impossible to read data");
+			throw Server::ConnectionException();
 		}
 		buffer[ret] = '\0';
 
 		// add to client buffer
-		Client* client = this->_clients.get(fd);
-		if (!client) {
-			throw std::runtime_error("Client not found");
-		}
-		client->addToBuffer(buffer);
+		client.addToBuffer(buffer);
 		
 		// parse and execute commands
 		std::string msg;
-		while (client->extractMessage(msg)) {
+		while (client.extractMessage(msg)) {
 			Log::input(fd, msg);
-			this->_executeCommand(Command(msg), *client);
+			this->_executeCommand(Command(msg), client);
 		}
 
+	} catch(Server::ConnectionException & e) {
+		throw (e);
 	} catch(std::exception & e) {
 		Log::error("Handling client input (socket " + stringify(fd) + ") failed: " + e.what());
 	}
@@ -267,6 +264,16 @@ void	Server::_checkRegistration(Client & client)
 		messages += RPL_MYINFO(client.getNickname(), HOST, VERSION, USERMODES, CHANNELMODES);
 		Server::_reply(client.getFd(), messages);
 	}
+}
+
+bool	Server::_isRegistrationTimedOut(Client & client) const
+{
+	if (client.getIsRegistered()) {
+		return (false);
+	}
+	time_t const & currentTime = time(NULL);
+	time_t const & connectTime = client.getConnectTime();
+	return (currentTime - connectTime > REGISTRATION_TIMEOUT);
 }
 
 void	Server::_reply(int fd, std::string const & msg) const
@@ -340,7 +347,7 @@ void	Server::start(void)
 	while (true)
 	{
 		// poll for events
-		int ret = poll(this->_pollfds.data(), this->_pollfds.size(), -1);
+		int ret = poll(this->_pollfds.data(), this->_pollfds.size(), POLL_INTERVAL);
 		if (ret < 0) {
 			// todo: reset server
 			throw std::runtime_error("Error: poll failed");
@@ -351,10 +358,40 @@ void	Server::start(void)
 			Server::_handleNewConnection();
 		}
 
-		// handle client inputs
-		for (size_t i = 1; i < this->_pollfds.size(); i++) {
-			if (this->_pollfds[i].revents & POLLIN) {
-				Server::_handleClientInput(this->_pollfds[i].fd);
+		size_t i = 1;
+		while (i < this->_pollfds.size()) {
+			int fd = this->_pollfds[i].fd;
+			short revents = this->_pollfds[i].revents;
+			Client* client = this->_clients.get(fd);
+			
+			try {
+			
+				if (!client) {
+					throw std::runtime_error("Client not found");
+				}
+				
+				// handle client inputs
+				if (revents & POLLIN) {
+					Server::_handleClientInput(*client);
+				}
+
+				// handle registration client timeout
+				if (this->_isRegistrationTimedOut(*client)) {
+					throw Server::RegistrationTimeoutException();
+				}
+
+				++i;
+				
+			} catch (Server::ConnectionException & e) {
+				std::string logMsg;
+				logMsg += "Connection stopped";
+				if (client && client->getIsRegistered()) {
+					logMsg += " with \"" + client->getNickname() + "!" + client->getUsername() + "@" + client->getHostname() + "\"";
+				}
+				logMsg += " (socket " + stringify(fd) + ")";
+				logMsg += ": " + std::string(e.what());
+				Log::info(logMsg);
+				this->_deleteClient(fd);
 			}
 		}
 	}
@@ -403,11 +440,8 @@ void	Server::printChannels(void) const
 		return ;
 	}
 	
-	std::map<std::string, Channel*>::const_iterator	it, begin, end;
-	begin = this->_channels.begin();
-	end = this->_channels.end();
-	
-	for (it = begin; it != end; it++) {
+	std::map<std::string, Channel*>::const_iterator	it;
+	for (it = this->_channels.begin(); it != this->_channels.end(); ++it) {
 		std::cout << "Channel " << it->first << ": ";
 		if (it->second) {
 			std::cout << *(it->second);
@@ -456,14 +490,14 @@ void	Server::_nick(Client & client, std::vector<std::string> const & params)
 	if (!isalpha(params[0][0]) && specialChars.find(params[0][0]) == std::string::npos) {
 		throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
 	}
-	for (size_t i = 1; i < params[0].size(); i++) {
+	for (size_t i = 1; i < params[0].size(); ++i) {
 		if (!isalnum(params[0][i]) && specialChars.find(params[0][i]) == std::string::npos && params[0][i] != '-') {
 			throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
 		}
 	}
 	
 	// check nickname availability
-	Client* otherClient = this->_clients.get(client.getNickname());
+	Client* otherClient = this->_clients.get(params[0]);
 	if (otherClient && otherClient != &client) {
 		throw Server::ErrException(ERR_NICKNAMEINUSE(client.getNickname(), params[0]));
 	}
