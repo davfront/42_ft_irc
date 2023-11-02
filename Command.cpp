@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/21 01:32:49 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/10/24 22:06:48 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ std::ostream &	operator<<(std::ostream & o, Command const & x)
 	o << "\"" << x.getPrefix() << "\", ";
 	o << "\"" << x.getCommand() << "\", ";
 	o << "{";
-	for (size_t i = 0; i < x.getParameters().size(); i++) {
+	for (size_t i = 0; i < x.getParameters().size(); ++i) {
 		o << "`" << x.getParameters()[i] << "`";
 		if (i < x.getParameters().size() - 1) {
 			o << ", ";

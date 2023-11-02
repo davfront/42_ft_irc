@@ -6,19 +6,22 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/27 12:26:25 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/02 10:25:19 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# define HOST			("ircserv.net")
-# define VERSION		("1.0.0")
-# define USERMODES		("o")
-# define CHANNELMODES	("iklot")
+# define HOST					("ircserv.net")
+# define VERSION				("1.0.0")
+# define USERMODES				("o")
+# define CHANNELMODES			("iklot")
 
-# define RPL_SERVERNAME	HOST
+# define RPL_SERVERNAME			HOST
+
+# define POLL_INTERVAL			(1000)
+# define REGISTRATION_TIMEOUT	(20)
 
 # include <iostream>
 # include <cstdlib>
@@ -78,11 +81,12 @@ class Server
 
 		void	_handleNewConnection(void);
 		void	_deleteClient(int fd);
-		void	_handleClientInput(int fd);
+		void	_handleClientInput(Client & client);
 		
 		void	_initCmds(void);
 		void	_executeCommand(Command const & cmd, Client & client);
 		void	_checkRegistration(Client & client);
+		bool	_isRegistrationTimedOut(Client & client) const;
 		void	_reply(int fd, std::string const & msg) const;
 	
 		// Commands
@@ -133,6 +137,22 @@ class Server
 					return (this->_msg.c_str());
 				}
 		};
+		class ConnectionException: public std::exception {
+			private:
+				std::string	_msg;
+			public:
+				ConnectionException(void): _msg("Client disconnected") {}
+				ConnectionException(std::string msg): _msg(msg) {}
+				ConnectionException(ConnectionException const & src): _msg(src._msg) {}
+				virtual ~ConnectionException(void) throw() {}
+				virtual const char* what() const throw() {
+					return (this->_msg.c_str());
+				}
+		};
+		class RegistrationTimeoutException: public ConnectionException {
+			public: RegistrationTimeoutException(): ConnectionException("Registration has timed out") {}
+		};
+		
 };
 
 // Output stream
