@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/10/27 11:16:54 by dapereir         ###   ########.fr        #
+#    Updated: 2023/11/02 13:25:27 by mmaxime-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ RM					=	rm -rf
 NAME				=	ircserv
 
 SRCS_DIR			=	.
-SRCS_FILES			=	main.cpp utils.cpp Server.cpp Client.cpp ClientList.cpp Channel.cpp ChannelList.cpp Command.cpp Log.cpp
+SRCS_FILES			=	main.cpp utils.cpp Server.cpp ServerCommands.cpp Client.cpp ClientList.cpp Channel.cpp ChannelList.cpp Command.cpp Log.cpp
 SRCS 				=	$(addprefix $(SRCS_DIR)/, $(SRCS_FILES))
 
 OBJS_DIR			=	./obj
