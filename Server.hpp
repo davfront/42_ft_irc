@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 13:35:48 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/02 16:28:37 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
+# define MAX_CLIENTS			(3)
 
 # include <algorithm>
 # include <csignal>
@@ -133,39 +134,17 @@ class Server
 				return "Invalid password: Provide at least 8 characters";
 			}
 		};
-		class ErrException: public std::exception {
-			private:
-				std::string	_msg;
-			public:
-				ErrException(std::string msg): _msg(msg) {}
-				ErrException(ErrException const & src): _msg(src._msg) {}
-				virtual ~ErrException(void) throw() {}
-				virtual const char* what() const throw() {
-					return (this->_msg.c_str());
-				}
+		class MaxClientsReachedException: public std::runtime_error {
+			public: MaxClientsReachedException(void): std::runtime_error("Limit of clients (" + stringify(MAX_CLIENTS) + ") reached") {}
 		};
-		class ConnectionException: public std::exception {
-			private:
-				std::string	_msg;
-			public:
-				ConnectionException(void): _msg("Client disconnected") {}
-				ConnectionException(std::string msg): _msg(msg) {}
-				ConnectionException(ConnectionException const & src): _msg(src._msg) {}
-				virtual ~ConnectionException(void) throw() {}
+		class ErrException: public std::runtime_error {
+			public: ErrException(std::string msg): std::runtime_error(msg) {}
 		};
-		class RegistrationTimeoutException: public ConnectionException {
-			public: RegistrationTimeoutException(): ConnectionException("Registration has timed out") {}
+		class ConnectionException: public std::runtime_error {
+			public: ConnectionException(std::string msg): std::runtime_error(msg) {}
 		};
-		class ServerException: public std::exception {
-			private:
-				std::string	_msg;
-			public:
-				ServerException(std::string msg): _msg(msg) {}
-				ServerException(ServerException const & src): _msg(src._msg) {}
-				virtual ~ServerException(void) throw() {}
-				virtual const char* what() const throw() {
-					return (this->_msg.c_str());
-				}
+		class ServerException: public std::runtime_error {
+			public: ServerException(std::string msg): std::runtime_error(msg) {}
 		};	
 };
 
