@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/27 11:26:59 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/02 13:38:23 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ class ClientList
 		void		remove(int fd);
 		Client*		get(int const & fd) const;
 		Client*		get(std::string const & nickname) const;
+		void		clear(void);
 };
 
 // Output stream

@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 10:25:06 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/02 13:19:27 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 const int	max_clients = 10;
-
+volatile int 		Server::receivedSignal = 0;
 
 // Constructors & destructor
 // ==========================================================================
@@ -128,7 +128,7 @@ void	Server::_removePollfd(int fd)
 		if (it->fd == fd) {
 			close(it->fd);
 			this->_pollfds.erase(it);
-			break ;
+			return ;
 		}
 	}
 }
@@ -264,6 +264,7 @@ void	Server::_checkRegistration(Client & client)
 		messages += RPL_YOURHOST(client.getNickname(), HOST, VERSION);
 		messages += RPL_CREATED(client.getNickname(), formatTime(this->_startTime));
 		messages += RPL_MYINFO(client.getNickname(), HOST, VERSION, USERMODES, CHANNELMODES);
+		messages += Server::_motdMsg(client);
 		Server::_reply(client.getFd(), messages);
 	}
 }
@@ -291,116 +292,139 @@ void	Server::_reply(int fd, std::string const & msg) const
 void	Server::start(void)
 {
 	Log::info("Starting " + Txt::BOLD + stringify(HOST) + Txt::RESET + "...");
-	
+
 	const char			*proto_name = "tcp";
 	struct protoent		*pe;
 
-	if ((pe = getprotobyname(proto_name)) == NULL) {
-		// todo: reset server
-		throw std::runtime_error("getting protocol name failed");
-	}
-
-	// Socket creation
-	this->_serverSocket = socket(PF_INET, SOCK_STREAM, pe->p_proto);
-	if ( this->_serverSocket == -1 ) {
-		// todo: reset server
-		close(this->_serverSocket);
-		throw std::runtime_error("creating socket failed");
-	}
-
-	int sockopt = 1; // Enable SO_REUSEADDR and SO_REUSEPORT
-	if ( setsockopt( this->_serverSocket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT , &sockopt, sizeof( sockopt ) ) < 0 ) // allows to reuse server address nd port after close (protect bind from crash)
-	{
-		// todo: reset server
-		close(this->_serverSocket);
-		throw std::runtime_error("setting socket options failed");
-	}
-
-	// Struct sockaddr initialization
-	struct sockaddr_in	sa = {};
-	sa.sin_family = PF_INET; // IPv4 format
-	sa.sin_port = htons( _port ); // Convert port
-	sa.sin_addr.s_addr = INADDR_ANY; // Bind to any available interface
-
-	// Binding of server socket
-	if ( bind( this->_serverSocket, reinterpret_cast<struct sockaddr *>( &sa ), sizeof( sa ) ) < 0 )
-	{
-		// todo: reset server
-		close(this->_serverSocket);
-		throw std::runtime_error("binding server socket failed");
-	}
-
-	// Listening
-	if ( listen( this->_serverSocket, SOMAXCONN ) < 0 ) // SOMAXCONN = constant representing the max size of the backlog
-	{
-		// todo: reset server
-		close(this->_serverSocket);
-		throw std::runtime_error("listening socket failed");
-	}
-	
-	// Including server socket
-	Server::_addPollfd(this->_serverSocket);
-
-	// Update start time
-	std::time(&(this->_startTime));
-
-	Log::info("Listening on 0.0.0.0:" + stringify(this->_port) + " (socket " + stringify(this->_serverSocket) + ")");
-	
-	while (true)
-	{
-		// poll for events
-		int ret = poll(this->_pollfds.data(), this->_pollfds.size(), POLL_INTERVAL);
-		if (ret < 0) {
-			// todo: reset server
-			throw std::runtime_error("Error: poll failed");
+	try {
+		if ((pe = getprotobyname(proto_name)) == NULL) {
+			throw Server::ServerException("Getting protocol name");
 		}
 
-		// check new connection request
-		if (this->_pollfds[0].revents & POLLIN) {
-			Server::_handleNewConnection();
+		// Socket creation
+		this->_serverSocket = socket(PF_INET, SOCK_STREAM, pe->p_proto);
+		if (this->_serverSocket == -1) {
+			throw Server::ServerException("Creating server socket");
 		}
 
-		size_t i = 1;
-		while (i < this->_pollfds.size()) {
-			int fd = this->_pollfds[i].fd;
-			short revents = this->_pollfds[i].revents;
-			Client* client = this->_clients.get(fd);
-			
-			try {
-			
-				if (!client) {
-					throw std::runtime_error("Client not found");
-				}
-				
-				// handle client inputs
-				if (revents & POLLIN) {
-					Server::_handleClientInput(*client);
-				}
+		int sockopt = 1; // Enable SO_REUSEADDR and SO_REUSEPORT
+		if (setsockopt(this->_serverSocket, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT , &sockopt, sizeof(sockopt)) < 0) {
+			throw Server::ServerException("Setting socket options");
+		}
 
-				// handle registration client timeout
-				if (this->_isRegistrationTimedOut(*client)) {
-					throw Server::RegistrationTimeoutException();
-				}
+		// Struct sockaddr initialization
+		struct sockaddr_in	sa;
+		memset(&sa, 0, sizeof(sa));
+		sa.sin_family = PF_INET; // IPv4 format
+		sa.sin_port = htons(_port); // Convert port
+		sa.sin_addr.s_addr = INADDR_ANY; // Bind to any available interface
 
-				++i;
+		// Binding of server socket
+		if (bind(this->_serverSocket, reinterpret_cast<struct sockaddr *>(&sa), sizeof(sa)) < 0) {
+			throw Server::ServerException("Binding server socket");
+		}
+
+		// Listening
+		if (listen(this->_serverSocket, SOMAXCONN) < 0) {
+			throw Server::ServerException("Listening");
+		}
+		
+		// Including server socket
+		Server::_addPollfd(this->_serverSocket);
+
+		// Update start time
+		std::time(&(this->_startTime));
+
+		Log::info("Listening on 0.0.0.0:" + stringify(this->_port) + " (socket " + stringify(this->_serverSocket) + ")");
+		
+		while (true)
+		{
+			// poll for events
+			int ret = poll(this->_pollfds.data(), this->_pollfds.size(), POLL_INTERVAL);
+			
+			if (receivedSignal == SIGINT || receivedSignal == SIGQUIT || receivedSignal == SIGTERM) {
+				break;
+			}
+
+			if (ret < 0) {
+				throw Server::ServerException("Polling");
+			}
+
+			// check new connection request
+			if (this->_pollfds[0].revents & POLLIN) {
+				Server::_handleNewConnection();
+			}
+
+			// handle client inputs
+			size_t i = 1;
+			while (i < this->_pollfds.size()) {
+				int fd = this->_pollfds[i].fd;
+				short revents = this->_pollfds[i].revents;
+				Client* client = this->_clients.get(fd);
 				
-			} catch (Server::ConnectionException & e) {
-				std::string logMsg;
-				logMsg += "Connection stopped";
-				if (client && client->getIsRegistered()) {
-					logMsg += " with \"" + client->getNickname() + "!" + client->getUsername() + "@" + client->getHostname() + "\"";
+				try {
+				
+					if (!client) {
+						throw std::runtime_error("Client not found");
+					}
+					
+					// handle client inputs
+					if (revents & POLLIN) {
+						Server::_handleClientInput(*client);
+					}
+
+					// handle registration client timeout
+					if (this->_isRegistrationTimedOut(*client)) {
+						throw Server::RegistrationTimeoutException();
+					}
+
+					++i;
+					
+				} catch (Server::ConnectionException & e) {
+					std::string logMsg;
+					logMsg += "Connection stopped";
+					if (client && client->getIsRegistered()) {
+						logMsg += " with \"" + client->getNickname() + "!" + client->getUsername() + "@" + client->getHostname() + "\"";
+					}
+					logMsg += " (socket " + stringify(fd) + ")";
+					logMsg += ": " + std::string(e.what());
+					Log::info(logMsg);
+					this->_deleteClient(fd);
 				}
-				logMsg += " (socket " + stringify(fd) + ")";
-				logMsg += ": " + std::string(e.what());
-				Log::info(logMsg);
-				this->_deleteClient(fd);
 			}
 		}
 	}
-	std::cout << "End of loop" << std::endl;
-	close(this->_serverSocket);
+	catch (Server::ServerException & e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		Server::stop(false);
+	}
+	Server::stop(true);
+
 }
 
+void	Server::stop(bool isSucces)
+{
+	// To send message to clients
+	for(std::map<int, Client*>::const_iterator it = this->_clients.getClients().begin(); it != this->_clients.getClients().end(); ++it) {
+		it->second->addToBuffer("ERROR :Closing Link: " + it->second->getHostname() + " (Server shutdown):" + (isSucces ? "Closed by host" : "Fatal error"));
+		send(it->second->getFd(), it->second->getBuffer().c_str(), it->second->getBuffer().size(), 0);
+	}
+	
+	// To close and clear the clients list and server properly
+	for(size_t i = 0; i < this->_pollfds.size(); ++i) {
+		close(this->_pollfds[i].fd);
+	}
+	this->_pollfds.clear();
+	this->_clients.clear();
+
+	// TODO: log messages
+	// TODO : Closing channels
+	
+	// to restore default signal handling
+	std::signal(SIGINT, SIG_DFL);
+	std::signal(SIGQUIT, SIG_DFL);
+	std::signal(SIGTERM, SIG_DFL);
+}
 
 // Commands
 // ==========================================================================

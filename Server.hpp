@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 10:25:19 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/02 13:35:48 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,12 @@
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
 
-# include <iostream>
+# include <algorithm>
+# include <csignal>
 # include <cstdlib>
 # include <cstring>
 # include <ctime>
+# include <iostream>
 # include <map>
 # include <stdexcept>
 # include <string>
@@ -98,6 +100,7 @@ class Server
 		static int const &				_checkPort(int const & port);
 		static std::string const &		_checkPassword(std::string const & password);
 		static int						_stringToPort(std::string const & token);
+		static std::string				_motdMsg(Client & client);
 
 	public:
 
@@ -114,6 +117,10 @@ class Server
 
 		// Member functions
 		void		start(void);
+		void		stop(bool isSucces);
+
+		// Non member attributes
+		static volatile int		receivedSignal;
 
 		// Exceptions
 		class InvalidPortException: public std::exception {
@@ -145,14 +152,21 @@ class Server
 				ConnectionException(std::string msg): _msg(msg) {}
 				ConnectionException(ConnectionException const & src): _msg(src._msg) {}
 				virtual ~ConnectionException(void) throw() {}
-				virtual const char* what() const throw() {
-					return (this->_msg.c_str());
-				}
 		};
 		class RegistrationTimeoutException: public ConnectionException {
 			public: RegistrationTimeoutException(): ConnectionException("Registration has timed out") {}
 		};
-		
+		class ServerException: public std::exception {
+			private:
+				std::string	_msg;
+			public:
+				ServerException(std::string msg): _msg(msg) {}
+				ServerException(ServerException const & src): _msg(src._msg) {}
+				virtual ~ServerException(void) throw() {}
+				virtual const char* what() const throw() {
+					return (this->_msg.c_str());
+				}
+		};	
 };
 
 // Output stream

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 10:24:39 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/02 13:37:52 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,10 @@ Client*	ClientList::get(std::string const & nickname) const
 	return (NULL);
 }
 
+void	ClientList::clear(void)
+{
+	this->_clients.clear();
+}
 
 // Output stream
 // ==========================================================================

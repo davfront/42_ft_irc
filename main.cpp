@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 13:00:54 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/20 13:11:45 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/02 13:23:29 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,23 @@
 #include <iostream>
 #include <stdexcept>
 
+void	handleStop(int signal) {
+	Server::receivedSignal = signal;
+}
+
 int main(int argc, char** argv) {
 
 	if (argc != 3) {
 		std::cerr << "Usage: ./ircserv <port> <password>" << std::endl;
 		return (1);
 	}
+
+	struct sigaction sa;
+	sa.sa_handler = &handleStop;
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
+	sigaction(SIGTERM, &sa, NULL);
 
 	try {
 		Server server(argv[1], argv[2]);
