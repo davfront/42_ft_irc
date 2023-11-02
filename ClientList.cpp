@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/25 00:23:02 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/02 10:24:39 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,11 +100,10 @@ void	ClientList::remove(int fd)
 
 Client*	ClientList::get(int const & fd) const
 {
-	std::map<int, Client*>::const_iterator	it, end;
+	std::map<int, Client*>::const_iterator	it;
 	it = this->_clients.find(fd);
-	end = this->_clients.end();
 
-	if (it == end) {
+	if (it == this->_clients.end()) {
 		return (NULL);
 	}
 	return (it->second);
@@ -114,7 +113,7 @@ Client*	ClientList::get(std::string const & nickname) const
 {
 	std::map<int, Client*>::const_iterator it;
 	for (it = this->_clients.begin(); it != this->_clients.end(); ++it) {
-		if (it->second && it->second->getNickname() == nickname) {
+		if (it->second && isEqualIgnoreCase(it->second->getNickname(), nickname)) {
 			return (it->second);
 		}
 	}

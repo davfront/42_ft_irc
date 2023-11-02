@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/25 00:10:23 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/02 10:24:14 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 
 # include <iostream>
 # include <ctime>
-
-# include "text_formatting.hpp"
 
 # include "Log.hpp"
 
