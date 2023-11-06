@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 13:19:27 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/02 16:31:55 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-const int	max_clients = 10;
-volatile int 		Server::receivedSignal = 0;
+volatile int Server::receivedSignal = 0;
 
 // Constructors & destructor
 // ==========================================================================
@@ -135,13 +134,14 @@ void	Server::_removePollfd(int fd)
 
 void	Server::_handleNewConnection(void)
 {
+	int clientSocket = -1;
 	try {
 		
 		// accept connection from an incoming client
 		sockaddr_in clientAddr;
 		memset(&clientAddr, 0, sizeof(clientAddr));
 		socklen_t clientAddrSize = sizeof(clientAddr);
-		int clientSocket = accept(this->_serverSocket, reinterpret_cast<sockaddr*>(&clientAddr), &clientAddrSize);
+		clientSocket = accept(this->_serverSocket, reinterpret_cast<sockaddr*>(&clientAddr), &clientAddrSize);
 		if (clientSocket == -1) {
 			throw std::runtime_error("accept failed");
 		}
@@ -156,6 +156,13 @@ void	Server::_handleNewConnection(void)
 
 		// add client socket to pollfd array
 		Server::_addPollfd(clientSocket);
+
+		// check if max clients is reached
+		if (this->_clients.size() >= MAX_CLIENTS) {
+			this->_reply(clientSocket, "ERROR :Connection limit reached");
+			Server::_removePollfd(clientSocket);
+			throw Server::MaxClientsReachedException();
+		}
 		
 		// get client ip and port
 		getsockname(clientSocket, reinterpret_cast<struct sockaddr*>(&clientAddr), &clientAddrSize);
@@ -170,8 +177,10 @@ void	Server::_handleNewConnection(void)
 		
 		Log::info("Accepted connection from " + clientHost + ":" + stringify(this->_port) + \
 			" on socket " + stringify(clientSocket));
+	} catch(Server::MaxClientsReachedException & e) {
+		Log::error("New connection refused on socket " + stringify(clientSocket) + ": " + std::string(e.what()));
 	} catch(std::exception & e) {
-		Log::error("Accepting connection failed: " + std::string(e.what()));
+		Log::error("New connection failed: " + std::string(e.what()));
 	}
 }
 
@@ -192,7 +201,7 @@ void	Server::_handleClientInput(Client & client)
 		char buffer[1024];
 		int ret = recv(fd, buffer, sizeof(buffer), 0);
 		if (ret <= 0) {
-			throw Server::ConnectionException();
+			throw Server::ConnectionException("Client disconnected");
 		}
 		buffer[ret] = '\0';
 
@@ -372,10 +381,10 @@ void	Server::start(void)
 					if (revents & POLLIN) {
 						Server::_handleClientInput(*client);
 					}
-
+			
 					// handle registration client timeout
 					if (this->_isRegistrationTimedOut(*client)) {
-						throw Server::RegistrationTimeoutException();
+						throw Server::ConnectionException("Registration has timed out");
 					}
 
 					++i;
