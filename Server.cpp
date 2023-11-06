@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 16:31:55 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/06 13:53:36 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -411,11 +411,11 @@ void	Server::start(void)
 
 }
 
-void	Server::stop(bool isSucces)
+void	Server::stop(bool isSuccess)
 {
 	// To send message to clients
 	for(std::map<int, Client*>::const_iterator it = this->_clients.getClients().begin(); it != this->_clients.getClients().end(); ++it) {
-		it->second->addToBuffer("ERROR :Closing Link: " + it->second->getHostname() + " (Server shutdown):" + (isSucces ? "Closed by host" : "Fatal error"));
+		it->second->addToBuffer("ERROR :Closing Link: " + it->second->getHostname() + " (Server shutdown):" + (isSuccess ? "Closed by host" : "Fatal error"));
 		send(it->second->getFd(), it->second->getBuffer().c_str(), it->second->getBuffer().size(), 0);
 	}
 	
