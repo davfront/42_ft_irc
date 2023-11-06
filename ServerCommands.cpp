@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/06 10:03:05 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/06 10:12:21 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	Server::_user(Client & client, std::vector<std::string> const & params)
 
 	// todo: check params validity
 
-	client.setUsername(params[0]);
+	client.setUsername("~" + params[0]);
 	client.setRealname(params[3]);
 }
 
