@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 16:28:37 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/06 10:03:42 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,14 @@ class Server
 		void	_handleNewConnection(void);
 		void	_deleteClient(int fd);
 		void	_handleClientInput(Client & client);
-		
-		void	_initCmds(void);
+
 		void	_executeCommand(Command const & cmd, Client & client);
 		void	_checkRegistration(Client & client);
 		bool	_isRegistrationTimedOut(Client & client) const;
 		void	_reply(int fd, std::string const & msg) const;
+	
+		// Command list
+		void	_initCmds(void);
 	
 		// Commands
 		void	_pass(Client & client, std::vector<std::string> const & params);
