@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 13:00:54 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 13:23:29 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/06 13:53:58 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int main(int argc, char** argv) {
 	}
 
 	struct sigaction sa;
+	memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = &handleStop;
 	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, NULL);
