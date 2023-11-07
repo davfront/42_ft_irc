@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/06 10:03:42 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/06 13:03:36 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
-# define MAX_CLIENTS			(3)
+# define MAX_CLIENTS			(10)
 
 # include <algorithm>
 # include <csignal>
@@ -98,6 +98,7 @@ class Server
 		void	_pass(Client & client, std::vector<std::string> const & params);
 		void	_nick(Client & client, std::vector<std::string> const & params);
 		void	_user(Client & client, std::vector<std::string> const & params);
+		void	_privmsg(Client & client, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);

@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/06 10:12:21 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/07 13:14:32 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	Server::_initCmds(void)
 	this->_cmds["PASS"] = &Server::_pass;
 	this->_cmds["NICK"] = &Server::_nick;
 	this->_cmds["USER"] = &Server::_user;
+	this->_cmds["PRIVMSG"] = &Server::_privmsg;
 }
 
 
@@ -114,5 +115,21 @@ std::string	Server::_motdMsg(Client & client)
 	motd += RPL_ENDOFMOTD(client.getNickname());
 	
 	return (motd);
+}
+
+void	Server::_privmsg(Client & client, std::vector<std::string> const & params)
+{
+	if (params.size() < 1) {
+		throw Server::ErrException(ERR_NORECIPIENT(client.getNickname(), "PRIVMSG"));
+	}
+	if (params.size() < 2) {
+		throw Server::ErrException(ERR_NOTEXTTOSEND(client.getNickname()));
+	}
+
+	Client* targetClient = this->_clients.get(params[0]);
+	if (!targetClient) {
+		throw Server::ErrException(ERR_NOSUCHNICK(client.getNickname(), params[0]));
+	}
+	this->_reply(targetClient->getFd(), RPL_PRIVMSG(client.getNickname(), targetClient->getNickname(), params[1]));
 }
 
