@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/06 13:03:36 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/07 13:18:59 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ class Server
 
 		// Member functions
 		void		start(void);
-		void		stop(bool isSucces);
+		void		stop(bool isSuccess);
 
 		// Non member attributes
 		static volatile int		receivedSignal;
