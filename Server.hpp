@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/07 13:18:59 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/07 13:56:00 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ class Server
 	private:
 
 		// Type definitions
-		typedef void (Server::*cmdFn)(Client & client, std::vector<std::string> const & params);
+		typedef void (Server::*cmdFn)(Client & sender, std::vector<std::string> const & params);
 
 		// Prevent default constructor and copy
 		Server(void) {}
@@ -86,19 +86,17 @@ class Server
 		void	_deleteClient(int fd);
 		void	_handleClientInput(Client & client);
 
+		void	_initCmds(void);
 		void	_executeCommand(Command const & cmd, Client & client);
 		void	_checkRegistration(Client & client);
 		bool	_isRegistrationTimedOut(Client & client) const;
 		void	_reply(int fd, std::string const & msg) const;
-	
-		// Command list
-		void	_initCmds(void);
-	
+		
 		// Commands
-		void	_pass(Client & client, std::vector<std::string> const & params);
-		void	_nick(Client & client, std::vector<std::string> const & params);
-		void	_user(Client & client, std::vector<std::string> const & params);
-		void	_privmsg(Client & client, std::vector<std::string> const & params);
+		void	_pass(Client & sender, std::vector<std::string> const & params);
+		void	_nick(Client & sender, std::vector<std::string> const & params);
+		void	_user(Client & sender, std::vector<std::string> const & params);
+		void	_privmsg(Client & sender, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);
