@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/06 13:53:36 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/07 13:46:41 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ void	Server::_handleNewConnection(void)
 
 		// check if max clients is reached
 		if (this->_clients.size() >= MAX_CLIENTS) {
-			this->_reply(clientSocket, "ERROR :Connection limit reached");
+			this->_reply(clientSocket, RPL_ERROR("Connection limit reached"));
 			Server::_removePollfd(clientSocket);
 			throw Server::MaxClientsReachedException();
 		}
@@ -227,6 +227,7 @@ void	Server::_initCmds(void)
 	this->_cmds["PASS"] = &Server::_pass;
 	this->_cmds["NICK"] = &Server::_nick;
 	this->_cmds["USER"] = &Server::_user;
+	this->_cmds["PRIVMSG"] = &Server::_privmsg;
 }
 
 void	Server::_executeCommand(Command const & cmd, Client & client)
@@ -415,7 +416,7 @@ void	Server::stop(bool isSuccess)
 {
 	// To send message to clients
 	for(std::map<int, Client*>::const_iterator it = this->_clients.getClients().begin(); it != this->_clients.getClients().end(); ++it) {
-		it->second->addToBuffer("ERROR :Closing Link: " + it->second->getHostname() + " (Server shutdown):" + (isSuccess ? "Closed by host" : "Fatal error"));
+		it->second->addToBuffer(RPL_ERROR("Closing Link: " + it->second->getHostname() + " (Server shutdown): " + (isSuccess ? "Closed by host" : "Fatal error")));
 		send(it->second->getFd(), it->second->getBuffer().c_str(), it->second->getBuffer().size(), 0);
 	}
 	
@@ -433,75 +434,6 @@ void	Server::stop(bool isSuccess)
 	std::signal(SIGINT, SIG_DFL);
 	std::signal(SIGQUIT, SIG_DFL);
 	std::signal(SIGTERM, SIG_DFL);
-}
-
-// Commands
-// ==========================================================================
-
-void	Server::_pass(Client & client, std::vector<std::string> const & params)
-{
-	if (params.empty() || params[0].empty()) {
-		throw Server::ErrException(ERR_NEEDMOREPARAMS(client.getNickname(), "PASS"));
-	}
-
-	if (client.getIsRegistered()) {
-		throw Server::ErrException(ERR_ALREADYREGISTERED(client.getNickname()));
-	}
-	
-	client.setIsPasswordValid(params[0] == this->_password);
-	if (!client.getIsPasswordValid()) {
-		throw Server::ErrException(ERR_PASSWDMISMATCH(client.getNickname()));
-	}
-}
-
-void	Server::_nick(Client & client, std::vector<std::string> const & params)
-{
-	if (!client.getIsPasswordValid()) {
-		return ;
-	}
-	
-	if (params.empty() || params[0].empty()) {
-		throw Server::ErrException(ERR_NEEDMOREPARAMS(client.getNickname(), "NICK"));
-	}
-
-	// check nickname validity
-	if (params[0].empty() || params[0].size() > 9) {
-		throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
-	}
-	std::string specialChars = "[]\\`_^{|}";
-	if (!isalpha(params[0][0]) && specialChars.find(params[0][0]) == std::string::npos) {
-		throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
-	}
-	for (size_t i = 1; i < params[0].size(); ++i) {
-		if (!isalnum(params[0][i]) && specialChars.find(params[0][i]) == std::string::npos && params[0][i] != '-') {
-			throw Server::ErrException(ERR_ERRONEUSNICKNAME(client.getNickname(), params[0]));
-		}
-	}
-	
-	// check nickname availability
-	Client* otherClient = this->_clients.get(params[0]);
-	if (otherClient && otherClient != &client) {
-		throw Server::ErrException(ERR_NICKNAMEINUSE(client.getNickname(), params[0]));
-	}
-
-	// update nickname
-	client.setNickname(params[0]);
-}
-
-void	Server::_user(Client & client, std::vector<std::string> const & params)
-{
-	if (!client.getIsPasswordValid()) {
-		return ;
-	}
-	
-	if (params.size() < 4 || params[0].empty() || params[3].empty()) {
-		throw Server::ErrException(ERR_NEEDMOREPARAMS(client.getNickname(), "USER"));
-	}
-
-	// todo: check params validity
-
-	client.setUsername(params[0]);
-	client.setRealname(params[3]);
 }
 
 

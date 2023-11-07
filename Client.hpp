@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 10:24:14 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/06 14:28:41 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,18 +60,19 @@ class Client
 		bool const &			getIsOper(void) const;
 
 		// Setters
-		void	setBuffer(std::string const & str);
-		void	setHostname(std::string const & hostname);
-		void	setNickname(std::string const & nickname);
-		void	setUsername(std::string const & username);
-		void	setRealname(std::string const & realname);
-		void	setIsPasswordValid(bool const & isPasswordValid);
-		void	setIsRegistered(bool const & isRegistered);
-		void	setIsOper(bool const & isOper);
+		void					setBuffer(std::string const & str);
+		void					setHostname(std::string const & hostname);
+		void					setNickname(std::string const & nickname);
+		void					setUsername(std::string const & username);
+		void					setRealname(std::string const & realname);
+		void					setIsPasswordValid(bool const & isPasswordValid);
+		void					setIsRegistered(bool const & isRegistered);
+		void					setIsOper(bool const & isOper);
 
 		// Member functions
-		void	addToBuffer(std::string const & str);
-		bool	extractMessage(std::string & dest);
+		void					addToBuffer(std::string const & str);
+		bool					extractMessage(std::string & dest);
+		std::string				getHostmask(void) const;
 };
 
 // Output stream

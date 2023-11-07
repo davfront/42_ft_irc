@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 13:00:54 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/06 13:53:58 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/07 13:18:46 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <stdexcept>
 
 void	handleStop(int signal) {
+	std::cout << std::endl;
 	Server::receivedSignal = signal;
 }
 

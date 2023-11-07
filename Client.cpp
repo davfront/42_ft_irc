@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/24 20:02:05 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/06 14:29:02 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,11 @@ bool	Client::extractMessage(std::string & dest)
 	this->_buffer = this->_buffer.substr(separatorPos + 2, this->_buffer.size());
 	dest = message;
 	return (true);
+}
+
+std::string	Client::getHostmask(void) const
+{
+	return (this->_nickname + "!" + this->_username + "@" + this->_hostname);
 }
 
 
