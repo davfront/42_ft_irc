@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   motd.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/07 13:49:24 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/07 18:02:29 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+void	Server::_motd(Client & sender, std::vector<std::string> const & params)
+{
+	(void)params;
+	this->_reply(sender.getFd(), this->_motdMsg(sender));
+}
 
 std::string	Server::_motdMsg(Client & client)
 {
