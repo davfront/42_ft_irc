@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/11/07 13:53:30 by dapereir         ###   ########.fr        #
+#    Updated: 2023/11/08 15:16:45 by mmaxime-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,8 @@ SRCS_FILES			=	main.cpp \
 						Server_cmds/motd.cpp \
 						Server_cmds/nick.cpp \
 						Server_cmds/pass.cpp \
+						Server_cmds/ping.cpp \
+						Server_cmds/pong.cpp \
 						Server_cmds/privmsg.cpp \
 						Server_cmds/user.cpp \
 						Client.cpp \
