@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/07 13:33:21 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/08 17:00:58 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 
 // Error
 # define ERR_NOSUCHNICK(nick, target)						RPL(nick, "401", target + " :No such nick/channel")
+# define ERR_NOSUCHSERVER(nick, target)						RPL(nick, "402", target + " :No such server")
 # define ERR_CANNOTSENDTOCHAN(nick, target)					RPL(nick, "404", target + " :Cannot send to channel")
 
 # define ERR_NORECIPIENT(nick, cmd)							RPL(nick, "411", ":No recipient given (" + cmd + ")")

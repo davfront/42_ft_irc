@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/07 18:02:29 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/08 17:03:30 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 void	Server::_motd(Client & sender, std::vector<std::string> const & params)
 {
-	(void)params;
+	if (params[0] != HOST) {
+		throw Server::ErrException(ERR_NOSUCHSERVER(sender.getNickname(), params[0]));
+	}
 	this->_reply(sender.getFd(), this->_motdMsg(sender));
 }
 
