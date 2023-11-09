@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/07 17:41:42 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/09 15:33:30 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,10 @@ class Server
 		void	_pass(Client & sender, std::vector<std::string> const & params);
 		void	_nick(Client & sender, std::vector<std::string> const & params);
 		void	_user(Client & sender, std::vector<std::string> const & params);
-		void	_privmsg(Client & sender, std::vector<std::string> const & params);
 		void	_motd(Client & sender, std::vector<std::string> const & params);
+		void	_ping(Client & sender, std::vector<std::string> const & params);
+		void	_pong(Client & sender, std::vector<std::string> const & params);
+		void	_privmsg(Client & sender, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);

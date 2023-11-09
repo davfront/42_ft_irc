@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/08 17:00:58 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/09 15:32:27 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 
 # define RPL_ERROR(msg)							            (std::string("ERROR :") + msg + "\r\n")
 # define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
+# define RPL_PING(msg)										(std::string(":") + RPL_SERVERNAME + " PONG " + RPL_SERVERNAME + " :" + msg + "\r\n")
 
 
 // Numeric replies
@@ -45,6 +46,8 @@
 # define ERR_NOSUCHNICK(nick, target)						RPL(nick, "401", target + " :No such nick/channel")
 # define ERR_NOSUCHSERVER(nick, target)						RPL(nick, "402", target + " :No such server")
 # define ERR_CANNOTSENDTOCHAN(nick, target)					RPL(nick, "404", target + " :Cannot send to channel")
+
+# define ERR_NOORIGIN(nick)									RPL(nick, "409", ":No origin specified")	
 
 # define ERR_NORECIPIENT(nick, cmd)							RPL(nick, "411", ":No recipient given (" + cmd + ")")
 # define ERR_NOTEXTTOSEND(nick)								RPL(nick, "412", ":No text to send")
