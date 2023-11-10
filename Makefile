@@ -6,7 +6,7 @@
 #    By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/11/08 15:16:45 by mmaxime-         ###   ########.fr        #
+#    Updated: 2023/11/09 15:40:28 by mmaxime-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ SRCS_FILES			=	main.cpp \
 						Server_cmds/ping.cpp \
 						Server_cmds/pong.cpp \
 						Server_cmds/privmsg.cpp \
+						Server_cmds/quit.cpp \
 						Server_cmds/user.cpp \
 						Client.cpp \
 						ClientList.cpp \
