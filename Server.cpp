@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/09 15:34:20 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/10 15:37:03 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,6 +231,7 @@ void	Server::_initCmds(void)
 	this->_cmds["PING"] = &Server::_ping;
 	this->_cmds["PONG"] = &Server::_pong;
 	this->_cmds["PRIVMSG"] = &Server::_privmsg;
+	this->_cmds["QUIT"] = &Server::_quit;
 }
 
 void	Server::_executeCommand(Command const & cmd, Client & client)
