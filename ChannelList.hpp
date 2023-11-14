@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/27 11:47:59 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/14 17:21:07 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ class ChannelList
 			}
 		};
 
+		typedef std::map<std::string, Channel*, cmp>::iterator			iterator;
+		typedef std::map<std::string, Channel*, cmp>::const_iterator	const_iterator;
+
 		// Constructors & destructor
 		ChannelList(void);
 		~ChannelList(void);
@@ -46,11 +49,17 @@ class ChannelList
 		void		setDeleteOnRemove(bool const & deleteOnRemove);
 
 		// Member functions
-		bool		empty(void) const;
-		size_t		size(void) const;
-		void		add(Channel* channel);
-		void		remove(std::string const & name);
-		Channel*	get(std::string const & name) const;
+		bool			empty(void) const;
+		size_t			size(void) const;
+		iterator		begin(void);
+		const_iterator	begin(void) const;
+		iterator		end(void);
+		const_iterator	end(void) const;
+	
+		void			add(Channel* channel);
+		void			remove(std::string const & name);
+		Channel*		get(std::string const & name) const;
+		
 		
 	private:
 
