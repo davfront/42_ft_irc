@@ -6,7 +6,7 @@
 #    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/11/14 16:38:02 by dapereir         ###   ########.fr        #
+#    Updated: 2023/11/15 11:08:28 by dapereir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRCS_FILES			=	main.cpp \
 						Server.cpp \
 						Server_cmds/join.cpp \
 						Server_cmds/list.cpp \
+						Server_cmds/mode.cpp \
 						Server_cmds/motd.cpp \
 						Server_cmds/names.cpp \
 						Server_cmds/nick.cpp \

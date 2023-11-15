@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/14 16:37:19 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/15 15:08:09 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,9 @@ class Server
 		void	_pass(Client & sender, std::vector<std::string> const & params);
 		void	_nick(Client & sender, std::vector<std::string> const & params);
 		void	_user(Client & sender, std::vector<std::string> const & params);
+		void	_modeClient(Client & sender, std::vector<std::string> const & params);
+		void	_modeChannel(Client & sender, std::vector<std::string> const & params);
+		void	_mode(Client & sender, std::vector<std::string> const & params);
 		void	_motd(Client & sender, std::vector<std::string> const & params);
 		void	_ping(Client & sender, std::vector<std::string> const & params);
 		void	_pong(Client & sender, std::vector<std::string> const & params);
