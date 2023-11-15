@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/15 10:20:42 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:51:01 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ class Channel
 			UNKNOWN,
 			INVITEE,
 			MEMBER,
-			OPERATOR
+			OPERATOR,
+			FOUNDER
 		}	t_status;
 		
 	private:
@@ -71,8 +72,9 @@ class Channel
 		t_status	getClientStatus(Client* client) const;
 		bool		isClientLinked(Client* client) const;
 		bool		isInvitee(Client* client) const;
-		bool		isMember(Client* client) const;
-		bool		isOperator(Client* client) const;
+		bool		isJoined(Client* client) const;
+		bool		hasOperatorRights(Client* client) const;
+		bool		isFounder(Client* client) const;
 		size_t		getMembersCount(void) const;
 };
 

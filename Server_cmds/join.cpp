@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/15 10:15:00 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:51:01 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ void	Server::_joinSingleChannel(Client & sender, std::string const & channelName
 		if (!channel) {
 			channel = new Channel(channelName);
 			this->_channels.add(channel);
-			channel->addClientLink(&sender, Channel::OPERATOR);
+			channel->addClientLink(&sender, Channel::FOUNDER);
 		} else {
 			// check if user is already in channel
-			if (channel->isMember(&sender)) {
+			if (channel->isJoined(&sender)) {
 				return ;
 			}
 			// todo: check if channel is invite-only		(mode i)

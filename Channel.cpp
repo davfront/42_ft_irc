@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/15 10:21:04 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:51:01 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,16 +116,22 @@ bool	Channel::isInvitee(Client* client) const
 	return (this->getClientStatus(client) == Channel::INVITEE);
 }
 
-bool	Channel::isMember(Client* client) const
+bool	Channel::isJoined(Client* client) const
 {
 	Channel::t_status status = this->getClientStatus(client);
-	return (status == Channel::MEMBER || status == Channel::OPERATOR);
+	return (status == Channel::MEMBER || status == Channel::OPERATOR || status == Channel::FOUNDER);
 }
 
-bool	Channel::isOperator(Client* client) const
+bool	Channel::hasOperatorRights(Client* client) const
 {
 	Channel::t_status status = this->getClientStatus(client);
-	return (status == Channel::OPERATOR);
+	return (status == Channel::OPERATOR || status == Channel::FOUNDER);
+}
+
+bool	Channel::isFounder(Client* client) const
+{
+	Channel::t_status status = this->getClientStatus(client);
+	return (status == Channel::FOUNDER);
 }
 
 size_t	Channel::getMembersCount(void) const
