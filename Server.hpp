@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/09 15:33:30 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/14 16:37:19 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,11 @@ class Server
 		void	_ping(Client & sender, std::vector<std::string> const & params);
 		void	_pong(Client & sender, std::vector<std::string> const & params);
 		void	_privmsg(Client & sender, std::vector<std::string> const & params);
+		void	_joinSingleChannel(Client & sender, std::string const & channelName, std::string const & key);
+		void	_join(Client & sender, std::vector<std::string> const & params);
+		void	_topic(Client & sender, std::vector<std::string> const & params);
+		void	_names(Client & sender, std::vector<std::string> const & params);
+		void	_list(Client & sender, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);

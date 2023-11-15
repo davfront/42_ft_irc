@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/09 15:32:27 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/14 16:40:24 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # define RPL_ERROR(msg)							            (std::string("ERROR :") + msg + "\r\n")
 # define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
 # define RPL_PING(msg)										(std::string(":") + RPL_SERVERNAME + " PONG " + RPL_SERVERNAME + " :" + msg + "\r\n")
+# define RPL_JOIN(hostmask, channel)						(std::string(":") + hostmask + " JOIN " + channel + "\r\n")
 
 
 // Numeric replies
@@ -38,6 +39,14 @@
 # define RPL_CREATED(nick, date)							RPL(nick, "003", ":This server was created " + date)
 # define RPL_MYINFO(nick, serv, ver, userMod, chanMod)		RPL(nick, "004", serv + " " + ver + " " + userMod + " " + chanMod)
 
+# define RPL_LISTSTART(nick)								RPL(nick, "321", "Channel :Users Name")
+# define RPL_LIST(nick, channel, size, topic)		        RPL(nick, "322", channel + " " + size + " :" + topic)
+# define RPL_LISTEND(nick)									RPL(nick, "323", ":End of /LIST")
+
+# define RPL_TOPIC(nick, channel, topic)					RPL(nick, "332", channel + " :" + topic)
+# define RPL_NAMREPLY(nick, channel, chanNicks)				RPL(nick, "353", "= " + channel + " :" + chanNicks)
+# define RPL_ENDOFNAMES(nick, channel)						RPL(nick, "366", channel + " :End of /NAMES list")
+
 # define RPL_MOTDSTART(nick, serv)							RPL(nick, "375", ":- " + serv + " Message of the day")
 # define RPL_MOTD(nick, motd)								RPL(nick, "372", ":" + motd)
 # define RPL_ENDOFMOTD(nick)								RPL(nick, "376", ":End of /MOTD command")
@@ -45,6 +54,7 @@
 // Error
 # define ERR_NOSUCHNICK(nick, target)						RPL(nick, "401", target + " :No such nick/channel")
 # define ERR_NOSUCHSERVER(nick, target)						RPL(nick, "402", target + " :No such server")
+# define ERR_NOSUCHCHANNEL(nick, target)					RPL(nick, "403", target + " :No such channel")
 # define ERR_CANNOTSENDTOCHAN(nick, target)					RPL(nick, "404", target + " :Cannot send to channel")
 
 # define ERR_NOORIGIN(nick)									RPL(nick, "409", ":No origin specified")	

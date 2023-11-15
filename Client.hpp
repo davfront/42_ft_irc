@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/06 14:28:41 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/10 22:42:35 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,11 @@
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
-# include <iostream>
 # include <ctime>
+# include <iostream>
+# include <string>
+
+# include "utils.hpp"
 
 # include "Log.hpp"
 

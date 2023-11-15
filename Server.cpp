@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/09 15:34:20 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:03:19 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,13 @@ void	Server::_deleteClient(int fd)
 {
 	close(fd);
 	Server::_removePollfd(fd);
-	this->_clients.remove(fd);
+	Client* client = this->_clients.get(fd);
+	if (client) {
+		for (ChannelList::iterator it = this->_channels.begin(); it != this->_channels.end(); ++it) {
+			it->second->removeClientLink(client);
+		}
+		this->_clients.remove(fd);
+	}
 }
 
 void	Server::_handleClientInput(Client & client)
@@ -231,6 +237,10 @@ void	Server::_initCmds(void)
 	this->_cmds["PING"] = &Server::_ping;
 	this->_cmds["PONG"] = &Server::_pong;
 	this->_cmds["PRIVMSG"] = &Server::_privmsg;
+	this->_cmds["JOIN"] = &Server::_join;
+	this->_cmds["TOPIC"] = &Server::_topic;
+	this->_cmds["NAMES"] = &Server::_names;
+	this->_cmds["LIST"] = &Server::_list;
 }
 
 void	Server::_executeCommand(Command const & cmd, Client & client)

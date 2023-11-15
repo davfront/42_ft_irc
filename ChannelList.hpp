@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/14 17:21:07 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/15 10:00:32 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class ChannelList
 		// Custom comparator for std::map
 		struct 	cmp {
 			bool operator()(std::string const & s1, std::string const & s2) const {
-				return (isEqualIgnoreCase(s1, s2));
+				return toLowerCase(s1) < toLowerCase(s2);
 			}
 		};
 

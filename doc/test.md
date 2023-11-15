@@ -15,6 +15,7 @@ sudo journalctl -u ngircd -f
 
 ```sh
 nc -C localhost 1234
+nc -C localhost 6667
 ```
 
 ## Register
@@ -41,4 +42,28 @@ USER billy 0 * :Billy the kid
 
 ```sh
 PRIVMSG jo :Hi jo, this is bill
+```
+
+## JOIN
+
+```sh
+# Command to join channel #foobar
+JOIN #foo,#bar
+
+# Command to join channel &foo using key "fubar"
+JOIN &foo fubar
+
+# Command to join channel #foo using key "fubar"
+# and &bar using no key
+JOIN #foo,&bar fubar
+
+# Command to join channel #foo using  key "fubar",
+# and channel #bar using key "foobar"
+JOIN #foo,#bar fubar,foobar     
+
+# Command to join channels #foo and #bar
+JOIN #foo,#bar
+
+# Leave all currently joined channels
+JOIN 0
 ```

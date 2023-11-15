@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/14 17:23:30 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/15 09:21:04 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ Client*	ClientList::get(std::string const & nickname) const
 {
 	ClientList::const_iterator it;
 	for (it = this->begin(); it != this->end(); ++it) {
-		if (it->second && isEqualIgnoreCase(it->second->getNickname(), nickname)) {
+		if (it->second && toLowerCase(it->second->getNickname()) == toLowerCase(nickname)) {
 			return (it->second);
 		}
 	}
