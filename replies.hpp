@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/14 16:40:24 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/16 14:47:56 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,9 @@
 // ==========================================================================
 
 # define RPL_ERROR(msg)							            (std::string("ERROR :") + msg + "\r\n")
-# define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
 # define RPL_PING(msg)										(std::string(":") + RPL_SERVERNAME + " PONG " + RPL_SERVERNAME + " :" + msg + "\r\n")
 # define RPL_JOIN(hostmask, channel)						(std::string(":") + hostmask + " JOIN " + channel + "\r\n")
-
+# define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
 
 // Numeric replies
 // ==========================================================================

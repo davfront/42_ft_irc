@@ -6,7 +6,7 @@
 #    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/11/15 11:08:28 by dapereir         ###   ########.fr        #
+#    Updated: 2023/11/16 14:47:49 by dapereir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,6 +37,7 @@ SRCS_FILES			=	main.cpp \
 						Server_cmds/pong.cpp \
 						Server_cmds/privmsg.cpp \
 						Server_cmds/topic.cpp \
+						Server_cmds/quit.cpp \
 						Server_cmds/user.cpp \
 						Client.cpp \
 						ClientList.cpp \

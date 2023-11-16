@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/15 15:08:09 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/16 14:48:08 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ class Server
 		void	_topic(Client & sender, std::vector<std::string> const & params);
 		void	_names(Client & sender, std::vector<std::string> const & params);
 		void	_list(Client & sender, std::vector<std::string> const & params);
+		void	_quit(Client & sender, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);
