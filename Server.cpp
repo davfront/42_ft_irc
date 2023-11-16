@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/10 15:37:03 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/16 17:33:05 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,7 @@ void	Server::_initCmds(void)
 	this->_cmds["NICK"] = &Server::_nick;
 	this->_cmds["USER"] = &Server::_user;
 	this->_cmds["MOTD"] = &Server::_motd;
+	this->_cmds["OPER"] = &Server::_oper;
 	this->_cmds["PING"] = &Server::_ping;
 	this->_cmds["PONG"] = &Server::_pong;
 	this->_cmds["PRIVMSG"] = &Server::_privmsg;
