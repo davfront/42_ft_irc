@@ -6,7 +6,7 @@
 #    By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/11/09 15:40:28 by mmaxime-         ###   ########.fr        #
+#    Updated: 2023/11/16 17:34:37 by mmaxime-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRCS_FILES			=	main.cpp \
 						Server.cpp \
 						Server_cmds/motd.cpp \
 						Server_cmds/nick.cpp \
+						Server_cmds/oper.cpp \
 						Server_cmds/pass.cpp \
 						Server_cmds/ping.cpp \
 						Server_cmds/pong.cpp \

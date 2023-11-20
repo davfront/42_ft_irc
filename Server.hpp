@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/09 15:41:38 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/16 17:30:10 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # define CHANNELMODES			("iklot")
 
 # define RPL_SERVERNAME			HOST
+# define OPER_NAME				("TheOper")
+# define OPER_PASSWORD			("ThePwd")
 
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
@@ -97,6 +99,7 @@ class Server
 		void	_nick(Client & sender, std::vector<std::string> const & params);
 		void	_user(Client & sender, std::vector<std::string> const & params);
 		void	_motd(Client & sender, std::vector<std::string> const & params);
+		void	_oper(Client & sender, std::vector<std::string> const & params);
 		void	_ping(Client & sender, std::vector<std::string> const & params);
 		void	_pong(Client & sender, std::vector<std::string> const & params);
 		void	_privmsg(Client & sender, std::vector<std::string> const & params);
