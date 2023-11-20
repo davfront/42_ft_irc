@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/15 15:08:09 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/16 17:30:10 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # define CHANNELMODES			("iklot")
 
 # define RPL_SERVERNAME			HOST
+# define OPER_NAME				("TheOper")
+# define OPER_PASSWORD			("ThePwd")
 
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
@@ -100,6 +102,7 @@ class Server
 		void	_modeChannel(Client & sender, std::vector<std::string> const & params);
 		void	_mode(Client & sender, std::vector<std::string> const & params);
 		void	_motd(Client & sender, std::vector<std::string> const & params);
+		void	_oper(Client & sender, std::vector<std::string> const & params);
 		void	_ping(Client & sender, std::vector<std::string> const & params);
 		void	_pong(Client & sender, std::vector<std::string> const & params);
 		void	_privmsg(Client & sender, std::vector<std::string> const & params);
@@ -108,6 +111,7 @@ class Server
 		void	_topic(Client & sender, std::vector<std::string> const & params);
 		void	_names(Client & sender, std::vector<std::string> const & params);
 		void	_list(Client & sender, std::vector<std::string> const & params);
+		void	_quit(Client & sender, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);
