@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/15 10:51:01 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/20 12:26:15 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ size_t	Channel::getMembersCount(void) const
 	size_t count = 0;
 	std::map<Client*, Channel::t_status>::const_iterator it;
 	for (it = this->_clientLinks.begin(); it != this->_clientLinks.end(); ++it) {
-		if (it->second == Channel::MEMBER || it->second == Channel::OPERATOR) {
+		if (it->second == Channel::MEMBER || it->second == Channel::OPERATOR || it->second == Channel::FOUNDER) {
 			count++;
 		}
 	}
