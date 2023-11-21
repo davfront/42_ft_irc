@@ -44,6 +44,8 @@
 # define RPL_LIST(nick, channel, size, topic)		        RPL(nick, "322", channel + " " + size + " :" + topic)
 # define RPL_LISTEND(nick)									RPL(nick, "323", ":End of /LIST")
 
+# define RPL_CREATIONTIME(nick, channel, creationtime)      RPL(nick, "329", channel + " " + creationtime)
+
 # define RPL_TOPIC(nick, channel, topic)					RPL(nick, "332", channel + " :" + topic)
 # define RPL_CHANNELMODEIS(nick, channel, modes)			RPL(nick, "324", channel + " " + modes)
 # define RPL_NAMREPLY(nick, channel, chanNicks)				RPL(nick, "353", "= " + channel + " :" + chanNicks)

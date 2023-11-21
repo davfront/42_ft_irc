@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 12:58:25 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 14:59:53 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 Channel::Channel(std::string name):
 	_name(name),
+	_creationTime(time(NULL)),
 	_limit(-1)
 	
 {
@@ -38,6 +39,11 @@ Channel::~Channel(void)
 std::string const &	Channel::getName(void) const
 {
 	return (this->_name);
+}
+
+time_t const &	Channel::getCreationTime(void) const
+{
+	return (this->_creationTime);
 }
 
 std::string const &	Channel::getTopic(void) const

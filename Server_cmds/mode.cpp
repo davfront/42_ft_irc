@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 18:16:19 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/21 14:43:28 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 15:05:16 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,8 @@ void	Server::_modeChannel(Client & sender, std::vector<std::string> const & para
 	// if no mode is given
 	if (params.size() == 1) {
 		this->_reply(sender.getFd(), RPL_CHANNELMODEIS(sender.getNickname(), channel->getName(), channel->getModes()));
-		// todo: send RPL_CREATIONTIME
+		// todo: RPL_CHANNELMODEIS add values if the user has rights
+		this->_reply(sender.getFd(), RPL_CREATIONTIME(sender.getNickname(), channel->getName(), stringify(channel->getCreationTime())));
 		return ;
 	}
 
@@ -197,7 +198,6 @@ void	Server::_modeChannel(Client & sender, std::vector<std::string> const & para
 	}
 	
 	// Send reply to all channel members
-	// todo: create a method to reply to all channel members
 	std::map<Client*, Channel::t_status>::const_iterator it;
 	for (it = channel->getClientLinks().begin(); it != channel->getClientLinks().end(); ++it) {
 		if (it->first) {

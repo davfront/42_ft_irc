@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 12:57:58 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 15:04:42 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #ifndef CHANNEL_HPP
 # define CHANNEL_HPP
 
+# include <ctime>
 # include <iostream>
 # include <map>
 # include <set>
@@ -41,12 +42,13 @@ class Channel
 	private:
 
 		// Prevent default constructor and copy
-		Channel(void) {}
-		Channel(Channel const &) {}
+		Channel(void): _creationTime(time(NULL)) {}
+		Channel(Channel const &): _creationTime(time(NULL)) {}
 		Channel &	operator=(Channel const &) { return (*this); }
 
 		// Member attributes
 		std::string const				_name;
+		time_t const					_creationTime;
 		std::set<char>					_modes;
 		std::string						_topic;
 		std::string						_key;
@@ -62,6 +64,7 @@ class Channel
 
 		// Getters
 		std::string const &						getName(void) const;
+		time_t const &							getCreationTime(void) const;
 		std::string const &						getTopic(void) const;
 		std::string const &						getKey(void) const;
 		int const &								getLimit(void) const;
