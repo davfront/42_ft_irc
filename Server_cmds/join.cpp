@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/21 13:51:05 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 15:11:06 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	Server::_joinSingleChannel(Client & sender, std::string const & channelName
 		}
 
 		// reply
-		this->_reply(sender.getFd(), RPL_JOIN(sender.getNickname(), channel->getName()));
+		this->_reply(sender.getFd(), RPL_JOIN(sender.getHostmask(), channel->getName()));
 		std::vector<std::string> params;
 		params.push_back(channel->getName());
 		this->_topic(sender, params);
