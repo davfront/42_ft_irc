@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 18:16:19 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/21 15:05:16 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 16:39:38 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,8 +149,19 @@ void	Server::_modeChannel(Client & sender, std::vector<std::string> const & para
 	
 	// if no mode is given
 	if (params.size() == 1) {
-		this->_reply(sender.getFd(), RPL_CHANNELMODEIS(sender.getNickname(), channel->getName(), channel->getModes()));
-		// todo: RPL_CHANNELMODEIS add values if the user has rights
+		std::string const & modes = channel->getModes();
+		std::string modeMsg = modes;
+		if (channel->isJoined(&sender)) {
+			for (size_t i = 0; i < modes.size(); ++i) {
+				if (modes[i] == 'k') {
+					modeMsg += " " + channel->getKey();
+				}
+				if (modes[i] == 'l') {
+					modeMsg += " " + stringify(channel->getLimit());
+				}
+			}
+		}
+		this->_reply(sender.getFd(), RPL_CHANNELMODEIS(sender.getNickname(), channel->getName(), modeMsg));
 		this->_reply(sender.getFd(), RPL_CREATIONTIME(sender.getNickname(), channel->getName(), stringify(channel->getCreationTime())));
 		return ;
 	}
