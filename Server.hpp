@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/20 12:19:33 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 12:54:03 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,10 @@ class Server
 		void	_user(Client & sender, std::vector<std::string> const & params);
 		void	_modeClient(Client & sender, std::vector<std::string> const & params);
 		void	_modeChannel(Client & sender, std::vector<std::string> const & params);
+		void	_updateChannelMode(Client & sender, Channel & channel, char modeChar, bool enable, \
+					std::vector<std::string>::const_iterator & nextParamIt, \
+					std::vector<std::string>::const_iterator const & end, \
+					std::vector<std::string> & replyTokens);
 		void	_mode(Client & sender, std::vector<std::string> const & params);
 		void	_motd(Client & sender, std::vector<std::string> const & params);
 		void	_oper(Client & sender, std::vector<std::string> const & params);
@@ -150,6 +154,11 @@ class Server
 				return "Invalid password: Provide at least 8 characters";
 			}
 		};
+		class SyntaxErrorException: public std::exception {
+			public: virtual const char* what() const throw() {
+				return "Syntax error";
+			}
+		};
 		class MaxClientsReachedException: public std::runtime_error {
 			public: MaxClientsReachedException(void): std::runtime_error("Limit of clients (" + stringify(MAX_CLIENTS) + ") reached") {}
 		};
@@ -161,7 +170,7 @@ class Server
 		};
 		class ServerException: public std::runtime_error {
 			public: ServerException(std::string msg): std::runtime_error(msg) {}
-		};	
+		};
 };
 
 // Output stream

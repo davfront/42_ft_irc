@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/20 12:19:14 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 13:08:02 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define RPL_PING(msg)										(std::string(":") + RPL_SERVERNAME + " PONG " + RPL_SERVERNAME + " :" + msg + "\r\n")
 # define RPL_JOIN(hostmask, channel)						(std::string(":") + hostmask + " JOIN " + channel + "\r\n")
 # define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
+# define RPL_MODE(hostmask, target, msg)					(std::string(":") + hostmask + " MODE " + target + " " + msg + "\r\n")
 # define RPL_OPER(nick)										(std::string(":") + RPL_SERVERNAME + " MODE " + nick + " :+o" + "\r\n")
 
 // Numeric replies
@@ -44,6 +45,7 @@
 # define RPL_LISTEND(nick)									RPL(nick, "323", ":End of /LIST")
 
 # define RPL_TOPIC(nick, channel, topic)					RPL(nick, "332", channel + " :" + topic)
+# define RPL_CHANNELMODEIS(nick, channel, modes)			RPL(nick, "324", channel + " " + modes)
 # define RPL_NAMREPLY(nick, channel, chanNicks)				RPL(nick, "353", "= " + channel + " :" + chanNicks)
 # define RPL_ENDOFNAMES(nick, channel)						RPL(nick, "366", channel + " :End of /NAMES list")
 # define RPL_UMODEIS(nick, mode)							RPL(nick, "221", mode)
@@ -71,11 +73,17 @@
 # define ERR_ERRONEUSNICKNAME(nick, newNick)				RPL(nick, "432", newNick + " :Erroneus nickname")
 # define ERR_NICKNAMEINUSE(nick, newNick)					RPL(nick, "433", newNick + " :Nickname is already in use")
 
+# define ERR_USERNOTINCHANNEL(nick, target, channel)		RPL(nick, "441", target + " " + channel + " :They aren't on that channel")
+
 # define ERR_NOTREGISTERED(nick)							RPL(nick, "451", ":You have not registered")
 
 # define ERR_NEEDMOREPARAMS(nick, cmd)						RPL(nick, "461", cmd + " :Not enough parameters")
 # define ERR_ALREADYREGISTERED(nick)						RPL(nick, "462", ":You may not reregister")
 # define ERR_PASSWDMISMATCH(nick)							RPL(nick, "464", ":Password incorrect")
+
+# define ERR_UNKNOWNMODE(nick, modeChar, channel)           RPL(nick, "472", modeChar + " :is unknown mode char to me for " + channel)
+
+# define ERR_CHANOPRIVSNEEDED(nick, channel)				RPL(nick, "482", channel + " :You're not channel operator")
 
 # define ERR_NOOPERHOST(nick)								RPL(nick, "491", ":No O-lines for your host")
 
