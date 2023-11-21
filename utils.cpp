@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 23:30:41 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/15 09:18:39 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 14:45:23 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,21 @@ std::string	toLowerCase(std::string const & s) {
 		result[i] = tolower(s[i]);
 	}
 	return (result);
+}
+
+bool	isValidInt(std::string const & s) {
+	if (s.empty()) {
+		return (false);
+	}
+	bool hasSign = (s[0] == '+' || s[0] == '-');
+	if (s.size() == hasSign) {
+		return (false);
+	}
+	for (size_t i = hasSign; i < s.size(); ++i) {
+		if (!isdigit(s[i])) {
+			return (false);
+		}
+	}
+	double v = atof(s.c_str());
+	return (v >= INT_MIN && v <= INT_MAX);
 }

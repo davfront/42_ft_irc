@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 12:54:03 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 14:32:58 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
-# define MAX_CLIENTS			(10)
+# define MAX_CLIENTS			(100)
 
 # include <algorithm>
 # include <csignal>

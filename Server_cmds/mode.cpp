@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 18:16:19 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/21 14:07:57 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 14:43:28 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,13 +84,18 @@ void	Server::_updateChannelMode( \
 			if (nextParamIt == end) {
 				throw Server::SyntaxErrorException();
 			}
-			// todo: check if nextParamIt is a valid int
+			if (!isValidInt(*nextParamIt)) {
+				return ;
+			}
 			int limit = atoi(nextParamIt->c_str());
+			nextParamIt++;
+			if (limit < 2 || limit > MAX_CLIENTS) {
+				return ;
+			}
 			channel.setMode('l');
 			channel.setLimit(limit);
 			replyTokens[0] += "+l";
-			replyTokens.push_back(*nextParamIt);
-			nextParamIt++;
+			replyTokens.push_back(stringify(limit));
 			return ;
 		}
 		if (!enable && channel.hasMode('l')) {
