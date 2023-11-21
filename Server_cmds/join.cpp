@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/21 15:11:06 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 13:51:14 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,33 @@ void	Server::_joinSingleChannel(Client & sender, std::string const & channelName
 			if (channel->isJoined(&sender)) {
 				return ;
 			}
-			// todo: check if channel is invite-only		(mode i)
-			// todo: check if channel's limit is reached	(mode l)
-			// todo: check if channel is key-locked			(mode k)
-			
+			// check if channel is invite-only (mode i)
+			if (channel->hasMode('i') && !channel->isInvitee(&sender)) {
+				throw Server::ErrException(ERR_INVITEONLYCHAN(sender.getNickname(), channel->getName()));
+			}
+			// check if channel is key-locked (mode k)
+			Log::debug("Channel key: " + channel->getKey() + ", key: " + key + ", match: " + std::to_string(channel->getKey() == key));
+			if (channel->hasMode('k') && channel->getKey() != key) {
+				throw Server::ErrException(ERR_BADCHANNELKEY(sender.getNickname(), channel->getName()));
+			}
+			// check if channel's limit is reached (mode l)
+			if (channel->hasMode('l') && channel->getMembersCount() >= static_cast<size_t>(channel->getLimit())) {
+				throw Server::ErrException(ERR_CHANNELISFULL(sender.getNickname(), channel->getName()));
+			}
 			// add user to channel
 			channel->addClientLink(&sender, Channel::MEMBER);
 		}
 
-		// reply
-		this->_reply(sender.getFd(), RPL_JOIN(sender.getHostmask(), channel->getName()));
+		// reply to all channel members
+		std::map<Client*, Channel::t_status>::const_iterator it;
+		for (it = channel->getClientLinks().begin(); it != channel->getClientLinks().end(); ++it) {
+			if (it->first && (it->second == Channel::MEMBER || it->second == Channel::OPERATOR|| it->second == Channel::FOUNDER)) {
+				Client* client = it->first;
+				this->_reply(client->getFd(), RPL_JOIN(sender.getHostmask(), channel->getName()));
+			}
+		}
+
+		// reply to user
 		std::vector<std::string> params;
 		params.push_back(channel->getName());
 		this->_topic(sender, params);
@@ -68,15 +85,16 @@ void	Server::_join(Client & sender, std::vector<std::string> const & params)
 		return ;
 	}
 
-	// parse channel names and keys
+	// parse channel names
 	std::vector<std::string> channelNames = split(params[0], ",");
 	if (channelNames.empty()) {
 		throw Server::ErrException(ERR_NEEDMOREPARAMS(sender.getNickname(), "JOIN"));
 	}
-	// remove duplicates
+
+	// parse keys
 	std::vector<std::string> keys;
-	if (params.size() >= 1) {
-		channelNames = split(params[0], ",");
+	if (params.size() >= 2) {
+		keys = split(params[1], ",");
 	}
 	
 	// for each channel

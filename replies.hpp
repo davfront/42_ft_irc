@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 15:12:45 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 22:52:05 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,10 @@
 # define ERR_ALREADYREGISTERED(nick)						RPL(nick, "462", ":You may not reregister")
 # define ERR_PASSWDMISMATCH(nick)							RPL(nick, "464", ":Password incorrect")
 
+# define ERR_CHANNELISFULL(nick, channel)					RPL(nick, "471", channel + " :Cannot join channel (+l)")
 # define ERR_UNKNOWNMODE(nick, modeChar, channel)           RPL(nick, "472", modeChar + " :is unknown mode char to me for " + channel)
+# define ERR_INVITEONLYCHAN(nick, channel)					RPL(nick, "473", channel + " :Cannot join channel (+i)")
+# define ERR_BADCHANNELKEY(nick, channel)					RPL(nick, "475", channel + " :Cannot join channel (+k)")
 
 # define ERR_CHANOPRIVSNEEDED(nick, channel)				RPL(nick, "482", channel + " :You're not channel operator")
 

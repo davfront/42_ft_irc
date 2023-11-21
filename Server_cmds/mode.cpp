@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 18:16:19 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/21 16:39:38 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 13:51:10 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,12 +211,9 @@ void	Server::_modeChannel(Client & sender, std::vector<std::string> const & para
 	// Send reply to all channel members
 	std::map<Client*, Channel::t_status>::const_iterator it;
 	for (it = channel->getClientLinks().begin(); it != channel->getClientLinks().end(); ++it) {
-		if (it->first) {
+		if (it->first && (it->second == Channel::MEMBER || it->second == Channel::OPERATOR|| it->second == Channel::FOUNDER)) {
 			Client* client = it->first;
-			Channel::t_status clientStatus = it->second;
-			if (clientStatus >= Channel::MEMBER) {
-				this->_reply(client->getFd(), RPL_MODE(client->getHostmask(), channel->getName(), replyMsg));
-			}
+			this->_reply(client->getFd(), RPL_MODE(sender.getHostmask(), channel->getName(), replyMsg));
 		}
 	}
 }
