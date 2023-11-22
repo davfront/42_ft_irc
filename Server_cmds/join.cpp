@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/22 13:51:14 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:32:12 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	Server::_joinSingleChannel(Client & sender, std::string const & channelName
 				throw Server::ErrException(ERR_INVITEONLYCHAN(sender.getNickname(), channel->getName()));
 			}
 			// check if channel is key-locked (mode k)
-			Log::debug("Channel key: " + channel->getKey() + ", key: " + key + ", match: " + std::to_string(channel->getKey() == key));
 			if (channel->hasMode('k') && channel->getKey() != key) {
 				throw Server::ErrException(ERR_BADCHANNELKEY(sender.getNickname(), channel->getName()));
 			}
