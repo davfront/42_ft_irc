@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 23:58:01 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:52:36 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,16 @@ std::string	Channel::getModes(void) const
 		modes += *it;
 	}
 	return (modes);
+}
+
+void	Channel::reply(std::string const & msg) const
+{
+	std::map<Client*, Channel::t_status>::const_iterator it;
+	for (it = this->_clientLinks.begin(); it != this->_clientLinks.end(); ++it) {
+		if (it->first && (it->second == Channel::MEMBER || it->second == Channel::OPERATOR|| it->second == Channel::FOUNDER)) {
+			it->first->reply(msg);
+		}
+	}
 }
 
 

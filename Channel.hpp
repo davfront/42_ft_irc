@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 23:56:07 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:44:44 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <map>
 # include <set>
 # include <string>
+# include <sys/socket.h>
 
 # include "utils.hpp"
 
@@ -97,6 +98,8 @@ class Channel
 		void		setMode(char modeKey);
 		void		unsetMode(char modeKey);
 		std::string	getModes(void) const;
+
+		void		reply(std::string const & msg) const;
 };
 
 // Output stream
