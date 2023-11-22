@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 15:52:36 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 23:23:12 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	Channel::setLimit(int const & limit)
 void	Channel::addClientLink(Client* client, Channel::t_status status)
 {
 	Channel::t_status currentStatus = this->getClientStatus(client);
-	if (currentStatus != Channel::UNKNOWN) {
+	if (currentStatus == Channel::UNKNOWN) {
 		this->_clientLinks.insert(std::make_pair(client, status));
 	} else {
 		this->_clientLinks[client] = status;

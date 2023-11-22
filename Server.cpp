@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 17:14:26 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 23:13:09 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,6 +241,7 @@ void	Server::_initCmds(void)
 	this->_cmds["PONG"] = &Server::_pong;
 	this->_cmds["PRIVMSG"] = &Server::_privmsg;
 	this->_cmds["JOIN"] = &Server::_join;
+	this->_cmds["INVITE"] = &Server::_invite;
 	this->_cmds["TOPIC"] = &Server::_topic;
 	this->_cmds["NAMES"] = &Server::_names;
 	this->_cmds["LIST"] = &Server::_list;
@@ -271,7 +272,7 @@ void	Server::_executeCommand(Command const & cmd, Client & client)
 		}
 
 	} catch(Server::ErrException & e) {
-		Server::_reply(client.getFd(), e.what());
+		client.reply(e.what());
 	} catch(std::exception &) {
 		throw;
 	}
@@ -292,7 +293,7 @@ void	Server::_checkRegistration(Client & client)
 		messages += RPL_CREATED(client.getNickname(), formatTime(this->_startTime));
 		messages += RPL_MYINFO(client.getNickname(), HOST, VERSION, USERMODES, CHANNELMODES);
 		messages += Server::_motdMsg(client);
-		Server::_reply(client.getFd(), messages);
+		client.reply(messages);
 	}
 }
 
