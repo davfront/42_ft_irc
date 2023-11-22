@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/22 15:48:43 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 17:01:07 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ void	Server::_joinSingleChannel(Client & sender, std::string const & channelName
 
 	} catch(Server::ErrException & e) {
 		Server::_reply(sender.getFd(), e.what());
-	} catch(std::exception & e) {
-		throw e;
+	} catch(std::exception &) {
+		throw;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/20 12:19:38 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 17:14:26 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,8 +221,9 @@ void	Server::_handleClientInput(Client & client)
 			this->_executeCommand(Command(msg), client);
 		}
 
-	} catch(Server::ConnectionException & e) {
-		throw (e);
+	} catch(Command::EmptyMessageException &) {
+	} catch(Server::ConnectionException &) {
+		throw;
 	} catch(std::exception & e) {
 		Log::error("Handling client input (socket " + stringify(fd) + ") failed: " + e.what());
 	}
@@ -271,8 +272,8 @@ void	Server::_executeCommand(Command const & cmd, Client & client)
 
 	} catch(Server::ErrException & e) {
 		Server::_reply(client.getFd(), e.what());
-	} catch(std::exception & e) {
-		throw e;
+	} catch(std::exception &) {
+		throw;
 	}
 }
 
