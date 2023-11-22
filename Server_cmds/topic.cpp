@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 18:16:19 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/22 13:51:10 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:36:53 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ void	Server::_topic(Client & sender, std::vector<std::string> const & params)
 	// if no topic is given, return the current topic
 	if (params.size() < 2) {
 		if (channel->getTopic().empty()) {
-			this->_reply(sender.getFd(), RPL_NOTOPIC(sender.getNickname(), channel->getName()));
+			sender.reply(RPL_NOTOPIC(sender.getNickname(), channel->getName()));
 		} else {
-			this->_reply(sender.getFd(), RPL_TOPIC(sender.getNickname(), channel->getName(), channel->getTopic()));
-			this->_reply(sender.getFd(), RPL_TOPICWHOTIME(sender.getNickname(), channel->getName(), channel->getTopicSetter(), stringify(channel->getTopicTime())));
+			sender.reply(RPL_TOPIC(sender.getNickname(), channel->getName(), channel->getTopic()));
+			sender.reply(RPL_TOPICWHOTIME(sender.getNickname(), channel->getName(), channel->getTopicSetter(), stringify(channel->getTopicTime())));
 		}
 		return ;
 	}
@@ -58,10 +58,10 @@ void	Server::_topic(Client & sender, std::vector<std::string> const & params)
 		if (it->first && (it->second == Channel::MEMBER || it->second == Channel::OPERATOR|| it->second == Channel::FOUNDER)) {
 			Client* client = it->first;
 			if (channel->getTopic().empty()) {
-				this->_reply(client->getFd(), RPL_NOTOPIC(sender.getNickname(), channel->getName()));
+				client->reply(RPL_NOTOPIC(sender.getNickname(), channel->getName()));
 			} else {
-				this->_reply(client->getFd(), RPL_TOPIC(sender.getNickname(), channel->getName(), channel->getTopic()));
-				this->_reply(client->getFd(), RPL_TOPICWHOTIME(sender.getNickname(), channel->getName(), channel->getTopicSetter(), stringify(channel->getTopicTime())));
+				client->reply(RPL_TOPIC(sender.getNickname(), channel->getName(), channel->getTopic()));
+				client->reply(RPL_TOPICWHOTIME(sender.getNickname(), channel->getName(), channel->getTopicSetter(), stringify(channel->getTopicTime())));
 			}
 		}
 	}

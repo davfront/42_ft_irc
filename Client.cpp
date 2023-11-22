@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/06 14:29:02 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:37:57 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,11 @@ std::string	Client::getHostmask(void) const
 	return (this->_nickname + "!" + this->_username + "@" + this->_hostname);
 }
 
+void	Client::reply(std::string const & msg) const
+{
+	Log::output(this->_fd, msg);
+	send(this->_fd, msg.c_str(), msg.size(), 0);
+}
 
 // Output stream
 // ==========================================================================

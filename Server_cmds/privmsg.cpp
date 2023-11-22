@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/07 13:54:43 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:29:46 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,5 @@ void	Server::_privmsg(Client & sender, std::vector<std::string> const & params)
 	if (!targetClient) {
 		throw Server::ErrException(ERR_NOSUCHNICK(sender.getNickname(), params[0]));
 	}
-	this->_reply(targetClient->getFd(), RPL_PRIVMSG(sender.getNickname(), targetClient->getNickname(), params[1]));
+	targetClient->reply(RPL_PRIVMSG(sender.getNickname(), targetClient->getNickname(), params[1]));
 }
