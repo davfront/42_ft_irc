@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 15:04:42 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 23:56:07 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ class Channel
 		time_t const					_creationTime;
 		std::set<char>					_modes;
 		std::string						_topic;
+		time_t							_topicTime;
+		std::string						_topicSetter;
 		std::string						_key;
 		int								_limit;
 		std::map<Client*, t_status>		_clientLinks;
@@ -66,12 +68,16 @@ class Channel
 		std::string const &						getName(void) const;
 		time_t const &							getCreationTime(void) const;
 		std::string const &						getTopic(void) const;
+		time_t const &							getTopicTime(void) const;
+		std::string const &						getTopicSetter(void) const;
 		std::string const &						getKey(void) const;
 		int const &								getLimit(void) const;
 		std::map<Client*, t_status> const &		getClientLinks(void) const;
 
 		// Setters
 		void		setTopic(std::string const & topic);
+		void		setTopicTime(time_t const & topicTime);
+		void		setTopicSetter(std::string const & topicSetter);
 		void		setKey(std::string const & key);
 		void		setLimit(int const & limit);
 

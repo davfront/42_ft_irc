@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 14:59:53 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 23:58:01 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 Channel::Channel(std::string name):
 	_name(name),
 	_creationTime(time(NULL)),
+	_topicTime(time(NULL)),
 	_limit(-1)
 	
 {
@@ -51,6 +52,16 @@ std::string const &	Channel::getTopic(void) const
 	return (this->_topic);
 }
 
+time_t const &	Channel::getTopicTime(void) const
+{
+	return (this->_topicTime);
+}
+
+std::string const &	Channel::getTopicSetter(void) const
+{
+	return (this->_topicSetter);
+}
+
 std::string const &	Channel::getKey(void) const
 {
 	return (this->_key);
@@ -73,6 +84,16 @@ std::map<Client*, Channel::t_status> const &	Channel::getClientLinks(void) const
 void	Channel::setTopic(std::string const & topic)
 {
 	this->_topic = topic;
+}
+
+void	Channel::setTopicTime(time_t const & topicTime)
+{
+	this->_topicTime = topicTime;
+}
+
+void	Channel::setTopicSetter(std::string const & topicSetter)
+{
+	this->_topicSetter = topicSetter;
 }
 
 void	Channel::setKey(std::string const & key)

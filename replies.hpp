@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 22:52:05 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 12:35:02 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@
 
 # define RPL_CREATIONTIME(nick, channel, creationtime)      RPL(nick, "329", channel + " " + creationtime)
 
+# define RPL_NOTOPIC(nick, channel)							RPL(nick, "331", channel + " :No topic is set")
 # define RPL_TOPIC(nick, channel, topic)					RPL(nick, "332", channel + " :" + topic)
+# define RPL_TOPICWHOTIME(nick, channel, who, time)			RPL(nick, "333", channel + " " + who + " " + time)
 # define RPL_CHANNELMODEIS(nick, channel, modes)			RPL(nick, "324", channel + " " + modes)
 # define RPL_NAMREPLY(nick, channel, chanNicks)				RPL(nick, "353", "= " + channel + " :" + chanNicks)
 # define RPL_ENDOFNAMES(nick, channel)						RPL(nick, "366", channel + " :End of /NAMES list")
@@ -76,6 +78,7 @@
 # define ERR_NICKNAMEINUSE(nick, newNick)					RPL(nick, "433", newNick + " :Nickname is already in use")
 
 # define ERR_USERNOTINCHANNEL(nick, target, channel)		RPL(nick, "441", target + " " + channel + " :They aren't on that channel")
+# define ERR_NOTONCHANNEL(nick, channel)					RPL(nick, "442", channel + " :You're not on that channel")
 
 # define ERR_NOTREGISTERED(nick)							RPL(nick, "451", ":You have not registered")
 
