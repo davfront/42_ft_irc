@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 13:37:52 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/15 09:21:04 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ ClientList::ClientList(void): _deleteOnRemove(false)
 ClientList::~ClientList(void)
 {
 	if (this->_deleteOnRemove) {
-		std::map<int, Client*>::const_iterator it;
-		for (it = this->_clients.begin(); it != this->_clients.end(); ++it) {
+		ClientList::const_iterator it;
+		for (it = this->begin(); it != this->end(); ++it) {
 			delete it->second;
 		}
 	}
@@ -74,13 +74,33 @@ size_t	ClientList::size(void) const
 	return (this->_clients.size());
 }
 
+ClientList::iterator	ClientList::begin(void)
+{
+	return (this->_clients.begin());
+}
+
+ClientList::const_iterator	ClientList::begin(void) const
+{
+	return (this->_clients.begin());
+}
+
+ClientList::iterator	ClientList::end(void)
+{
+	return (this->_clients.end());
+}
+
+ClientList::const_iterator	ClientList::end(void) const
+{
+	return (this->_clients.end());
+}
+
 void	ClientList::add(Client* client)
 {
 	if (!client) {
 		return ;
 	}
 
-	std::map<int, Client*>::iterator it = this->_clients.find(client->getFd());
+	ClientList::iterator it = this->_clients.find(client->getFd());
 	if (it == this->_clients.end()) {
 		this->_clients[client->getFd()] = client;
 	}
@@ -88,7 +108,7 @@ void	ClientList::add(Client* client)
 
 void	ClientList::remove(int fd)
 {
-	std::map<int, Client*>::iterator it = this->_clients.find(fd);
+	ClientList::iterator it = this->_clients.find(fd);
 	if (it == this->_clients.end()) {
 		return ;
 	}
@@ -100,7 +120,7 @@ void	ClientList::remove(int fd)
 
 Client*	ClientList::get(int const & fd) const
 {
-	std::map<int, Client*>::const_iterator	it;
+	ClientList::const_iterator	it;
 	it = this->_clients.find(fd);
 
 	if (it == this->_clients.end()) {
@@ -111,9 +131,9 @@ Client*	ClientList::get(int const & fd) const
 
 Client*	ClientList::get(std::string const & nickname) const
 {
-	std::map<int, Client*>::const_iterator it;
-	for (it = this->_clients.begin(); it != this->_clients.end(); ++it) {
-		if (it->second && isEqualIgnoreCase(it->second->getNickname(), nickname)) {
+	ClientList::const_iterator it;
+	for (it = this->begin(); it != this->end(); ++it) {
+		if (it->second && toLowerCase(it->second->getNickname()) == toLowerCase(nickname)) {
 			return (it->second);
 		}
 	}
@@ -130,13 +150,13 @@ void	ClientList::clear(void)
 
 std::ostream &	operator<<(std::ostream & o, ClientList const & x)
 {
-	o << x.getClients().size() << " client(s)"<< std::endl;
-	if (x.getClients().empty()) {
+	o << x.size() << " client(s)"<< std::endl;
+	if (x.empty()) {
 		return (o);
 	}
 	
-	std::map<int, Client*>::const_iterator it;
-	for (it = x.getClients().begin(); it != x.getClients().end(); ++it) {
+	ClientList::const_iterator it;
+	for (it = x.begin(); it != x.end(); ++it) {
 		o << "Client " << it->first << ": ";
 		if (it->second) {
 			o << *(it->second);

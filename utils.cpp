@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 23:30:41 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/27 10:27:12 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/21 14:45:23 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,27 @@ std::vector<std::string>	split(std::string const & s, std::string const & sep, b
 	return (tokens);
 }
 
-bool	isEqualIgnoreCase(std::string const & s1, std::string const & s2) {
-	if (s1.size() != s2.size()) {
+std::string	toLowerCase(std::string const & s) {
+	std::string result = s;
+	for (size_t i = 0; i < s.size(); i++) {
+		result[i] = tolower(s[i]);
+	}
+	return (result);
+}
+
+bool	isValidInt(std::string const & s) {
+	if (s.empty()) {
 		return (false);
 	}
-	for (size_t i = 0; i < s1.size(); i++) {
-		if (tolower(s1[i]) != tolower(s2[i])) {
+	bool hasSign = (s[0] == '+' || s[0] == '-');
+	if (s.size() == hasSign) {
+		return (false);
+	}
+	for (size_t i = hasSign; i < s.size(); ++i) {
+		if (!isdigit(s[i])) {
 			return (false);
 		}
 	}
-	return (true);
+	double v = atof(s.c_str());
+	return (v >= INT_MIN && v <= INT_MAX);
 }

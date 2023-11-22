@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/16 17:30:10 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/21 14:32:58 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
-# define MAX_CLIENTS			(10)
+# define MAX_CLIENTS			(100)
 
 # include <algorithm>
 # include <csignal>
@@ -98,11 +98,23 @@ class Server
 		void	_pass(Client & sender, std::vector<std::string> const & params);
 		void	_nick(Client & sender, std::vector<std::string> const & params);
 		void	_user(Client & sender, std::vector<std::string> const & params);
+		void	_modeClient(Client & sender, std::vector<std::string> const & params);
+		void	_modeChannel(Client & sender, std::vector<std::string> const & params);
+		void	_updateChannelMode(Client & sender, Channel & channel, char modeChar, bool enable, \
+					std::vector<std::string>::const_iterator & nextParamIt, \
+					std::vector<std::string>::const_iterator const & end, \
+					std::vector<std::string> & replyTokens);
+		void	_mode(Client & sender, std::vector<std::string> const & params);
 		void	_motd(Client & sender, std::vector<std::string> const & params);
 		void	_oper(Client & sender, std::vector<std::string> const & params);
 		void	_ping(Client & sender, std::vector<std::string> const & params);
 		void	_pong(Client & sender, std::vector<std::string> const & params);
 		void	_privmsg(Client & sender, std::vector<std::string> const & params);
+		void	_joinSingleChannel(Client & sender, std::string const & channelName, std::string const & key);
+		void	_join(Client & sender, std::vector<std::string> const & params);
+		void	_topic(Client & sender, std::vector<std::string> const & params);
+		void	_names(Client & sender, std::vector<std::string> const & params);
+		void	_list(Client & sender, std::vector<std::string> const & params);
 		void	_quit(Client & sender, std::vector<std::string> const & params);
 
 		// Non-member functions
@@ -142,6 +154,11 @@ class Server
 				return "Invalid password: Provide at least 8 characters";
 			}
 		};
+		class SyntaxErrorException: public std::exception {
+			public: virtual const char* what() const throw() {
+				return "Syntax error";
+			}
+		};
 		class MaxClientsReachedException: public std::runtime_error {
 			public: MaxClientsReachedException(void): std::runtime_error("Limit of clients (" + stringify(MAX_CLIENTS) + ") reached") {}
 		};
@@ -153,7 +170,7 @@ class Server
 		};
 		class ServerException: public std::runtime_error {
 			public: ServerException(std::string msg): std::runtime_error(msg) {}
-		};	
+		};
 };
 
 // Output stream

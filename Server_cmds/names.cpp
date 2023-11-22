@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   user.cpp                                           :+:      :+:    :+:   */
+/*   names.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/21 16:43:19 by dapereir         ###   ########.fr       */
+/*   Created: 2023/11/07 18:16:19 by mmaxime-          #+#    #+#             */
+/*   Updated: 2023/11/14 14:17:38 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-void	Server::_user(Client & sender, std::vector<std::string> const & params)
+void	Server::_names(Client & sender, std::vector<std::string> const & params)
 {
-	if (!sender.getIsPasswordValid()) {
-		return ;
-	}
-	
-	if (params.size() < 4 || params[0].empty() || params[3].empty()) {
-		throw Server::ErrException(ERR_NEEDMOREPARAMS(sender.getNickname(), "USER"));
-	}
-	
-	sender.setUsername("~" + params[0]);
-	sender.setRealname(params[3]);
+	(void)sender;
+	(void)params;
+	Log::debug("NAMES command called");
 }

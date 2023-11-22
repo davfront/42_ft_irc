@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientList.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/02 13:38:23 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/14 17:20:59 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@
 
 class ClientList
 {
+
+	public:
+
+		typedef std::map<int, Client*>::iterator		iterator;
+		typedef std::map<int, Client*>::const_iterator	const_iterator;
 		
 	private:
 
@@ -49,13 +54,18 @@ class ClientList
 		void	setDeleteOnRemove(bool const & deleteOnRemove);
 
 		// Member functions
-		bool		empty(void) const;
-		size_t		size(void) const;
-		void		add(Client* client);
-		void		remove(int fd);
-		Client*		get(int const & fd) const;
-		Client*		get(std::string const & nickname) const;
-		void		clear(void);
+		bool			empty(void) const;
+		size_t			size(void) const;
+		iterator		begin(void);
+		const_iterator	begin(void) const;
+		iterator		end(void);
+		const_iterator	end(void) const;
+
+		void			add(Client* client);
+		void			remove(int fd);
+		Client*			get(int const & fd) const;
+		Client*			get(std::string const & nickname) const;
+		void			clear(void);
 };
 
 // Output stream
