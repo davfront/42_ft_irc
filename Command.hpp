@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/10/27 11:27:05 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 17:12:17 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,12 @@ class Command
 				return "Invalid message";
 			}
 		};
+		class EmptyMessageException: public std::exception {
+			public: virtual const char* what() const throw() {
+				return "Empty message";
+			}
+		};
+
 
 };
 

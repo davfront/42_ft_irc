@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 18:16:19 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/22 13:51:10 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 16:14:43 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,11 +114,11 @@ void	Server::_updateChannelMode( \
 		}
 		Client* client = this->_clients.get(*nextParamIt);
 		if (!client) {
-			this->_reply(sender.getFd(), ERR_NOSUCHNICK(sender.getNickname(), *nextParamIt));
+			sender.reply(ERR_NOSUCHNICK(sender.getNickname(), *nextParamIt));
 			return ;
 		}
 		if (!channel.isJoined(client)) {
-			this->_reply(sender.getFd(), ERR_USERNOTINCHANNEL(sender.getNickname(), *nextParamIt, channel.getName()));
+			sender.reply(ERR_USERNOTINCHANNEL(sender.getNickname(), *nextParamIt, channel.getName()));
 			return ;
 		}
 		if (channel.hasOperatorRights(client) == enable) {
@@ -132,7 +132,7 @@ void	Server::_updateChannelMode( \
 	}
 	
 	// unknow mode
-	this->_reply(sender.getFd(), ERR_UNKNOWNMODE(sender.getNickname(), stringify(modeChar), channel.getName()));
+	sender.reply(ERR_UNKNOWNMODE(sender.getNickname(), stringify(modeChar), channel.getName()));
 }
 
 void	Server::_modeChannel(Client & sender, std::vector<std::string> const & params)
@@ -161,8 +161,8 @@ void	Server::_modeChannel(Client & sender, std::vector<std::string> const & para
 				}
 			}
 		}
-		this->_reply(sender.getFd(), RPL_CHANNELMODEIS(sender.getNickname(), channel->getName(), modeMsg));
-		this->_reply(sender.getFd(), RPL_CREATIONTIME(sender.getNickname(), channel->getName(), stringify(channel->getCreationTime())));
+		sender.reply(RPL_CHANNELMODEIS(sender.getNickname(), channel->getName(), modeMsg));
+		sender.reply(RPL_CREATIONTIME(sender.getNickname(), channel->getName(), stringify(channel->getCreationTime())));
 		return ;
 	}
 
@@ -209,13 +209,7 @@ void	Server::_modeChannel(Client & sender, std::vector<std::string> const & para
 	}
 	
 	// Send reply to all channel members
-	std::map<Client*, Channel::t_status>::const_iterator it;
-	for (it = channel->getClientLinks().begin(); it != channel->getClientLinks().end(); ++it) {
-		if (it->first && (it->second == Channel::MEMBER || it->second == Channel::OPERATOR|| it->second == Channel::FOUNDER)) {
-			Client* client = it->first;
-			this->_reply(client->getFd(), RPL_MODE(sender.getHostmask(), channel->getName(), replyMsg));
-		}
-	}
+	channel->reply(RPL_MODE(sender.getHostmask(), channel->getName(), replyMsg));
 }
 
 void	Server::_mode(Client & sender, std::vector<std::string> const & params)
@@ -230,6 +224,3 @@ void	Server::_mode(Client & sender, std::vector<std::string> const & params)
 		Server::_modeClient(sender, params);
 	}
 }
-
-	
-	

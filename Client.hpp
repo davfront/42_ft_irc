@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/10 22:42:35 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 15:39:17 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <ctime>
 # include <iostream>
 # include <string>
+# include <sys/socket.h>
 
 # include "utils.hpp"
 
@@ -76,6 +77,7 @@ class Client
 		void					addToBuffer(std::string const & str);
 		bool					extractMessage(std::string & dest);
 		std::string				getHostmask(void) const;
+		void					reply(std::string const & msg) const;
 };
 
 // Output stream

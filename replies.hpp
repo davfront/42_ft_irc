@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 12:35:02 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 22:47:04 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,12 @@
 // Non numeric replies
 // ==========================================================================
 
-# define RPL_ERROR(msg)							            (std::string("ERROR :") + msg + "\r\n")
+# define RPL_ERROR(msg)										(std::string("ERROR :") + msg + "\r\n")
 # define RPL_PING(msg)										(std::string(":") + RPL_SERVERNAME + " PONG " + RPL_SERVERNAME + " :" + msg + "\r\n")
+# define RPL_INVITE(hostmask, target, channel)				(std::string(":") + hostmask + " INVITE " + target + " " + channel + "\r\n")
 # define RPL_JOIN(hostmask, channel)						(std::string(":") + hostmask + " JOIN :" + channel + "\r\n")
 # define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
-# define RPL_MODE(hostmask, target, msg)					(std::string(":") + hostmask + " MODE " + target + " " + msg + "\r\n")
+# define RPL_MODE(hostmask, target, tokens)					(std::string(":") + hostmask + " MODE " + target + " " + tokens + "\r\n")
 # define RPL_OPER(nick)										(std::string(":") + RPL_SERVERNAME + " MODE " + nick + " :+o" + "\r\n")
 
 // Numeric replies
@@ -41,10 +42,10 @@
 # define RPL_MYINFO(nick, serv, ver, userMod, chanMod)		RPL(nick, "004", serv + " " + ver + " " + userMod + " " + chanMod)
 
 # define RPL_LISTSTART(nick)								RPL(nick, "321", "Channel :Users Name")
-# define RPL_LIST(nick, channel, size, topic)		        RPL(nick, "322", channel + " " + size + " :" + topic)
+# define RPL_LIST(nick, channel, size, topic)				RPL(nick, "322", channel + " " + size + " :" + topic)
 # define RPL_LISTEND(nick)									RPL(nick, "323", ":End of /LIST")
 
-# define RPL_CREATIONTIME(nick, channel, creationtime)      RPL(nick, "329", channel + " " + creationtime)
+# define RPL_CREATIONTIME(nick, channel, creationtime)		RPL(nick, "329", channel + " " + creationtime)
 
 # define RPL_NOTOPIC(nick, channel)							RPL(nick, "331", channel + " :No topic is set")
 # define RPL_TOPIC(nick, channel, topic)					RPL(nick, "332", channel + " :" + topic)
@@ -53,6 +54,8 @@
 # define RPL_NAMREPLY(nick, channel, chanNicks)				RPL(nick, "353", "= " + channel + " :" + chanNicks)
 # define RPL_ENDOFNAMES(nick, channel)						RPL(nick, "366", channel + " :End of /NAMES list")
 # define RPL_UMODEIS(nick, mode)							RPL(nick, "221", mode)
+
+# define RPL_INVITING(nick, target, channel)				RPL(nick, "341", target + " " + channel)
 
 # define RPL_MOTDSTART(nick, serv)							RPL(nick, "375", ":- " + serv + " Message of the day")
 # define RPL_MOTD(nick, motd)								RPL(nick, "372", ":" + motd)
@@ -79,6 +82,7 @@
 
 # define ERR_USERNOTINCHANNEL(nick, target, channel)		RPL(nick, "441", target + " " + channel + " :They aren't on that channel")
 # define ERR_NOTONCHANNEL(nick, channel)					RPL(nick, "442", channel + " :You're not on that channel")
+# define ERR_USERONCHANNEL(nick, target, channel)			RPL(nick, "443", target + " " + channel + " :is already on channel")
 
 # define ERR_NOTREGISTERED(nick)							RPL(nick, "451", ":You have not registered")
 
@@ -87,7 +91,7 @@
 # define ERR_PASSWDMISMATCH(nick)							RPL(nick, "464", ":Password incorrect")
 
 # define ERR_CHANNELISFULL(nick, channel)					RPL(nick, "471", channel + " :Cannot join channel (+l)")
-# define ERR_UNKNOWNMODE(nick, modeChar, channel)           RPL(nick, "472", modeChar + " :is unknown mode char to me for " + channel)
+# define ERR_UNKNOWNMODE(nick, modeChar, channel)			RPL(nick, "472", modeChar + " :is unknown mode char to me for " + channel)
 # define ERR_INVITEONLYCHAN(nick, channel)					RPL(nick, "473", channel + " :Cannot join channel (+i)")
 # define ERR_BADCHANNELKEY(nick, channel)					RPL(nick, "475", channel + " :Cannot join channel (+k)")
 

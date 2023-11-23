@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/22 15:32:12 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/22 23:09:39 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,7 @@ void	Server::_joinSingleChannel(Client & sender, std::string const & channelName
 		}
 
 		// reply to all channel members
-		std::map<Client*, Channel::t_status>::const_iterator it;
-		for (it = channel->getClientLinks().begin(); it != channel->getClientLinks().end(); ++it) {
-			if (it->first && (it->second == Channel::MEMBER || it->second == Channel::OPERATOR|| it->second == Channel::FOUNDER)) {
-				Client* client = it->first;
-				this->_reply(client->getFd(), RPL_JOIN(sender.getHostmask(), channel->getName()));
-			}
-		}
+		channel->reply(RPL_JOIN(sender.getHostmask(), channel->getName()));
 
 		// reply to user
 		std::vector<std::string> params;
@@ -65,9 +59,9 @@ void	Server::_joinSingleChannel(Client & sender, std::string const & channelName
 		this->_names(sender, params);
 
 	} catch(Server::ErrException & e) {
-		Server::_reply(sender.getFd(), e.what());
-	} catch(std::exception & e) {
-		throw e;
+		sender.reply(e.what());
+	} catch(std::exception &) {
+		throw;
 	}
 }
 

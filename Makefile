@@ -6,7 +6,7 @@
 #    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/11/20 12:19:12 by dapereir         ###   ########.fr        #
+#    Updated: 2023/11/22 22:13:32 by dapereir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ SRCS_DIR			=	.
 SRCS_FILES			=	main.cpp \
 						utils.cpp \
 						Server.cpp \
+						Server_cmds/invite.cpp \
 						Server_cmds/join.cpp \
 						Server_cmds/list.cpp \
 						Server_cmds/mode.cpp \
