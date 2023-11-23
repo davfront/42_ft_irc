@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 23:13:09 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/23 15:55:49 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,13 +186,31 @@ void	Server::_handleNewConnection(void)
 
 void	Server::_deleteClient(int fd)
 {
+	// close socket
 	close(fd);
+
+	// delete pollfd
 	Server::_removePollfd(fd);
+
 	Client* client = this->_clients.get(fd);
 	if (client) {
-		for (ChannelList::iterator it = this->_channels.begin(); it != this->_channels.end(); ++it) {
-			it->second->removeClientLink(client);
+	
+		// for each channel
+		ChannelList::iterator it = this->_channels.begin();
+		while (it != this->_channels.end()) {
+			Channel* channel = it->second;
+			it++;
+
+			// remove client link
+			channel->removeClientLink(client);
+
+			// delete channel if empty
+			if (channel->getMembersCount() == 0) {
+				this->_channels.remove(channel->getName());
+			}
 		}
+
+		// delete client
 		this->_clients.remove(fd);
 	}
 }
@@ -241,6 +259,7 @@ void	Server::_initCmds(void)
 	this->_cmds["PONG"] = &Server::_pong;
 	this->_cmds["PRIVMSG"] = &Server::_privmsg;
 	this->_cmds["JOIN"] = &Server::_join;
+	this->_cmds["PART"] = &Server::_part;
 	this->_cmds["INVITE"] = &Server::_invite;
 	this->_cmds["TOPIC"] = &Server::_topic;
 	this->_cmds["NAMES"] = &Server::_names;

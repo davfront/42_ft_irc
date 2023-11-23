@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 22:47:04 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/23 21:35:01 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define RPL_PING(msg)										(std::string(":") + RPL_SERVERNAME + " PONG " + RPL_SERVERNAME + " :" + msg + "\r\n")
 # define RPL_INVITE(hostmask, target, channel)				(std::string(":") + hostmask + " INVITE " + target + " " + channel + "\r\n")
 # define RPL_JOIN(hostmask, channel)						(std::string(":") + hostmask + " JOIN :" + channel + "\r\n")
+# define RPL_PART(hostmask, channel, reason)				(std::string(":") + hostmask + " PART " + channel + " :" + reason + "\r\n")
 # define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
 # define RPL_MODE(hostmask, target, tokens)					(std::string(":") + hostmask + " MODE " + target + " " + tokens + "\r\n")
 # define RPL_OPER(nick)										(std::string(":") + RPL_SERVERNAME + " MODE " + nick + " :+o" + "\r\n")

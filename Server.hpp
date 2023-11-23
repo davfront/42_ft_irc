@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 22:13:32 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/23 21:31:01 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,8 @@ class Server
 		void	_invite(Client & sender, std::vector<std::string> const & params);
 		void	_joinSingleChannel(Client & sender, std::string const & channelName, std::string const & key);
 		void	_join(Client & sender, std::vector<std::string> const & params);
+		void	_partSingleChannel(Client & sender, std::string const & channelName, std::string const & reason);
+		void	_part(Client & sender, std::vector<std::string> const & params);
 		void	_topic(Client & sender, std::vector<std::string> const & params);
 		void	_names(Client & sender, std::vector<std::string> const & params);
 		void	_list(Client & sender, std::vector<std::string> const & params);

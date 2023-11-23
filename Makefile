@@ -6,7 +6,7 @@
 #    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/11/22 22:13:32 by dapereir         ###   ########.fr        #
+#    Updated: 2023/11/23 15:56:08 by dapereir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ SRCS_FILES			=	main.cpp \
 						Server_cmds/names.cpp \
 						Server_cmds/nick.cpp \
 						Server_cmds/oper.cpp \
+						Server_cmds/part.cpp \
 						Server_cmds/pass.cpp \
 						Server_cmds/ping.cpp \
 						Server_cmds/pong.cpp \
