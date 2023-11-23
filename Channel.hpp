@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 15:44:44 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/23 22:11:41 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ class Channel
 		void		unsetMode(char modeKey);
 		std::string	getModes(void) const;
 
-		void		reply(std::string const & msg) const;
+		void		reply(std::string const & msg, Client* excludedClient = NULL) const;
 };
 
 // Output stream
