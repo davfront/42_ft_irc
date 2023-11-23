@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 15:39:17 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/23 17:31:05 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ class Client
 		std::string					_nickname;
 		std::string					_username;
 		std::string					_realname;
+		std::string					_mode;
 		bool						_isPasswordValid;
 		bool						_isRegistered;
 		bool						_isOper;
@@ -59,6 +60,7 @@ class Client
 		std::string const &		getNickname(void) const;
 		std::string const &		getUsername(void) const;
 		std::string const &		getRealname(void) const;
+		std::string const &		getMode(void) const;
 		bool const &			getIsPasswordValid(void) const;
 		bool const &			getIsRegistered(void) const;
 		bool const &			getIsOper(void) const;
@@ -69,6 +71,7 @@ class Client
 		void					setNickname(std::string const & nickname);
 		void					setUsername(std::string const & username);
 		void					setRealname(std::string const & realname);
+		void					setMode(std::string const & mode);
 		void					setIsPasswordValid(bool const & isPasswordValid);
 		void					setIsRegistered(bool const & isRegistered);
 		void					setIsOper(bool const & isOper);
@@ -78,6 +81,7 @@ class Client
 		bool					extractMessage(std::string & dest);
 		std::string				getHostmask(void) const;
 		void					reply(std::string const & msg) const;
+		void					unsetMode(char modeChar);
 };
 
 // Output stream

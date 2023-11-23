@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 15:37:57 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/23 17:36:00 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Client::Client(int fd, std::string hostname):
 	_nickname("*"),
 	_username(""),
 	_realname(""),
+	_mode("+"),
 	_isPasswordValid(false),
 	_isRegistered(false),
 	_isOper(false)
@@ -77,6 +78,11 @@ std::string const &	Client::getRealname(void) const
 	return (this->_realname);
 }
 
+std::string const &	Client::getMode(void) const
+{
+	return (this->_mode);
+}
+
 bool const &	Client::getIsPasswordValid(void) const
 {
 	return (this->_isPasswordValid);
@@ -119,6 +125,11 @@ void	Client::setUsername(std::string const & username)
 void	Client::setRealname(std::string const & realname)
 {
 	this->_realname = realname;
+}
+
+void	Client::setMode(std::string const & mode)
+{
+	this->_mode = mode;
 }
 
 void	Client::setIsPasswordValid(bool const & isPasswordValid)
@@ -166,6 +177,14 @@ void	Client::reply(std::string const & msg) const
 	Log::output(this->_fd, msg);
 	send(this->_fd, msg.c_str(), msg.size(), 0);
 }
+
+void	Client::unsetMode(char mode)
+{
+	std::string::size_type pos = this->_mode.find(mode);
+	if (pos != std::string::npos)
+		this->_mode.erase(pos, 1);
+}
+
 
 // Output stream
 // ==========================================================================
