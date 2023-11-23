@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/22 23:09:39 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/23 21:52:29 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,14 @@ void	Server::_join(Client & sender, std::vector<std::string> const & params)
 	
 	// if channel parameter is "0"
 	if (params[0] == "0") {
-		// todo: leave all channels
+		ChannelList::iterator it = this->_channels.begin();
+		while (it != this->_channels.end()) {
+			Channel* channel = it->second;
+			it++;
+			if (channel->isJoined(&sender)) {
+				Server::_partSingleChannel(sender, channel->getName(), "");
+			}
+		}
 		return ;
 	}
 
