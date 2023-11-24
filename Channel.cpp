@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 23:34:21 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 10:00:33 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ bool	Channel::isFounder(Client* client) const
 	return (status == Channel::FOUNDER);
 }
 
-size_t	Channel::getMembersCount(void) const
+size_t	Channel::getMemberCount(void) const
 {
 	size_t count = 0;
 	std::map<Client*, Channel::t_status>::const_iterator it;
@@ -180,6 +180,34 @@ size_t	Channel::getMembersCount(void) const
 		}
 	}
 	return (count);
+}
+
+std::vector<std::string>	Channel::getMemberNameLists(void) const
+{
+	std::vector<std::string> nameLists;
+	std::string nameList;
+	size_t nameListCount = 0;
+	std::map<Client*, Channel::t_status>::const_iterator it;
+	for (it = this->_clientLinks.begin(); it != this->_clientLinks.end(); ++it) {
+		if (it->second == Channel::MEMBER || it->second == Channel::OPERATOR || it->second == Channel::FOUNDER) {
+			nameList += (nameListCount > 0 ? " " : "");
+			nameList += (it->second == Channel::FOUNDER ? "~" : "");
+			nameList += (it->second == Channel::OPERATOR ? "@" : "");
+			nameList += it->first->getNickname();
+			nameListCount++;
+		}
+		if (nameListCount >= 40) {
+			nameLists.push_back(nameList);
+			nameList = "";
+			nameListCount = 0;
+		}
+	}
+	if (nameListCount > 0) {
+		nameLists.push_back(nameList);
+		nameList = "";
+		nameListCount = 0;
+	}
+	return (nameLists);
 }
 
 bool	Channel::hasMode(char modeKey) const
@@ -207,11 +235,12 @@ std::string	Channel::getModes(void) const
 	return (modes);
 }
 
-void	Channel::reply(std::string const & msg) const
+void	Channel::reply(std::string const & msg, Client* excludedClient) const
 {
 	std::map<Client*, Channel::t_status>::const_iterator it;
 	for (it = this->_clientLinks.begin(); it != this->_clientLinks.end(); ++it) {
-		if (it->first && (it->second == Channel::MEMBER || it->second == Channel::OPERATOR|| it->second == Channel::FOUNDER)) {
+		if (it->first && it->first != excludedClient && \
+			(it->second == Channel::MEMBER || it->second == Channel::OPERATOR|| it->second == Channel::FOUNDER)) {
 			it->first->reply(msg);
 		}
 	}

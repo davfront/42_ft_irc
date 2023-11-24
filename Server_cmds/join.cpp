@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/22 23:09:39 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 09:31:11 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	Server::_joinSingleChannel(Client & sender, std::string const & channelName
 				throw Server::ErrException(ERR_BADCHANNELKEY(sender.getNickname(), channel->getName()));
 			}
 			// check if channel's limit is reached (mode l)
-			if (channel->hasMode('l') && channel->getMembersCount() >= static_cast<size_t>(channel->getLimit())) {
+			if (channel->hasMode('l') && channel->getMemberCount() >= static_cast<size_t>(channel->getLimit())) {
 				throw Server::ErrException(ERR_CHANNELISFULL(sender.getNickname(), channel->getName()));
 			}
 			// add user to channel
@@ -74,7 +74,14 @@ void	Server::_join(Client & sender, std::vector<std::string> const & params)
 	
 	// if channel parameter is "0"
 	if (params[0] == "0") {
-		// todo: leave all channels
+		ChannelList::iterator it = this->_channels.begin();
+		while (it != this->_channels.end()) {
+			Channel* channel = it->second;
+			it++;
+			if (channel->isJoined(&sender)) {
+				Server::_partSingleChannel(sender, channel->getName(), "");
+			}
+		}
 		return ;
 	}
 

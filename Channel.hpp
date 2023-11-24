@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 15:44:44 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 09:32:59 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,30 +76,31 @@ class Channel
 		std::map<Client*, t_status> const &		getClientLinks(void) const;
 
 		// Setters
-		void		setTopic(std::string const & topic);
-		void		setTopicTime(time_t const & topicTime);
-		void		setTopicSetter(std::string const & topicSetter);
-		void		setKey(std::string const & key);
-		void		setLimit(int const & limit);
+		void									setTopic(std::string const & topic);
+		void									setTopicTime(time_t const & topicTime);
+		void									setTopicSetter(std::string const & topicSetter);
+		void									setKey(std::string const & key);
+		void									setLimit(int const & limit);
 
 		// Member functions
-		void		addClientLink(Client* client, t_status status);
-		void		removeClientLink(Client* client);
-		t_status	getClientStatus(Client* client) const;
-		void		setClientStatus(Client* client, t_status status);
-		bool		isClientLinked(Client* client) const;
-		bool		isInvitee(Client* client) const;
-		bool		isJoined(Client* client) const;
-		bool		hasOperatorRights(Client* client) const;
-		bool		isFounder(Client* client) const;
-		size_t		getMembersCount(void) const;
+		void									addClientLink(Client* client, t_status status);
+		void									removeClientLink(Client* client);
+		t_status								getClientStatus(Client* client) const;
+		void									setClientStatus(Client* client, t_status status);
+		bool									isClientLinked(Client* client) const;
+		bool									isInvitee(Client* client) const;
+		bool									isJoined(Client* client) const;
+		bool									hasOperatorRights(Client* client) const;
+		bool									isFounder(Client* client) const;
+		size_t									getMemberCount(void) const;
+		std::vector<std::string>				getMemberNameLists(void) const;
 
-		bool		hasMode(char modeKey) const;
-		void		setMode(char modeKey);
-		void		unsetMode(char modeKey);
-		std::string	getModes(void) const;
+		bool									hasMode(char modeKey) const;
+		void									setMode(char modeKey);
+		void									unsetMode(char modeKey);
+		std::string								getModes(void) const;
 
-		void		reply(std::string const & msg) const;
+		void									reply(std::string const & msg, Client* excludedClient = NULL) const;
 };
 
 // Output stream

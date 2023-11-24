@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/23 17:31:27 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/24 10:38:59 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define RPL_PING(msg)										(std::string(":") + RPL_SERVERNAME + " PONG " + RPL_SERVERNAME + " :" + msg + "\r\n")
 # define RPL_INVITE(hostmask, target, channel)				(std::string(":") + hostmask + " INVITE " + target + " " + channel + "\r\n")
 # define RPL_JOIN(hostmask, channel)						(std::string(":") + hostmask + " JOIN :" + channel + "\r\n")
+# define RPL_PART(hostmask, channel, reason)				(std::string(":") + hostmask + " PART " + channel + " :" + reason + "\r\n")
 # define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
 # define RPL_MODE(hostmask, target, tokens)					(std::string(":") + hostmask + " MODE " + target + " " + tokens + "\r\n")
 # define RPL_OPER(nick)										(std::string(":") + RPL_SERVERNAME + " MODE " + nick + " :+o" + "\r\n")
@@ -42,10 +43,6 @@
 # define RPL_MYINFO(nick, serv, ver, userMod, chanMod)		RPL(nick, "004", serv + " " + ver + " " + userMod + " " + chanMod)
 
 # define RPL_UMODEIS(nick, mode)							RPL(nick, "221", mode)
-
-# define RPL_LISTSTART(nick)								RPL(nick, "321", "Channel :Users Name")
-# define RPL_LIST(nick, channel, size, topic)				RPL(nick, "322", channel + " " + size + " :" + topic)
-# define RPL_LISTEND(nick)									RPL(nick, "323", ":End of /LIST")
 
 # define RPL_CREATIONTIME(nick, channel, creationtime)		RPL(nick, "329", channel + " " + creationtime)
 
