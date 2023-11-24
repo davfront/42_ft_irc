@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 09:31:11 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 10:15:19 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,7 +263,6 @@ void	Server::_initCmds(void)
 	this->_cmds["INVITE"] = &Server::_invite;
 	this->_cmds["TOPIC"] = &Server::_topic;
 	this->_cmds["NAMES"] = &Server::_names;
-	this->_cmds["LIST"] = &Server::_list;
 	this->_cmds["QUIT"] = &Server::_quit;
 }
 

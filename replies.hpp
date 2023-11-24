@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 09:51:06 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 10:15:04 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,6 @@
 # define RPL_YOURHOST(nick, serv, ver)						RPL(nick, "002", ":Your host is " + serv + ", running version " + ver)
 # define RPL_CREATED(nick, date)							RPL(nick, "003", ":This server was created " + date)
 # define RPL_MYINFO(nick, serv, ver, userMod, chanMod)		RPL(nick, "004", serv + " " + ver + " " + userMod + " " + chanMod)
-
-# define RPL_LISTSTART(nick)								RPL(nick, "321", "Channel :Users Name")
-# define RPL_LIST(nick, channel, size, topic)				RPL(nick, "322", channel + " " + size + " :" + topic)
-# define RPL_LISTEND(nick)									RPL(nick, "323", ":End of /LIST")
 
 # define RPL_CREATIONTIME(nick, channel, creationtime)		RPL(nick, "329", channel + " " + creationtime)
 
