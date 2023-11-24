@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 10:15:04 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 10:38:59 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@
 # define RPL_CREATED(nick, date)							RPL(nick, "003", ":This server was created " + date)
 # define RPL_MYINFO(nick, serv, ver, userMod, chanMod)		RPL(nick, "004", serv + " " + ver + " " + userMod + " " + chanMod)
 
+# define RPL_UMODEIS(nick, mode)							RPL(nick, "221", mode)
+
 # define RPL_CREATIONTIME(nick, channel, creationtime)		RPL(nick, "329", channel + " " + creationtime)
 
 # define RPL_NOTOPIC(nick, channel)							RPL(nick, "331", channel + " :No topic is set")
@@ -50,7 +52,6 @@
 # define RPL_CHANNELMODEIS(nick, channel, modes)			RPL(nick, "324", channel + " " + modes)
 # define RPL_NAMREPLY(nick, channel, chanNicks)				RPL(nick, "353", "= " + channel + " :" + chanNicks)
 # define RPL_ENDOFNAMES(nick, channel)						RPL(nick, "366", channel + " :End of /NAMES list")
-# define RPL_UMODEIS(nick, mode)							RPL(nick, "221", mode)
 
 # define RPL_INVITING(nick, target, channel)				RPL(nick, "341", target + " " + channel)
 
@@ -92,10 +93,12 @@
 # define ERR_INVITEONLYCHAN(nick, channel)					RPL(nick, "473", channel + " :Cannot join channel (+i)")
 # define ERR_BADCHANNELKEY(nick, channel)					RPL(nick, "475", channel + " :Cannot join channel (+k)")
 
+# define ERR_NOPRIVILEGES(nick)								RPL(nick, "481", ":Permission Denied")
 # define ERR_CHANOPRIVSNEEDED(nick, channel)				RPL(nick, "482", channel + " :You're not channel operator")
 
 # define ERR_NOOPERHOST(nick)								RPL(nick, "491", ":No O-lines for your host")
 
+# define ERR_UMODEUNKNOWNFLAG(nick)							RPL(nick, "501", ":Unknown MODE flag")
 # define ERR_USERSDONTMATCH(nick)							RPL(nick, "502", ":Cant change mode for other users")
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   oper.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/16 17:28:07 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/22 15:36:47 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/23 17:33:41 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ void	Server::_oper(Client & sender, std::vector<std::string> const & params)
 	}
 	else {
 		sender.setIsOper(true);
+		sender.setMode("+o");
 		sender.reply(RPL_OPER(sender.getNickname()));
 		sender.reply(RPL_YOUREOPER(sender.getNickname()));
+	
 	}
 }

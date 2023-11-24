@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 18:16:19 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/22 16:14:43 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/23 17:48:01 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,40 @@
 
 void	Server::_modeClient(Client & sender, std::vector<std::string> const & params)
 {
-	// todo
-	(void)sender;
-	(void)params;
+	if (!this->_clients.get(params[0])) {
+		throw Server::ErrException(ERR_NOSUCHNICK(sender.getNickname(), params[0]));
+	}
+
+	if (params[0].compare(sender.getNickname())) {
+		throw Server::ErrException(ERR_USERSDONTMATCH(sender.getNickname()));
+	}
+
+	if (params.size() == 1) {
+		sender.reply(RPL_UMODEIS(sender.getNickname(), sender.getMode()));
+		return ;
+	}
+	std::string modeString = params[1];
+	bool enable = true;
+	for (size_t i = 0; i < modeString.size(); ++i) {
+		if (modeString[0] != '+' && modeString[0] != '-') {
+			throw Server::ErrException(ERR_UMODEUNKNOWNFLAG(sender.getNickname()));
+		}
+		if (modeString[i] == '+' || modeString[i] == '-') {
+			enable = (modeString[i] == '+');
+		}
+		else {
+			if (modeString[i] != 'o') {
+				sender.reply(ERR_UMODEUNKNOWNFLAG(sender.getNickname()));
+			}
+			else if (enable) {
+				sender.reply(ERR_NOPRIVILEGES(sender.getNickname()));
+			}
+			else if (!sender.getMode().compare("+o")) {
+				sender.unsetMode(modeString[i]);
+				sender.reply(RPL_MODE(sender.getHostmask(), sender.getNickname(), ":-" + modeString[i]));
+			}
+		}
+	}
 }
 
 void	Server::_updateChannelMode( \
