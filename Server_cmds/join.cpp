@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/23 21:52:29 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 09:31:11 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	Server::_joinSingleChannel(Client & sender, std::string const & channelName
 				throw Server::ErrException(ERR_BADCHANNELKEY(sender.getNickname(), channel->getName()));
 			}
 			// check if channel's limit is reached (mode l)
-			if (channel->hasMode('l') && channel->getMembersCount() >= static_cast<size_t>(channel->getLimit())) {
+			if (channel->hasMode('l') && channel->getMemberCount() >= static_cast<size_t>(channel->getLimit())) {
 				throw Server::ErrException(ERR_CHANNELISFULL(sender.getNickname(), channel->getName()));
 			}
 			// add user to channel

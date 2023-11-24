@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/23 15:55:49 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 09:31:11 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,7 @@ void	Server::_deleteClient(int fd)
 			channel->removeClientLink(client);
 
 			// delete channel if empty
-			if (channel->getMembersCount() == 0) {
+			if (channel->getMemberCount() == 0) {
 				this->_channels.remove(channel->getName());
 			}
 		}

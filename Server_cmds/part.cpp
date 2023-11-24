@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 15:56:15 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/23 21:34:37 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 09:31:11 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	Server::_partSingleChannel(Client & sender, std::string const & channelName
 		sender.reply(RPL_PART(sender.getHostmask(), channel->getName(), reason));
 
 		// if empty, delete channel 
-		if (channel->getMembersCount() == 0) {
+		if (channel->getMemberCount() == 0) {
 			this->_channels.remove(channel->getName());
 		}
 		// reply to all channel members
