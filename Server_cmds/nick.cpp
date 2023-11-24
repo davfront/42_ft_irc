@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/07 13:54:19 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 12:18:46 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,19 @@ void	Server::_nick(Client & sender, std::vector<std::string> const & params)
 	
 	// check nickname availability
 	Client* otherClient = this->_clients.get(params[0]);
+	if (otherClient && otherClient == &sender) {
+		return ;
+	}
 	if (otherClient && otherClient != &sender) {
 		throw Server::ErrException(ERR_NICKNAMEINUSE(sender.getNickname(), params[0]));
 	}
 
-	// update nickname
-	sender.setNickname(params[0]);
+	// update nickname and reply
+	if (sender.getIsRegistered()) {
+		std:: string oldHostmask = sender.getHostmask();
+		sender.setNickname(params[0]);
+		sender.reply(RPL_NICK(oldHostmask, params[0]));
+	} else {
+		sender.setNickname(params[0]);
+	}
 }

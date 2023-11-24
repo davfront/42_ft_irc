@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 10:38:59 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 11:57:41 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
 # define RPL_MODE(hostmask, target, tokens)					(std::string(":") + hostmask + " MODE " + target + " " + tokens + "\r\n")
 # define RPL_OPER(nick)										(std::string(":") + RPL_SERVERNAME + " MODE " + nick + " :+o" + "\r\n")
+# define RPL_NICK(hostmask, newNick)						(std::string(":") + hostmask + " NICK " + newNick + "\r\n")
 
 // Numeric replies
 // ==========================================================================
