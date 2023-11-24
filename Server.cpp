@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 10:15:19 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 15:53:36 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -333,6 +333,24 @@ void	Server::_reply(int fd, std::string const & msg) const
 
 	Log::output(fd, msg);
 	send(fd, msg.c_str(), msg.size(), 0);
+}
+
+ClientList	Server::_getChannelPeers(Client & client) const
+{
+	ClientList peers;
+	ChannelList::const_iterator it;
+	for (it = this->_channels.begin(); it != this->_channels.end(); ++it) {
+		Channel* channel = it->second;
+		std::map<Client*, Channel::t_status> const & clientLinks = channel->getClientLinks();
+		std::map<Client*, Channel::t_status>::const_iterator it2;
+		for (it2 = clientLinks.begin(); it2 != clientLinks.end(); ++it2) {
+			if (it2->first && it2->first != &client && \
+				(it2->second == Channel::MEMBER || it2->second == Channel::OPERATOR || it2->second == Channel::FOUNDER)) {
+				peers.add(it2->first);
+			}
+		}
+	}
+	return (peers);
 }
 
 void	Server::start(void)

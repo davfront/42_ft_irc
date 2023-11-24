@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/24 15:00:43 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 15:56:49 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	Server::_nick(Client & sender, std::vector<std::string> const & params)
 		std:: string oldHostmask = sender.getHostmask();
 		sender.setNickname(params[0]);
 		sender.reply(RPL_NICK(oldHostmask, params[0]));
+		this->_getChannelPeers(sender).reply(RPL_NICK(oldHostmask, params[0]));
 	} else {
 		sender.setNickname(params[0]);
 	}
