@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 10:15:13 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 15:04:40 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
 # define MAX_CLIENTS			(100)
+
+# define BOT_NICK				("Groot")
+# define BOT_HOSTMASK			(BOT_NICK + "!" + BOT_NICK + "@" + RPL_SERVERNAME)
+# define BOT_MSG				("I am Groot!")
 
 # include <algorithm>
 # include <csignal>

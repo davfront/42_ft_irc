@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/24 12:18:46 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 15:00:43 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,9 @@ void	Server::_nick(Client & sender, std::vector<std::string> const & params)
 	}
 	
 	// check nickname availability
+	if (toLowerCase(params[0]) == toLowerCase(BOT_NICK)) {
+		throw Server::ErrException(ERR_NICKCOLLISION(sender.getNickname(), BOT_NICK, "- Nickname reserved"));
+	}
 	Client* otherClient = this->_clients.get(params[0]);
 	if (otherClient && otherClient == &sender) {
 		return ;

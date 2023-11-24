@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 11:57:41 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 14:54:57 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@
 # define ERR_NONICKNAMEGIVEN(nick)							RPL(nick, "431", ":No nickname given")
 # define ERR_ERRONEUSNICKNAME(nick, newNick)				RPL(nick, "432", newNick + " :Erroneus nickname")
 # define ERR_NICKNAMEINUSE(nick, newNick)					RPL(nick, "433", newNick + " :Nickname is already in use")
+
+# define ERR_NICKCOLLISION(nick, newNick, msg)				RPL(nick, "436", newNick + " :" + msg)
 
 # define ERR_USERNOTINCHANNEL(nick, target, channel)		RPL(nick, "441", target + " " + channel + " :They aren't on that channel")
 # define ERR_NOTONCHANNEL(nick, channel)					RPL(nick, "442", channel + " :You're not on that channel")
