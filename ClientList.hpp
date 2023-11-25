@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/14 17:20:59 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 15:58:44 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ class ClientList
 		
 	private:
 
-		// Prevent copy
-		ClientList(ClientList const &) {}
+		// Prevent assignment operator
 		ClientList &	operator=(ClientList const &) { return (*this); }
 
 		// Member attributes
@@ -44,6 +43,7 @@ class ClientList
 
 		// Constructors & destructor
 		ClientList(void);
+		ClientList(ClientList const &);
 		~ClientList(void);
 
 		// Getters
@@ -66,6 +66,7 @@ class ClientList
 		Client*			get(int const & fd) const;
 		Client*			get(std::string const & nickname) const;
 		void			clear(void);
+		void			reply(std::string const & msg) const;
 };
 
 // Output stream
