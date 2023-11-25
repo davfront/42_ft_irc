@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 10:15:13 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/25 16:50:47 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,11 +113,13 @@ class Server
 		void	_invite(Client & sender, std::vector<std::string> const & params);
 		void	_joinSingleChannel(Client & sender, std::string const & channelName, std::string const & key);
 		void	_join(Client & sender, std::vector<std::string> const & params);
+		void	_kick(Client & sender, std::vector<std::string> const & params);
 		void	_partSingleChannel(Client & sender, std::string const & channelName, std::string const & reason);
 		void	_part(Client & sender, std::vector<std::string> const & params);
 		void	_topic(Client & sender, std::vector<std::string> const & params);
 		void	_names(Client & sender, std::vector<std::string> const & params);
 		void	_quit(Client & sender, std::vector<std::string> const & params);
+		void	_kill(Client & sender, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);

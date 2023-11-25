@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/04 13:10:52 by dapereir          #+#    #+#              #
-#    Updated: 2023/11/24 10:14:30 by dapereir         ###   ########.fr        #
+#    Updated: 2023/11/25 17:17:27 by mmaxime-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,8 @@ SRCS_FILES			=	main.cpp \
 						Server.cpp \
 						Server_cmds/invite.cpp \
 						Server_cmds/join.cpp \
+						Server_cmds/kick.cpp \
+						Server_cmds/kill.cpp \
 						Server_cmds/mode.cpp \
 						Server_cmds/motd.cpp \
 						Server_cmds/names.cpp \
