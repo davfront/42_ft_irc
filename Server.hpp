@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/27 10:36:56 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/27 15:47:40 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
 # define MAX_CLIENTS			(100)
+
+# define ISUPPORT				("CHARSET=UTF-8 CASEMAPPING=ascii NICKLEN=9 PREFIX=(qo)~@ CHANTYPES=#& CHANNELLEN=50 CHANMODES=,k,l,it")
 
 # define BOT_NICK				("Groot")
 # define BOT_HOSTMASK			(BOT_NICK + "!" + BOT_NICK + "@" + RPL_SERVERNAME)
