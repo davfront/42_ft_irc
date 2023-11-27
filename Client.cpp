@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 16:38:21 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/27 15:09:29 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,12 +167,16 @@ void	Client::addToBufferIn(std::string const & str)
 
 bool	Client::extractMessage(std::string & dest)
 {
-	size_t separatorPos = this->_bufferIn.find("\r\n");
-	if (separatorPos == std::string::npos)
+	size_t lfPos = this->_bufferIn.find("\n");
+	if (lfPos == std::string::npos)
 		return (false);
 
-	std::string message = this->_bufferIn.substr(0, separatorPos);
-	this->_bufferIn = this->_bufferIn.substr(separatorPos + 2, this->_bufferIn.size());
+	bool isCRLF = (lfPos > 0 && this->_bufferIn[lfPos - 1] == '\r');
+	size_t endlinePos = isCRLF ? lfPos - 1 : lfPos;
+	size_t endlineLen = isCRLF ? 2 : 1;
+
+	std::string message = this->_bufferIn.substr(0, endlinePos);
+	this->_bufferIn = this->_bufferIn.substr(endlinePos + endlineLen, this->_bufferIn.size());
 	dest = message;
 	return (true);
 }
