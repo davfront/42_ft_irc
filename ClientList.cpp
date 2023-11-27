@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/15 09:21:04 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 16:00:53 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@
 ClientList::ClientList(void): _deleteOnRemove(false)
 {
 	Log::debug("ClientList created");
+	return ;
+}
+
+ClientList::ClientList(ClientList const & src):
+	_deleteOnRemove(false),
+	_clients(src.getClients())
+{
+	Log::debug("ClientList created by copy");
 	return ;
 }
 
@@ -143,6 +151,16 @@ Client*	ClientList::get(std::string const & nickname) const
 void	ClientList::clear(void)
 {
 	this->_clients.clear();
+}
+
+void	ClientList::reply(std::string const & msg) const
+{
+	ClientList::const_iterator it;
+	for (it = this->begin(); it != this->end(); ++it) {
+		if (it->second) {
+			it->second->reply(msg);
+		}
+	}
 }
 
 // Output stream

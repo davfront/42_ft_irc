@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/23 17:31:05 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/24 16:32:29 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ class Client
 		// Member attributes
 		int const					_fd;
 		time_t const				_connectTime;
-		std::string					_buffer;
+		std::string					_bufferIn;
+		std::string					_bufferOut;
 		std::string					_hostname;
 		std::string					_nickname;
 		std::string					_username;
@@ -55,7 +56,8 @@ class Client
 		// Getters
 		int const &				getFd(void) const;
 		time_t const &			getConnectTime(void) const;
-		std::string const &		getBuffer(void) const;
+		std::string const &		getBufferIn(void) const;
+		std::string const &		getBufferOut(void) const;
 		std::string const &		getHostname(void) const;
 		std::string const &		getNickname(void) const;
 		std::string const &		getUsername(void) const;
@@ -66,7 +68,8 @@ class Client
 		bool const &			getIsOper(void) const;
 
 		// Setters
-		void					setBuffer(std::string const & str);
+		void					setBufferIn(std::string const & str);
+		void					setBufferOut(std::string const & str);
 		void					setHostname(std::string const & hostname);
 		void					setNickname(std::string const & nickname);
 		void					setUsername(std::string const & username);
@@ -77,10 +80,10 @@ class Client
 		void					setIsOper(bool const & isOper);
 
 		// Member functions
-		void					addToBuffer(std::string const & str);
+		void					addToBufferIn(std::string const & str);
 		bool					extractMessage(std::string & dest);
 		std::string				getHostmask(void) const;
-		void					reply(std::string const & msg) const;
+		void					reply(std::string const & msg);
 		void					unsetMode(char modeChar);
 };
 

@@ -47,23 +47,32 @@ PRIVMSG jo :Hi jo, this is bill
 ## JOIN
 
 ```sh
-# Command to join channel #foobar
-JOIN #foo,#bar
-
-# Command to join channel &foo using key "fubar"
-JOIN &foo fubar
-
-# Command to join channel #foo using key "fubar"
-# and &bar using no key
-JOIN #foo,&bar fubar
-
-# Command to join channel #foo using  key "fubar",
-# and channel #bar using key "foobar"
-JOIN #foo,#bar fubar,foobar     
-
 # Command to join channels #foo and #bar
 JOIN #foo,#bar
 
 # Leave all currently joined channels
 JOIN 0
+```
+
+## Send file with irssi
+
+Getter create and configure a download folder:
+```sh
+mkdir <path/to/dl_folder>
+chmod 777 <path/to/dl_folder>
+
+# irssi
+/set dcc_download_path <path/to/dl_folder>
+```
+
+Sender does:
+```sh
+# irssi
+/dcc send <getterNickname> <path/to/file>
+```
+
+Getter does:
+```sh
+# irssi
+/dcc get <senderNickname>
 ```

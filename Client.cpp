@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/23 17:36:00 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/24 16:38:21 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 Client::Client(int fd, std::string hostname):
 	_fd(fd),
 	_connectTime(time(NULL)),
-	_buffer(""),
+	_bufferIn(""),
 	_hostname(hostname),
 	_nickname("*"),
 	_username(""),
@@ -53,9 +53,14 @@ time_t const &	Client::getConnectTime(void) const
 	return (this->_connectTime);
 }
 
-std::string const &	Client::getBuffer(void) const
+std::string const &	Client::getBufferIn(void) const
 {
-	return (this->_buffer);
+	return (this->_bufferIn);
+}
+
+std::string const &	Client::getBufferOut(void) const
+{
+	return (this->_bufferOut);
 }
 
 std::string const &	Client::getHostname(void) const
@@ -102,9 +107,14 @@ bool const &	Client::getIsOper(void) const
 // Setters
 // ==========================================================================
 
-void	Client::setBuffer(std::string const & str)
+void	Client::setBufferIn(std::string const & str)
 {
-	this->_buffer = str;
+	this->_bufferIn = str;
+}
+
+void	Client::setBufferOut(std::string const & str)
+{
+	this->_bufferOut = str;
 }
 
 void	Client::setHostname(std::string const & hostname)
@@ -150,19 +160,19 @@ void	Client::setIsOper(bool const & isOper)
 // Member functions
 // ==========================================================================
 
-void	Client::addToBuffer(std::string const & str)
+void	Client::addToBufferIn(std::string const & str)
 {
-	this->_buffer += str;
+	this->_bufferIn += str;
 }
 
 bool	Client::extractMessage(std::string & dest)
 {
-	size_t separatorPos = this->_buffer.find("\r\n");
+	size_t separatorPos = this->_bufferIn.find("\r\n");
 	if (separatorPos == std::string::npos)
 		return (false);
 
-	std::string message = this->_buffer.substr(0, separatorPos);
-	this->_buffer = this->_buffer.substr(separatorPos + 2, this->_buffer.size());
+	std::string message = this->_bufferIn.substr(0, separatorPos);
+	this->_bufferIn = this->_bufferIn.substr(separatorPos + 2, this->_bufferIn.size());
 	dest = message;
 	return (true);
 }
@@ -172,10 +182,10 @@ std::string	Client::getHostmask(void) const
 	return (this->_nickname + "!" + this->_username + "@" + this->_hostname);
 }
 
-void	Client::reply(std::string const & msg) const
+void	Client::reply(std::string const & msg)
 {
 	Log::output(this->_fd, msg);
-	send(this->_fd, msg.c_str(), msg.size(), 0);
+	this->_bufferOut += msg;
 }
 
 void	Client::unsetMode(char mode)

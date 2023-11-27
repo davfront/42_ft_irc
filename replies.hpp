@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/25 17:18:47 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/27 10:38:03 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
 # define RPL_QUIT(hostmask, reason)							(std::string(":") + hostmask + " QUIT :" + reason + "\r\n")
 # define RPL_KILL(hostmask, killer, reason)					(std::string(":") + hostmask + " QUIT :Killed by " + killer + ": " + reason + "\r\n")
+# define RPL_NICK(hostmask, newNick)						(std::string(":") + hostmask + " NICK " + newNick + "\r\n")
 
 // Numeric replies
 // ==========================================================================
@@ -80,6 +81,8 @@
 # define ERR_NONICKNAMEGIVEN(nick)							RPL(nick, "431", ":No nickname given")
 # define ERR_ERRONEUSNICKNAME(nick, newNick)				RPL(nick, "432", newNick + " :Erroneus nickname")
 # define ERR_NICKNAMEINUSE(nick, newNick)					RPL(nick, "433", newNick + " :Nickname is already in use")
+
+# define ERR_NICKCOLLISION(nick, newNick, msg)				RPL(nick, "436", newNick + " :" + msg)
 
 # define ERR_USERNOTINCHANNEL(nick, target, channel)		RPL(nick, "441", target + " " + channel + " :They aren't on that channel")
 # define ERR_NOTONCHANNEL(nick, channel)					RPL(nick, "442", channel + " :You're not on that channel")

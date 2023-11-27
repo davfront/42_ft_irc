@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/01 10:54:00 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/23 22:17:01 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/24 15:18:28 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,13 @@ void	Server::_privmsg(Client & sender, std::vector<std::string> const & params)
 
 	// for each target
 	for (size_t i = 0; i < targetNames.size(); i++) {
-		if (!targetNames[i].empty() && (targetNames[i][0] == '#' || targetNames[i][0] == '&')) {
+		if (toLowerCase(targetNames[i]) == toLowerCase(BOT_NICK)) {
+			// bot
+			Log::debug(std::string("") + "Bot (" + BOT_NICK + ") recieves: " + params[1]);
+			usleep(10e5);
+			Log::debug(std::string("") + "Bot (" + BOT_NICK + ") replies: " + BOT_MSG);
+			sender.reply(RPL_PRIVMSG(BOT_NICK, sender.getNickname(), BOT_MSG));
+		} else if (!targetNames[i].empty() && (targetNames[i][0] == '#' || targetNames[i][0] == '&')) {
 			// channel
 			Channel* channel = this->_channels.get(targetNames[i]);
 			if (!channel) {

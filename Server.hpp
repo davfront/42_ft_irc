@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/25 16:50:47 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/27 10:36:56 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,10 @@
 # define POLL_INTERVAL			(1000)
 # define REGISTRATION_TIMEOUT	(20)
 # define MAX_CLIENTS			(100)
+
+# define BOT_NICK				("Groot")
+# define BOT_HOSTMASK			(BOT_NICK + "!" + BOT_NICK + "@" + RPL_SERVERNAME)
+# define BOT_MSG				("I am Groot!")
 
 # include <algorithm>
 # include <csignal>
@@ -81,44 +85,45 @@ class Server
 		std::time_t							_startTime;
 
 		// Member functions
-		void	_addPollfd(int fd);
-		void	_removePollfd(int fd);
+		void		_addPollfd(int fd);
+		void		_removePollfd(int fd);
 
-		void	_handleNewConnection(void);
-		void	_deleteClient(int fd);
-		void	_handleClientInput(Client & client);
+		void		_handleNewConnection(void);
+		void		_deleteClient(int fd);
+		void		_handleClientInput(Client & client);
 
-		void	_initCmds(void);
-		void	_executeCommand(Command const & cmd, Client & client);
-		void	_checkRegistration(Client & client);
-		bool	_isRegistrationTimedOut(Client & client) const;
-		void	_reply(int fd, std::string const & msg) const;
+		void		_initCmds(void);
+		void		_executeCommand(Command const & cmd, Client & client);
+		void		_checkRegistration(Client & client);
+		bool		_isRegistrationTimedOut(Client & client) const;
+		void		_reply(int fd, std::string const & msg) const;
+		ClientList	_getChannelPeers(Client & client) const;
 		
 		// Commands
-		void	_pass(Client & sender, std::vector<std::string> const & params);
-		void	_nick(Client & sender, std::vector<std::string> const & params);
-		void	_user(Client & sender, std::vector<std::string> const & params);
-		void	_modeClient(Client & sender, std::vector<std::string> const & params);
-		void	_modeChannel(Client & sender, std::vector<std::string> const & params);
-		void	_updateChannelMode(Client & sender, Channel & channel, char modeChar, bool enable, \
+		void		_pass(Client & sender, std::vector<std::string> const & params);
+		void		_nick(Client & sender, std::vector<std::string> const & params);
+		void		_user(Client & sender, std::vector<std::string> const & params);
+		void		_modeClient(Client & sender, std::vector<std::string> const & params);
+		void		_modeChannel(Client & sender, std::vector<std::string> const & params);
+		void		_updateChannelMode(Client & sender, Channel & channel, char modeChar, bool enable, \
 					std::vector<std::string>::const_iterator & nextParamIt, \
 					std::vector<std::string>::const_iterator const & end, \
 					std::vector<std::string> & replyTokens);
-		void	_mode(Client & sender, std::vector<std::string> const & params);
-		void	_motd(Client & sender, std::vector<std::string> const & params);
-		void	_oper(Client & sender, std::vector<std::string> const & params);
-		void	_ping(Client & sender, std::vector<std::string> const & params);
-		void	_pong(Client & sender, std::vector<std::string> const & params);
-		void	_privmsg(Client & sender, std::vector<std::string> const & params);
-		void	_invite(Client & sender, std::vector<std::string> const & params);
-		void	_joinSingleChannel(Client & sender, std::string const & channelName, std::string const & key);
-		void	_join(Client & sender, std::vector<std::string> const & params);
+		void		_mode(Client & sender, std::vector<std::string> const & params);
+		void		_motd(Client & sender, std::vector<std::string> const & params);
+		void		_oper(Client & sender, std::vector<std::string> const & params);
+		void		_ping(Client & sender, std::vector<std::string> const & params);
+		void		_pong(Client & sender, std::vector<std::string> const & params);
+		void		_privmsg(Client & sender, std::vector<std::string> const & params);
+		void		_invite(Client & sender, std::vector<std::string> const & params);
+		void		_joinSingleChannel(Client & sender, std::string const & channelName, std::string const & key);
+		void		_join(Client & sender, std::vector<std::string> const & params);
 		void	_kick(Client & sender, std::vector<std::string> const & params);
-		void	_partSingleChannel(Client & sender, std::string const & channelName, std::string const & reason);
-		void	_part(Client & sender, std::vector<std::string> const & params);
-		void	_topic(Client & sender, std::vector<std::string> const & params);
-		void	_names(Client & sender, std::vector<std::string> const & params);
-		void	_quit(Client & sender, std::vector<std::string> const & params);
+		void		_partSingleChannel(Client & sender, std::string const & channelName, std::string const & reason);
+		void		_part(Client & sender, std::vector<std::string> const & params);
+		void		_topic(Client & sender, std::vector<std::string> const & params);
+		void		_names(Client & sender, std::vector<std::string> const & params);
+		void		_quit(Client & sender, std::vector<std::string> const & params);
 		void	_kill(Client & sender, std::vector<std::string> const & params);
 
 		// Non-member functions

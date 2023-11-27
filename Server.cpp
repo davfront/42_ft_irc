@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/25 16:51:27 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/27 10:39:30 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void	Server::_addPollfd(int fd)
 {
 	pollfd clientPollfd;
 	clientPollfd.fd = fd;
-	clientPollfd.events = POLLIN;
+	clientPollfd.events = POLLIN | POLLOUT;
 	clientPollfd.revents = 0;
 	this->_pollfds.push_back(clientPollfd);
 }
@@ -230,7 +230,7 @@ void	Server::_handleClientInput(Client & client)
 		buffer[ret] = '\0';
 
 		// add to client buffer
-		client.addToBuffer(buffer);
+		client.addToBufferIn(buffer);
 		
 		// parse and execute commands
 		std::string msg;
@@ -307,13 +307,11 @@ void	Server::_checkRegistration(Client & client)
 		Log::info("User \"" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostname() + "\" registered" + \
 			" (socket " + stringify(client.getFd()) + ")");
 
-		std::string messages;
-		messages += RPL_WELCOME(client.getNickname(), client.getUsername(), client.getHostname());
-		messages += RPL_YOURHOST(client.getNickname(), HOST, VERSION);
-		messages += RPL_CREATED(client.getNickname(), formatTime(this->_startTime));
-		messages += RPL_MYINFO(client.getNickname(), HOST, VERSION, USERMODES, CHANNELMODES);
-		messages += Server::_motdMsg(client);
-		client.reply(messages);
+		client.reply(RPL_WELCOME(client.getNickname(), client.getUsername(), client.getHostname()));
+		client.reply(RPL_YOURHOST(client.getNickname(), HOST, VERSION));
+		client.reply(RPL_CREATED(client.getNickname(), formatTime(this->_startTime)));
+		client.reply(RPL_MYINFO(client.getNickname(), HOST, VERSION, USERMODES, CHANNELMODES));
+		client.reply(Server::_motdMsg(client));
 	}
 }
 
@@ -335,6 +333,24 @@ void	Server::_reply(int fd, std::string const & msg) const
 
 	Log::output(fd, msg);
 	send(fd, msg.c_str(), msg.size(), 0);
+}
+
+ClientList	Server::_getChannelPeers(Client & client) const
+{
+	ClientList peers;
+	ChannelList::const_iterator it;
+	for (it = this->_channels.begin(); it != this->_channels.end(); ++it) {
+		Channel* channel = it->second;
+		std::map<Client*, Channel::t_status> const & clientLinks = channel->getClientLinks();
+		std::map<Client*, Channel::t_status>::const_iterator it2;
+		for (it2 = clientLinks.begin(); it2 != clientLinks.end(); ++it2) {
+			if (it2->first && it2->first != &client && \
+				(it2->second == Channel::MEMBER || it2->second == Channel::OPERATOR || it2->second == Channel::FOUNDER)) {
+				peers.add(it2->first);
+			}
+		}
+	}
+	return (peers);
 }
 
 void	Server::start(void)
@@ -419,6 +435,12 @@ void	Server::start(void)
 					// handle client inputs
 					if (revents & POLLIN) {
 						Server::_handleClientInput(*client);
+					}
+
+					// handle client outputs
+					if (revents & POLLOUT) {
+						send(fd, client->getBufferOut().c_str(), client->getBufferOut().size(), 0);
+						client->setBufferOut("");
 					}
 			
 					// handle registration client timeout
