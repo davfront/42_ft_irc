@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:40:03 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/25 15:57:34 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/27 19:42:34 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 void	Server::_quit(Client & sender, std::vector<std::string> const & params)
 {
 	std::string	reason = (params.size() > 0) ? "Quit: " + params[0] : sender.getNickname();
+
+	Log::info("Quitting (" + reason + ")");
 
 	ChannelList::iterator it = this->_channels.begin();
 	while (it != this->_channels.end()) {

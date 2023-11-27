@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 11:41:39 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/25 15:53:49 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/27 19:42:40 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	Server::_kill(Client & sender, std::vector<std::string> const & params)
 {
+	Log::info("Killing (" + params[0] + " " + params[1] + ")");
+
 	if (params.size() < 2) {
 		throw Server::ErrException(ERR_NEEDMOREPARAMS(sender.getNickname(), "KILL"));
 	}

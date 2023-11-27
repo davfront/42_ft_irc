@@ -6,7 +6,7 @@
 /*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/25 16:48:05 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/25 17:19:45 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/27 19:42:49 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	Server::_kick(Client & sender, std::vector<std::string> const & params)
 {
+	Log::info("Kicking (" + params[1] + " from " + params[0] + ")");
+	
 	if (params.size() < 2) {
 		throw Server::ErrException(ERR_NEEDMOREPARAMS(sender.getNickname(), "KICK"));
 	}

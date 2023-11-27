@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/27 10:39:30 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/27 19:37:35 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -492,8 +492,21 @@ void	Server::stop(bool isSuccess)
 				}
 			}
 		}
+	}
+
+	for (size_t i = 0; i < this->_clients.size(); ++i) {
+		ClientList::iterator it = this->_clients.begin();
+		while (it != this->_clients.end()) {
+			Client* client = it->second;
+			it++;
+			this->_clients.remove(client->getFd());
+		}
+	}
+	
+	for(size_t i = 0; i < this->_pollfds.size(); ++i) {
 		close(this->_pollfds[i].fd);
 	}
+
 	this->_pollfds.clear();
 	this->_clients.clear();
 	this->_channels.clear();
