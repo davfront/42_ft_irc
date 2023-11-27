@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 20:31:42 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/27 10:39:30 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,6 +263,8 @@ void	Server::_initCmds(void)
 	this->_cmds["INVITE"] = &Server::_invite;
 	this->_cmds["TOPIC"] = &Server::_topic;
 	this->_cmds["NAMES"] = &Server::_names;
+	this->_cmds["KICK"] = &Server::_kick;
+	this->_cmds["KILL"] = &Server::_kill;
 	this->_cmds["QUIT"] = &Server::_quit;
 }
 
@@ -474,19 +476,35 @@ void	Server::stop(bool isSuccess)
 {
 	// To send message to clients
 	for(std::map<int, Client*>::const_iterator it = this->_clients.getClients().begin(); it != this->_clients.getClients().end(); ++it) {
-		it->second->addToBufferIn(RPL_ERROR("Closing Link: " + it->second->getHostname() + " (Server shutdown): " + (isSuccess ? "Closed by host" : "Fatal error")));
-		send(it->second->getFd(), it->second->getBufferIn().c_str(), it->second->getBufferIn().size(), 0);
+		this->_reply(it->second->getFd(), RPL_ERROR("Closing Link: " + it->second->getHostname() + " (Server shutdown): " + (isSuccess ? "Closed by host" : "Fatal error")));
 	}
 	
 	// To close and clear the clients list and server properly
 	for(size_t i = 0; i < this->_pollfds.size(); ++i) {
+		ChannelList::iterator it = this->_channels.begin();
+		while (it != this->_channels.end()) {
+			Channel*  channel = it->second;
+			it++;
+			if (channel->isJoined(this->_clients.get(this->_pollfds[i].fd))) {
+				channel->removeClientLink(this->_clients.get(this->_pollfds[i].fd));
+				if (channel->getMemberCount() == 0) {
+					this->_channels.remove(channel->getName());
+				}
+			}
+		}
 		close(this->_pollfds[i].fd);
 	}
 	this->_pollfds.clear();
 	this->_clients.clear();
+	this->_channels.clear();
 
-	// TODO: log messages
-	// TODO : Closing channels
+	std::string logMsg = "Server stopped: ";
+	if (isSuccess) {
+		logMsg += "Closed by host";
+	} else {
+		logMsg += "Fatal error";
+	}
+	Log::info(logMsg);
 	
 	// to restore default signal handling
 	std::signal(SIGINT, SIG_DFL);

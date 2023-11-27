@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/15 10:00:32 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/25 16:37:44 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ class ChannelList
 		void			add(Channel* channel);
 		void			remove(std::string const & name);
 		Channel*		get(std::string const & name) const;
-		
+		void			clear(void);
 		
 	private:
 

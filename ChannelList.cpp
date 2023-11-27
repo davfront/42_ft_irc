@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/14 17:24:09 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/25 16:38:31 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,11 @@ Channel*	ChannelList::get(std::string const & name) const
 		return (NULL);
 	}
 	return (it->second);
+}
+
+void	ChannelList::clear(void)
+{
+	this->_channels.clear();
 }
 
 

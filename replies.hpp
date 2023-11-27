@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: mmaxime- <mmaxime-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 14:54:57 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/27 10:38:03 by mmaxime-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,13 @@
 # define RPL_PING(msg)										(std::string(":") + RPL_SERVERNAME + " PONG " + RPL_SERVERNAME + " :" + msg + "\r\n")
 # define RPL_INVITE(hostmask, target, channel)				(std::string(":") + hostmask + " INVITE " + target + " " + channel + "\r\n")
 # define RPL_JOIN(hostmask, channel)						(std::string(":") + hostmask + " JOIN :" + channel + "\r\n")
-# define RPL_PART(hostmask, channel, reason)				(std::string(":") + hostmask + " PART " + channel + " :" + reason + "\r\n")
-# define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
+# define RPL_KICK(hostmask, channel, target, reason)		(std::string(":") + hostmask + " KICK " + channel + " " + target + " :" + reason + "\r\n")
 # define RPL_MODE(hostmask, target, tokens)					(std::string(":") + hostmask + " MODE " + target + " " + tokens + "\r\n")
 # define RPL_OPER(nick)										(std::string(":") + RPL_SERVERNAME + " MODE " + nick + " :+o" + "\r\n")
+# define RPL_PART(hostmask, channel, reason)				(std::string(":") + hostmask + " PART " + channel + " :" + reason + "\r\n")
+# define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
+# define RPL_QUIT(hostmask, reason)							(std::string(":") + hostmask + " QUIT :" + reason + "\r\n")
+# define RPL_KILL(hostmask, killer, reason)					(std::string(":") + hostmask + " QUIT :Killed by " + killer + ": " + reason + "\r\n")
 # define RPL_NICK(hostmask, newNick)						(std::string(":") + hostmask + " NICK " + newNick + "\r\n")
 
 // Numeric replies
