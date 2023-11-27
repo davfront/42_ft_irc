@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 17:12:17 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/27 14:44:43 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <stdexcept>
 # include <string>
 # include <vector>
+
+# include "utils.hpp"
 
 # include "Log.hpp"
 

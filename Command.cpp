@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 14:58:27 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/22 17:14:53 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/27 14:44:36 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ Command::Command(std::string msg)
 		if (token[0] == ':') {
 			this->_prefix = token;
 		} else {
-			this->_command = token;
+			this->_command = toUpperCase(token);
 		}
 		
 		// command
 		if (this->_command.empty()) {
-			this->_command = Command::_extractMessageToken(msg);
+			this->_command = toUpperCase(Command::_extractMessageToken(msg));
 		}
 
 		// parameters

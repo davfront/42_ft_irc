@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 23:30:41 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/21 14:45:23 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/27 14:28:15 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,14 @@ std::string	toLowerCase(std::string const & s) {
 	std::string result = s;
 	for (size_t i = 0; i < s.size(); i++) {
 		result[i] = tolower(s[i]);
+	}
+	return (result);
+}
+
+std::string	toUpperCase(std::string const & s) {
+	std::string result = s;
+	for (size_t i = 0; i < s.size(); i++) {
+		result[i] = toupper(s[i]);
 	}
 	return (result);
 }
