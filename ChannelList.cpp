@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/28 10:28:25 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/28 19:52:03 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	ChannelList::remove(std::string const & name)
 		return ;
 	}
 	if (this->_deleteOnRemove) {
-		delete it->second;
+		deleteSafe(it->second);
 	}
 	this->_channels.erase(it);
 }
@@ -127,9 +127,9 @@ Channel*	ChannelList::get(std::string const & name) const
 void	ChannelList::removeAll(void)
 {
 	if (this->_deleteOnRemove) {
-		ChannelList::const_iterator it;
+		ChannelList::iterator it;
 		for (it = this->begin(); it != this->end(); ++it) {
-			delete it->second;
+			deleteSafe(it->second);
 		}
 	}
 	this->_channels.clear();
