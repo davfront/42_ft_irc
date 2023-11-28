@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 16:00:53 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:29:01 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,7 @@ ClientList::ClientList(ClientList const & src):
 
 ClientList::~ClientList(void)
 {
-	if (this->_deleteOnRemove) {
-		ClientList::const_iterator it;
-		for (it = this->begin(); it != this->end(); ++it) {
-			delete it->second;
-		}
-	}
-	
+	this->removeAll();
 	Log::debug("ClientList (" + stringify(this->getClients().size()) + " client(s)) destroyed");
 	return ;
 }
@@ -148,8 +142,14 @@ Client*	ClientList::get(std::string const & nickname) const
 	return (NULL);
 }
 
-void	ClientList::clear(void)
+void	ClientList::removeAll(void)
 {
+	if (this->_deleteOnRemove) {
+		ClientList::const_iterator it;
+		for (it = this->begin(); it != this->end(); ++it) {
+			delete it->second;
+		}
+	}
 	this->_clients.clear();
 }
 

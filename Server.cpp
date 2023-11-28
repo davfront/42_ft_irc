@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/27 15:26:31 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:40:44 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -304,8 +304,7 @@ void	Server::_checkRegistration(Client & client)
 	client.setIsRegistered(isRegistered);
 	
 	if (isRegistered) {
-		Log::info("User \"" + client.getNickname() + "!" + client.getUsername() + "@" + client.getHostname() + "\" registered" + \
-			" (socket " + stringify(client.getFd()) + ")");
+		Log::info("User \"" + client.getHostmask() + "\" registered (socket " + stringify(client.getFd()) + ")");
 
 		client.reply(RPL_WELCOME(client.getNickname(), client.getUsername(), client.getHostname()));
 		client.reply(RPL_YOURHOST(client.getNickname(), HOST, VERSION));
@@ -455,7 +454,7 @@ void	Server::start(void)
 					std::string logMsg;
 					logMsg += "Connection stopped";
 					if (client && client->getIsRegistered()) {
-						logMsg += " with \"" + client->getNickname() + "!" + client->getUsername() + "@" + client->getHostname() + "\"";
+						logMsg += " with \"" + client->getHostmask() + "\"";
 					}
 					logMsg += " (socket " + stringify(fd) + ")";
 					logMsg += ": " + std::string(e.what());
@@ -480,24 +479,15 @@ void	Server::stop(bool isSuccess)
 		this->_reply(it->second->getFd(), RPL_ERROR("Closing Link: " + it->second->getHostname() + " (Server shutdown): " + (isSuccess ? "Closed by host" : "Fatal error")));
 	}
 	
-	// To close and clear the clients list and server properly
+	// Close sockets (and clear pollfd list)
 	for(size_t i = 0; i < this->_pollfds.size(); ++i) {
-		ChannelList::iterator it = this->_channels.begin();
-		while (it != this->_channels.end()) {
-			Channel*  channel = it->second;
-			it++;
-			if (channel->isJoined(this->_clients.get(this->_pollfds[i].fd))) {
-				channel->removeClientLink(this->_clients.get(this->_pollfds[i].fd));
-				if (channel->getMemberCount() == 0) {
-					this->_channels.remove(channel->getName());
-				}
-			}
-		}
 		close(this->_pollfds[i].fd);
 	}
 	this->_pollfds.clear();
-	this->_clients.clear();
-	this->_channels.clear();
+
+	// Delete clients and channels (and clear lists)
+	this->_channels.removeAll();
+	this->_clients.removeAll();
 
 	std::string logMsg = "Server stopped: ";
 	if (isSuccess) {

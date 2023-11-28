@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/24 15:58:44 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:29:06 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ class ClientList
 		void			remove(int fd);
 		Client*			get(int const & fd) const;
 		Client*			get(std::string const & nickname) const;
-		void			clear(void);
+		void			removeAll(void);
 		void			reply(std::string const & msg) const;
 };
 
