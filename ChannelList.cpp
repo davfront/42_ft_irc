@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ChannelList.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/25 16:38:31 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:28:25 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,7 @@ ChannelList::ChannelList(void): _deleteOnRemove(false)
 
 ChannelList::~ChannelList(void)
 {
-	if (this->_deleteOnRemove) {
-		ChannelList::const_iterator it;
-		for (it = this->begin(); it != this->end(); ++it) {
-			delete it->second;
-		}
-	}
-	
+	this->removeAll();
 	Log::debug("ChannelList (" + stringify(this->getChannels().size()) + " channel(s)) destroyed");
 	return ;
 }
@@ -130,8 +124,14 @@ Channel*	ChannelList::get(std::string const & name) const
 	return (it->second);
 }
 
-void	ChannelList::clear(void)
+void	ChannelList::removeAll(void)
 {
+	if (this->_deleteOnRemove) {
+		ChannelList::const_iterator it;
+		for (it = this->begin(); it != this->end(); ++it) {
+			delete it->second;
+		}
+	}
 	this->_channels.clear();
 }
 

@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/28 10:10:43 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:33:15 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -480,37 +480,15 @@ void	Server::stop(bool isSuccess)
 		this->_reply(it->second->getFd(), RPL_ERROR("Closing Link: " + it->second->getHostname() + " (Server shutdown): " + (isSuccess ? "Closed by host" : "Fatal error")));
 	}
 	
-	// To close and clear the clients list and server properly
-	for(size_t i = 0; i < this->_pollfds.size(); ++i) {
-		ChannelList::iterator it = this->_channels.begin();
-		while (it != this->_channels.end()) {
-			Channel*  channel = it->second;
-			it++;
-			if (channel->isJoined(this->_clients.get(this->_pollfds[i].fd))) {
-				channel->removeClientLink(this->_clients.get(this->_pollfds[i].fd));
-				if (channel->getMemberCount() == 0) {
-					this->_channels.remove(channel->getName());
-				}
-			}
-		}
-	}
-
-	for (size_t i = 0; i < this->_clients.size(); ++i) {
-		ClientList::iterator it = this->_clients.begin();
-		while (it != this->_clients.end()) {
-			Client* client = it->second;
-			it++;
-			this->_clients.remove(client->getFd());
-		}
-	}
-	
+	// Close sockets (and clear pollfd list)
 	for(size_t i = 0; i < this->_pollfds.size(); ++i) {
 		close(this->_pollfds[i].fd);
 	}
-
 	this->_pollfds.clear();
-	this->_clients.clear();
-	this->_channels.clear();
+
+	// Delete clients and channels (and clear lists)
+	this->_channels.removeAll();
+	this->_clients.removeAll();
 
 	std::string logMsg = "Server stopped: ";
 	if (isSuccess) {
