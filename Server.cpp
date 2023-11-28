@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/27 19:37:35 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/28 10:10:43 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,6 +311,7 @@ void	Server::_checkRegistration(Client & client)
 		client.reply(RPL_YOURHOST(client.getNickname(), HOST, VERSION));
 		client.reply(RPL_CREATED(client.getNickname(), formatTime(this->_startTime)));
 		client.reply(RPL_MYINFO(client.getNickname(), HOST, VERSION, USERMODES, CHANNELMODES));
+		client.reply(RPL_ISUPPORT(client.getNickname(), ISUPPORT));
 		client.reply(Server::_motdMsg(client));
 	}
 }

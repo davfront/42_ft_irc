@@ -14,8 +14,8 @@ sudo journalctl -u ngircd -f
 ## Connect
 
 ```sh
-nc -C localhost 1234
-nc -C localhost 6667
+nc localhost 1234
+nc localhost 6667
 ```
 
 ## Register
