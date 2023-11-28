@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 15:40:03 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/27 19:42:34 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/28 11:49:24 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ void	Server::_quit(Client & sender, std::vector<std::string> const & params)
 
 	Log::info("Quitting (" + reason + ")");
 
+	// Send QUIT message to all channel peers
+	this->_getChannelPeers(sender).reply(RPL_QUIT(sender.getHostmask(), reason));
+
+	// Remove client from all channels
 	ChannelList::iterator it = this->_channels.begin();
 	while (it != this->_channels.end()) {
 		Channel*  channel = it->second;
@@ -27,12 +31,13 @@ void	Server::_quit(Client & sender, std::vector<std::string> const & params)
 			if (channel->getMemberCount() == 0) {
 				this->_channels.remove(channel->getName());
 			}
-			else {
-				channel->reply(RPL_QUIT(sender.getHostmask(), reason));
-			}
 		}
 	}
 
+	// Send ERROR message to client
 	sender.reply(RPL_ERROR("Closing connection"));
+
+	// Delete client
+	Log::info("User \"" + sender.getHostmask() + "\" unregistered (socket " + stringify(sender.getFd()) + "): Got QUIT command.");
 	this->_deleteClient(sender.getFd());
 }
