@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kill.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 11:41:39 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/29 09:57:52 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/29 11:29:44 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,17 @@ void	Server::_kill(Client & sender, std::vector<std::string> const & params)
 	// Send ERROR message to target
 	target->reply(RPL_ERROR("Closing connection: " + reason));
 	
-	// Send buffer to target, and close connection
+	// Send buffer to target
 	this->_reply(target->getFd(), target->getBufferOut());
-	throw Server::ConnectionException("Got KILL command");
+
+	// Stop connection
+	if (target == &sender) {
+		throw Server::ConnectionException("Got KILL command");
+	}
+
+	if (target->getIsRegistered()) {
+		Log::info("User \"" + target->getHostmask() + "\" unregistered (socket " + stringify(target->getFd()) + "): Got KILL command");
+	}
+	Log::info("Connection stopped (socket " + stringify(target->getFd()) + "): Got KILL command");
+	this->_deleteClient(target->getFd());
 }
