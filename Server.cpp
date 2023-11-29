@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:31 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/28 11:40:44 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/29 10:28:27 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,9 @@ void	Server::_handleClientInput(Client & client)
 		char buffer[1024];
 		int ret = recv(fd, buffer, sizeof(buffer), 0);
 		if (ret <= 0) {
-			throw Server::ConnectionException("Client disconnected");
+			this->_getChannelPeers(client).reply(RPL_QUIT(client.getHostmask(), "Quit: Client closed connection"));
+			this->_reply(client.getFd(), RPL_ERROR("Closing connection"));
+			throw Server::ConnectionException("Client closed connection");
 		}
 		buffer[ret] = '\0';
 
@@ -424,13 +426,10 @@ void	Server::start(void)
 			while (i < this->_pollfds.size()) {
 				int fd = this->_pollfds[i].fd;
 				short revents = this->_pollfds[i].revents;
-				Client* client = this->_clients.get(fd);
 				
 				try {
-				
-					if (!client) {
-						throw std::runtime_error("Client not found");
-					}
+					Client* client = this->_clients.get(fd);
+					if (!client) { continue; }
 					
 					// handle client inputs
 					if (revents & POLLIN) {
@@ -445,21 +444,19 @@ void	Server::start(void)
 			
 					// handle registration client timeout
 					if (this->_isRegistrationTimedOut(*client)) {
+						this->_reply(client->getFd(), RPL_ERROR("Closing connection"));
 						throw Server::ConnectionException("Registration has timed out");
 					}
 
 					++i;
 					
 				} catch (Server::ConnectionException & e) {
-					std::string logMsg;
-					logMsg += "Connection stopped";
+					Client* client = this->_clients.get(fd);
 					if (client && client->getIsRegistered()) {
-						logMsg += " with \"" + client->getHostmask() + "\"";
+						Log::info("User \"" + client->getHostmask() + "\" unregistered (socket " + stringify(client->getFd()) + "): " + std::string(e.what()));
 					}
-					logMsg += " (socket " + stringify(fd) + ")";
-					logMsg += ": " + std::string(e.what());
-					Log::info(logMsg);
 					this->_deleteClient(fd);
+					Log::info("Connection stopped (socket " + stringify(fd) + "): " + std::string(e.what()));
 				}
 			}
 		}

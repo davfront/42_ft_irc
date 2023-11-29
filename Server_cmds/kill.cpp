@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kill.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmaxime- <mmaxime-@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 11:41:39 by mmaxime-          #+#    #+#             */
-/*   Updated: 2023/11/27 19:42:40 by mmaxime-         ###   ########.fr       */
+/*   Updated: 2023/11/29 09:57:52 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 void	Server::_kill(Client & sender, std::vector<std::string> const & params)
 {
-	Log::info("Killing (" + params[0] + " " + params[1] + ")");
-
 	if (params.size() < 2) {
 		throw Server::ErrException(ERR_NEEDMOREPARAMS(sender.getNickname(), "KILL"));
 	}
@@ -25,25 +23,21 @@ void	Server::_kill(Client & sender, std::vector<std::string> const & params)
 	}
 
 	Client* target = this->_clients.get(params[0]);
-	
 	if (!target) {
 		throw Server::ErrException(ERR_NOSUCHNICK(sender.getNickname(), params[0]));
 	}
-	target->reply(RPL_ERROR("Killed by" + sender.getNickname() + ": " + params[1]));
+
+	// Send KILL message to target
+	target->reply(RPL_KILL(sender.getHostmask(), target->getNickname(), params[1]));
+
+	// Send QUIT message to all channel peers
+	std::string	reason = "Killed by " + sender.getNickname() + ": " + params[1];
+	this->_getChannelPeers(*target).reply(RPL_QUIT(target->getHostmask(), reason));
+
+	// Send ERROR message to target
+	target->reply(RPL_ERROR("Closing connection: " + reason));
 	
-	ChannelList::iterator it = this->_channels.begin();
-	while (it != this->_channels.end()) {
-		Channel*  channel = it->second;
-		it++;
-		if (channel->isJoined(target)) {
-			channel->removeClientLink(target);
-			if (channel->getMemberCount() == 0) {
-				this->_channels.remove(channel->getName());
-			}
-			else {
-				channel->reply(RPL_KILL(target->getHostmask(), sender.getNickname(), params[1]));
-			}
-		}
-	}
-	this->_deleteClient(target->getFd());
+	// Send buffer to target, and close connection
+	this->_reply(target->getFd(), target->getBufferOut());
+	throw Server::ConnectionException("Got KILL command");
 }

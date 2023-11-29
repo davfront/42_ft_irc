@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:52:34 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/27 15:47:40 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/29 09:26:54 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,9 @@ class Server
 		void		_modeClient(Client & sender, std::vector<std::string> const & params);
 		void		_modeChannel(Client & sender, std::vector<std::string> const & params);
 		void		_updateChannelMode(Client & sender, Channel & channel, char modeChar, bool enable, \
-					std::vector<std::string>::const_iterator & nextParamIt, \
-					std::vector<std::string>::const_iterator const & end, \
-					std::vector<std::string> & replyTokens);
+						std::vector<std::string>::const_iterator & nextParamIt, \
+						std::vector<std::string>::const_iterator const & end, \
+						std::vector<std::string> & replyTokens);
 		void		_mode(Client & sender, std::vector<std::string> const & params);
 		void		_motd(Client & sender, std::vector<std::string> const & params);
 		void		_oper(Client & sender, std::vector<std::string> const & params);
@@ -120,13 +120,13 @@ class Server
 		void		_invite(Client & sender, std::vector<std::string> const & params);
 		void		_joinSingleChannel(Client & sender, std::string const & channelName, std::string const & key);
 		void		_join(Client & sender, std::vector<std::string> const & params);
-		void	_kick(Client & sender, std::vector<std::string> const & params);
+		void		_kick(Client & sender, std::vector<std::string> const & params);
 		void		_partSingleChannel(Client & sender, std::string const & channelName, std::string const & reason);
 		void		_part(Client & sender, std::vector<std::string> const & params);
 		void		_topic(Client & sender, std::vector<std::string> const & params);
 		void		_names(Client & sender, std::vector<std::string> const & params);
 		void		_quit(Client & sender, std::vector<std::string> const & params);
-		void	_kill(Client & sender, std::vector<std::string> const & params);
+		void		_kill(Client & sender, std::vector<std::string> const & params);
 
 		// Non-member functions
 		static int const &				_checkPort(int const & port);

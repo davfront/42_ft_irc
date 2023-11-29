@@ -6,7 +6,7 @@
 /*   By: dapereir <dapereir@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/17 12:50:02 by dapereir          #+#    #+#             */
-/*   Updated: 2023/11/27 15:25:18 by dapereir         ###   ########.fr       */
+/*   Updated: 2023/11/29 09:47:33 by dapereir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # define RPL_PART(hostmask, channel, reason)				(std::string(":") + hostmask + " PART " + channel + " :" + reason + "\r\n")
 # define RPL_PRIVMSG(hostmask, target, msg)					(std::string(":") + hostmask + " PRIVMSG " + target + " :" + msg + "\r\n")
 # define RPL_QUIT(hostmask, reason)							(std::string(":") + hostmask + " QUIT :" + reason + "\r\n")
-# define RPL_KILL(hostmask, killer, reason)					(std::string(":") + hostmask + " QUIT :Killed by " + killer + ": " + reason + "\r\n")
+# define RPL_KILL(hostmask, target, comment)				(std::string(":") + hostmask + " KILL " + target + " :" + comment + "\r\n")
 # define RPL_NICK(hostmask, newNick)						(std::string(":") + hostmask + " NICK " + newNick + "\r\n")
 
 // Numeric replies
